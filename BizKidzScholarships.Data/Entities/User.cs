@@ -13,8 +13,10 @@ namespace BizKidzScholarships.Data.Entities
         public required string Email { get; set; }
         public required string Password { get; set; }
 
-        public ICollection<UserTask> UserTasks { get; set; } = new List<UserTask>();
+        public ICollection<UserTask> UserTasks { get; set; } = [];
 
         public required UserProfile Profile { get; set; }
+
+        public required ICollection<TaskSubmission> TaskSubmissions { get; set; }
     }
 }

@@ -18,5 +18,9 @@ namespace BizKidzScholarships.Data.Entities
 
         public string? TaskImageKey { get; set; }
 
+        public required Boolean TaskEnabled { get; set; } = false;
+
+        public required ICollection<TaskSubmission> TaskSubmissions { get; set; } = [];
+
     }
 }

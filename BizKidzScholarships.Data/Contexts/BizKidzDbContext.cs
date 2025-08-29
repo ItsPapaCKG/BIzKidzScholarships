@@ -62,6 +62,16 @@ namespace BizKidzScholarships.Data.Contexts
             });
 
             modelBuilder.Entity<TaskSubmission>(s => { 
+                s.HasKey(ts => new { ts.AttemptNumber, ts.UserId, ts.TaskId });
+
+                s.HasOne(ts => ts.User)
+                .WithMany(u => u.TaskSubmissions)
+                .HasForeignKey(ts => ts.UserId);
+
+                s.HasOne(ts => ts.Task)
+                .WithMany(t => t.TaskSubmissions)
+                .HasForeignKey(ts => ts.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
             });
         }
 
