@@ -1,12 +1,12 @@
 ﻿using BizKidzScholarships.Data.Base;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BizKidzScholarships.Data.Entities
 {
     public class UserProfile : BaseTrackableModel
     {
-        public required int UserId { get; set; }
+        public required Guid UserId { get; set; }
 
         [MaxLength(30)]
         public required string FirstName { get; set; }
@@ -28,6 +28,6 @@ namespace BizKidzScholarships.Data.Entities
 
         public int? Score { get; set; }
 
-        public required User User { get; set; }
+        public required IdentityUser<Guid> User { get; set; }
     }
 }

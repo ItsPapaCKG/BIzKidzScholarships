@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BizKidzScholarships.Data.Entities
@@ -9,9 +10,9 @@ namespace BizKidzScholarships.Data.Entities
         public required int AttemptNumber { get; set; }
 
         [ForeignKey("User")]
-        public required int UserId { get; set; }
+        public required Guid UserId { get; set; }
 
-        public required User User { get; set; }
+        public required IdentityUser<Guid> User { get; set; }
 
         [ForeignKey("Task")]
         public required int TaskId { get; set; }

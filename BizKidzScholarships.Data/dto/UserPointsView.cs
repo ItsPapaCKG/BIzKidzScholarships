@@ -8,7 +8,7 @@ namespace BizKidzScholarships.Data.dto
 {
     public class UserPointsView
     {
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public int Points { get; set; }
 

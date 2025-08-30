@@ -8,8 +8,12 @@ namespace BizKidzScholarships.Data.NetworkedModels
 {
     public interface ICurrentUser
     {
-        string? Id { get; }
+        Guid Id { get; }
 
         bool IsAuthenticated { get; }
+
+        string Email { get; }
+
+        Task<IList<string>> GetRolesAsync();
     }
 }

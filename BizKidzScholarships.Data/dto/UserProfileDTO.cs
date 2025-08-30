@@ -10,7 +10,7 @@ namespace BizKidzScholarships.Data.dto
 {
     public class UserProfileDTO
     {
-        public required int UserId { get; set; }
+        public required Guid UserId { get; set; }
 
         [MaxLength(30)]
         public required string FirstName { get; set; }

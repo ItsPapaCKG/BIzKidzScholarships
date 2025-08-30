@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using BizKidzScholarships.Data.Entities;
-using TaskItem = BizKidzScholarships.Data.Entities.TaskItem;
+﻿using BizKidzScholarships.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TaskItem = BizKidzScholarships.Data.Entities.TaskItem;
 
 namespace BizKidzScholarships.Data.Contexts
 {
@@ -23,28 +22,23 @@ namespace BizKidzScholarships.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(u =>
+
+            modelBuilder.Entity<UserProfile>(s =>
             {
-                u.Property(p => p.Id)
-                .UseIdentityColumn();
-
-                u.HasIndex(p => p.Username);
-
-                u.HasOne(up => up.Profile)
-                .WithOne(u => u.User)
-                .HasForeignKey<UserProfile>(up => up.UserId);
-            });
-
-            modelBuilder.Entity<UserProfile>(s => {
                 s.ToTable("Profiles");
                 s.HasKey(up => up.UserId);
+
+                s.HasOne(up => up.User)
+                .WithMany()
+                .HasForeignKey(up => up.UserId);
             });
 
-            modelBuilder.Entity<UserPointsReward>(upo => { 
+            modelBuilder.Entity<UserPointsReward>(upo =>
+            {
                 upo.HasKey(upo => new { upo.UserId, upo.TaskId, upo.AttemptNumber });
 
                 upo.HasOne(upo => upo.User)
-                .WithMany(u => u.Rewards)
+                .WithMany()
                 .HasForeignKey(upo => upo.UserId);
 
                 upo.HasOne(upo => upo.Task)
@@ -52,7 +46,8 @@ namespace BizKidzScholarships.Data.Contexts
                 .HasForeignKey(r => r.TaskId);
             });
 
-            modelBuilder.Entity<TaskItem>(b => {
+            modelBuilder.Entity<TaskItem>(b =>
+            {
                 b.ToTable("Tasks");
                 b.HasKey(c => c.Id);
                 b.HasIndex(c => c.TaskNameInternal);
@@ -61,7 +56,7 @@ namespace BizKidzScholarships.Data.Contexts
             modelBuilder.Entity<UserTask>(t =>
             {
                 t.HasOne(ut => ut.User)
-                .WithMany(u => u.UserTasks)
+                .WithMany()
                 .HasForeignKey(ut => ut.UserId);
 
                 t.HasOne(ut => ut.Task)
@@ -72,11 +67,12 @@ namespace BizKidzScholarships.Data.Contexts
 
             });
 
-            modelBuilder.Entity<TaskSubmission>(s => { 
+            modelBuilder.Entity<TaskSubmission>(s =>
+            {
                 s.HasKey(ts => new { ts.AttemptNumber, ts.UserId, ts.TaskId });
 
                 s.HasOne(ts => ts.User)
-                .WithMany(u => u.TaskSubmissions)
+                .WithMany()
                 .HasForeignKey(ts => ts.UserId);
 
                 s.HasOne(ts => ts.Task)
@@ -84,6 +80,8 @@ namespace BizKidzScholarships.Data.Contexts
                 .HasForeignKey(ts => ts.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
             });
+
+            base.OnModelCreating(modelBuilder);
         }
 
     }

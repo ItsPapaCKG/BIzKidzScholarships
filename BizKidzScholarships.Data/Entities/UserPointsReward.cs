@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,7 +15,7 @@ namespace BizKidzScholarships.Data.Entities
 
         [Key]
         [ForeignKey("Users")]
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
 
         public int TaskId { get; set; }
 
@@ -24,7 +25,7 @@ namespace BizKidzScholarships.Data.Entities
 
         public DateTime Updated { get; set; }
 
-        public required User User { get; set; }
+        public required IdentityUser<Guid> User { get; set; }
 
         public required TaskItem Task { get; set; }
     }

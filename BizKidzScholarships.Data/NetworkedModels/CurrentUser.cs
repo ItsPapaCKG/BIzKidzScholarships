@@ -15,8 +15,15 @@ namespace BizKidzScholarships.Data.NetworkedModels
         {
             _httpContextAccessor = accessor;
         }
-
-        public string? Id { get => _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? _httpContextAccessor.HttpContext.User.FindFirst("sub")?.Value; }
         public bool IsAuthenticated { get => _httpContextAccessor.HttpContext.User?.Identity?.IsAuthenticated == true; }
+
+        public string Email => IsAuthenticated ? _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)!.Value : string.Empty;
+
+        Guid ICurrentUser.Id => IsAuthenticated ? Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)!.Value) : Guid.Empty;
+
+        public async Task<IList<string>> GetRolesAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

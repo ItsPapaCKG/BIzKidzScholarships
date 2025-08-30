@@ -34,7 +34,7 @@ namespace BIzKidzScholarships.API
 
             var app = builder.Build();
 
-            app.MapIdentityApi<IdentityUser>();
+            app.MapIdentityApi<IdentityUser<Guid>>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

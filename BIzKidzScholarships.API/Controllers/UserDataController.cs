@@ -6,10 +6,6 @@ namespace BIzKidzScholarships.API.Controllers
     [Route("api/user")]
     public class UserDataController
     {
-        [HttpGet]
-        public IActionResult Get(int userId)
-        {
 
-        }
     }
 }
