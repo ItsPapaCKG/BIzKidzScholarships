@@ -1,7 +1,9 @@
 
 using BizKidzScholarships.Data.Contexts;
+using BizKidzScholarships.Data.NetworkedModels;
 using BIzKidzScholarships.API.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -22,20 +24,6 @@ namespace BIzKidzScholarships.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                    {
-                        ValidateAudience = true,
-                        ValidateIssuer = true,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                        ValidAudience = builder.Configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
-                    };
-                });
-
             builder.Services.AddDbContext<BizKidzDbContext>(options =>
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("PGHost"));
@@ -45,6 +33,8 @@ namespace BIzKidzScholarships.API
             builder.Services.RegisterServices();
 
             var app = builder.Build();
+
+            app.MapIdentityApi<IdentityUser>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

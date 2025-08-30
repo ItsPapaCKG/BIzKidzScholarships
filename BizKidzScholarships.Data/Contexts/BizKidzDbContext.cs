@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BizKidzScholarships.Data.Entities;
 using TaskItem = BizKidzScholarships.Data.Entities.TaskItem;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace BizKidzScholarships.Data.Contexts
 {
-    public class BizKidzDbContext : DbContext
+    public class BizKidzDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
     {
-        DbSet<User> Users { get; set; }
         DbSet<TaskItem> Tasks { get; set; }
         DbSet<UserProfile> Profiles { get; set; }
 
