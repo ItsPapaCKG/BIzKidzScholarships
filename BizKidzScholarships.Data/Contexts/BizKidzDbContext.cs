@@ -12,7 +12,7 @@ namespace BizKidzScholarships.Data.Contexts
 
         DbSet<UserTask> UserTasks { get; set; }
 
-        DbSet<UserPoints> UserPoints { get; set; }
+        DbSet<UserPointsReward> UserPoints { get; set; }
 
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
@@ -33,6 +33,23 @@ namespace BizKidzScholarships.Data.Contexts
                 .HasForeignKey<UserProfile>(up => up.UserId);
             });
 
+            modelBuilder.Entity<UserProfile>(s => {
+                s.ToTable("Profiles");
+                s.HasKey(up => up.UserId);
+            });
+
+            modelBuilder.Entity<UserPointsReward>(upo => { 
+                upo.HasKey(upo => new { upo.UserId, upo.TaskId, upo.AttemptNumber });
+
+                upo.HasOne(upo => upo.User)
+                .WithMany(u => u.Rewards)
+                .HasForeignKey(upo => upo.UserId);
+
+                upo.HasOne(upo => upo.Task)
+                .WithMany(t => t.Rewards)
+                .HasForeignKey(r => r.TaskId);
+            });
+
             modelBuilder.Entity<TaskItem>(b => {
                 b.ToTable("Tasks");
                 b.HasKey(c => c.Id);
@@ -51,14 +68,6 @@ namespace BizKidzScholarships.Data.Contexts
 
                 t.HasIndex(ut => ut.Status);
 
-            });
-
-            modelBuilder.Entity<UserProfile>(s => {
-                s.ToTable("Profiles");
-
-                s.HasOne(up => up.User)
-                .WithOne(p => p.Profile)
-                .HasForeignKey<UserProfile>(u => u.UserId);
             });
 
             modelBuilder.Entity<TaskSubmission>(s => { 

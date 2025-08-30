@@ -9,8 +9,13 @@ namespace BizKidzScholarships.Data.Entities
         [Key]
         public int Id { get; set; }
 
+        [MaxLength(20)]
         public required string Username { get; set; }
+
+        [MaxLength(75)]
         public required string Email { get; set; }
+
+        [MaxLength(512)]
         public required string Password { get; set; }
 
         public ICollection<UserTask> UserTasks { get; set; } = [];
@@ -18,5 +23,8 @@ namespace BizKidzScholarships.Data.Entities
         public required UserProfile Profile { get; set; }
 
         public required ICollection<TaskSubmission> TaskSubmissions { get; set; }
+
+        public required ICollection<UserPointsReward> Rewards { get; set; }
+             
     }
 }

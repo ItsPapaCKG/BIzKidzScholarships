@@ -8,6 +8,7 @@ namespace BizKidzScholarships.Data.Entities
         [Key]
         public int Id { get; set; }
 
+        [MaxLength(60)]
         public required string TaskNameInternal { get; set; }
 
         [MaxLength(150)]
@@ -16,11 +17,14 @@ namespace BizKidzScholarships.Data.Entities
         [MaxLength(500)]
         public string TaskDescription { get; set; } = string.Empty;
 
+        [MaxLength(150)]
         public string? TaskImageKey { get; set; }
 
         public required Boolean TaskEnabled { get; set; } = false;
 
         public required ICollection<TaskSubmission> TaskSubmissions { get; set; } = [];
+
+        public required ICollection<UserPointsReward> Rewards { get; set; } = [];
 
     }
 }
