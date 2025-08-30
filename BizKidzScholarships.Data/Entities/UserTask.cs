@@ -13,7 +13,7 @@ namespace BizKidzScholarships.Data.Entities
         [ForeignKey("Task")]
         public int TaskId { get; set; }
 
-        public TaskStatus Status { get; set; } = TaskStatus.Open;
+        public TaskStatus Status { get; set; } = TaskStatus.Disabled;
 
         public required User User { get; set; }
 

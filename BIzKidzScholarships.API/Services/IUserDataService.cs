@@ -10,10 +10,10 @@ namespace BIzKidzScholarships.API.Services
         UserProfileDTO GetUserProfile(int userId);
 
         // Public Get User Assigned Tasks w/ Title/Description/Points bound
-        List<TaskItem> GetUserTasks(int userId);
+        List<DashboardTaskDTO> GetUserTasks(int userId);
 
         // Get User Points and Entries Total
-        List<>
+        UserPointsView GetUserPoints(int userId);
 
     }
 }
