@@ -1,5 +1,6 @@
 
 using BizKidzScholarships.Data.Contexts;
+using BIzKidzScholarships.API.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,6 +40,9 @@ namespace BIzKidzScholarships.API
             {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("PGHost"));
             });
+
+            builder.Services.RegisterMappings();
+            builder.Services.RegisterServices();
 
             var app = builder.Build();
 

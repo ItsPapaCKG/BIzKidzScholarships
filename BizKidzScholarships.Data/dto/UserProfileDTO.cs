@@ -1,10 +1,14 @@
-﻿using BizKidzScholarships.Data.Base;
+﻿using BizKidzScholarships.Data.Entities;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BizKidzScholarships.Data.Entities
+namespace BizKidzScholarships.Data.dto
 {
-    public class UserProfile : BaseTrackableModel
+    public class UserProfileDTO
     {
         public required int UserId { get; set; }
 
@@ -27,7 +31,5 @@ namespace BizKidzScholarships.Data.Entities
         public string? BusinessLogoKey { get; set; }
 
         public int? Score { get; set; }
-
-        public required User User { get; set; }
     }
 }
