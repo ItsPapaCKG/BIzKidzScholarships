@@ -155,9 +155,6 @@ namespace BizKidzScholarships.Data.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("character varying(12)");
 
-                    b.Property<int?>("Score")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 

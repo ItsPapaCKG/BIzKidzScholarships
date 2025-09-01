@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.NetworkedModels;
+using BIzKidzScholarships.API.Services;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,8 @@ namespace BIzKidzScholarships.API.Extensions
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUser, CurrentUser>();
 
+            services.AddScoped<IUserDataService, UserDataService>();
+
             services.AddTransient<IMapper, Mapper>();
 
             services.AddAuthorization();
@@ -24,17 +27,32 @@ namespace BIzKidzScholarships.API.Extensions
             services.AddIdentityCore<IdentityUser<Guid>>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
-                    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-";
 
                     options.Password.RequiredLength = 9;
                     options.Password.RequiredUniqueChars = 2;
                     options.Password.RequireUppercase = true;
                     options.Password.RequireNonAlphanumeric = true;
+
+                    //options.Stores.ProtectPersonalData = true;
                 })
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<BizKidzDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.Name = "BizKidzCookie";
+                options.Cookie.SameSite = SameSiteMode.Lax;
+
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+
+                options.LoginPath = "/auth/login";
+                options.AccessDeniedPath = "/auth/accessdenied";
+            });
         }
     }
 }

@@ -13,6 +13,10 @@ namespace BIzKidzScholarships.API.Extensions
                 cfg.CreateMap<UserProfileDTO, UserProfile>()
                     .ForMember(m => m.User, a => a.Ignore());
 
+
+                cfg.CreateMap<UserProfile, RegisterUserProfileDTO>();
+                cfg.CreateMap<RegisterUserProfileDTO, UserProfile>()
+                    .ForMember(m => m.UserId, a => a.Ignore());
             });
         }
     }

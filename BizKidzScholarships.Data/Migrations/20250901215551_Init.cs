@@ -187,7 +187,6 @@ namespace BizKidzScholarships.Data.Migrations
                     BusinessEmail = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     BusinessName = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
                     BusinessLogoKey = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Score = table.Column<int>(type: "integer", nullable: true),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

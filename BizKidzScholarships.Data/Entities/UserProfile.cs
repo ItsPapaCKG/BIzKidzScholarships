@@ -26,8 +26,6 @@ namespace BizKidzScholarships.Data.Entities
         [MaxLength(150)]
         public string? BusinessLogoKey { get; set; }
 
-        public int? Score { get; set; }
-
         public required IdentityUser<Guid> User { get; set; }
     }
 }

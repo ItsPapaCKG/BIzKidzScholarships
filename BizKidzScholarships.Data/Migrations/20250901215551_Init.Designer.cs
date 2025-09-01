@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BizKidzScholarships.Data.Migrations
 {
     [DbContext(typeof(BizKidzDbContext))]
-    [Migration("20250901200534_Init")]
+    [Migration("20250901215551_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -157,9 +157,6 @@ namespace BizKidzScholarships.Data.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(12)
                         .HasColumnType("character varying(12)");
-
-                    b.Property<int?>("Score")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
