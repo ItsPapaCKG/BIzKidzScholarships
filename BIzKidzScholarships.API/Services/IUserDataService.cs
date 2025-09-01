@@ -7,13 +7,13 @@ namespace BIzKidzScholarships.API.Services
     {
 
         // Public Get User Profile
-        UserProfileDTO GetUserProfile(int userId);
+        UserProfileDTO? GetUserProfile(Guid userId);
 
         // Public Get User Assigned Tasks w/ Title/Description/Points bound
-        List<DashboardTaskDTO> GetUserTasks(int userId);
+        Task<List<DashboardTaskDTO>> GetUserTasks(Guid userId);
 
         // Get User Points and Entries Total
-        UserPointsView GetUserPoints(int userId);
+        UserPointsView? GetUserPoints(Guid userId);
 
     }
 }

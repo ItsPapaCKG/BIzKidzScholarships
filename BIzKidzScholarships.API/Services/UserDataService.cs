@@ -2,6 +2,7 @@
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.NetworkedModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BIzKidzScholarships.API.Services
 {
@@ -17,19 +18,37 @@ namespace BIzKidzScholarships.API.Services
             _context = context;
             _mapper = mapper;
         }
-        public UserPointsView GetUserPoints(Guid userId)
+        public UserPointsView? GetUserPoints(Guid userId)
         {
-            throw new NotImplementedException();
+            var ent = _context.UserPoints.FirstOrDefault(p => p.UserId == userId);
+
+            if (ent == null)
+                return null;
+
+            var model = _mapper.Map<UserPointsView>(ent);
+
+            return model;
         }
 
-        public UserProfileDTO GetUserProfile(int userId = 0)
+        public UserProfileDTO? GetUserProfile(Guid userId)
         {
-            throw new NotImplementedException();
+            var ent = _context.Profiles.FirstOrDefault(p => p.UserId == userId);
+
+            if (ent == null)
+                return null;
+
+            var model = _mapper.Map<UserProfileDTO>(ent);
+
+            return model;
         }
 
-        public List<DashboardTaskDTO> GetUserTasks(int userId)
+        public async Task<List<DashboardTaskDTO>> GetUserTasks(Guid userId)
         {
-            throw new NotImplementedException();
+            var tasks = await _context.UserTasks.Where(ut => ut.UserId == userId).ToListAsync();
+
+            var newList = _mapper.Map<List<DashboardTaskDTO>>(tasks);
+
+            return newList;
         }
     }
 }

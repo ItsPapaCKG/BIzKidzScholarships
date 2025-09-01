@@ -8,12 +8,12 @@ namespace BizKidzScholarships.Data.Contexts
 {
     public class BizKidzDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
     {
-        DbSet<TaskItem> Tasks { get; set; }
-        DbSet<UserProfile> Profiles { get; set; }
+        public DbSet<TaskItem> Tasks { get; set; }
+        public DbSet<UserProfile> Profiles { get; set; }
 
-        DbSet<UserTask> UserTasks { get; set; }
+        public DbSet<UserTask> UserTasks { get; set; }
 
-        DbSet<UserPointsReward> UserPoints { get; set; }
+        public DbSet<UserPointsReward> UserPoints { get; set; }
 
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
