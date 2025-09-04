@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35806.99 d17.13
+VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIzKidzScholarships.API", "BIzKidzScholarships.API\BIzKidzScholarships.API.csproj", "{F0B49A70-3108-4F78-83C2-26E56A666417}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizKidzScholarships.Data", "BizKidzScholarships.Data\BizKidzScholarships.Data.csproj", "{92537B8E-F607-4C12-9FD7-B2CA035B099D}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "bizkidzscholarships.react", "BizKidzScholarships.React\bizkidzscholarships.react.esproj", "{3746894A-A40B-2DF2-B6A3-5CEEF12B8ADD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,12 @@ Global
 		{92537B8E-F607-4C12-9FD7-B2CA035B099D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92537B8E-F607-4C12-9FD7-B2CA035B099D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92537B8E-F607-4C12-9FD7-B2CA035B099D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3746894A-A40B-2DF2-B6A3-5CEEF12B8ADD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3746894A-A40B-2DF2-B6A3-5CEEF12B8ADD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3746894A-A40B-2DF2-B6A3-5CEEF12B8ADD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3746894A-A40B-2DF2-B6A3-5CEEF12B8ADD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3746894A-A40B-2DF2-B6A3-5CEEF12B8ADD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3746894A-A40B-2DF2-B6A3-5CEEF12B8ADD}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

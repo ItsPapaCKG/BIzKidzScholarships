@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BizKidzScholarships.Data\BizKidzScholarships.Data.csproj" />
+    <ProjectReference Include="..\BizKidzScholarships.React\bizkidzscholarships.react.esproj" />
   </ItemGroup>
 
 </Project>
