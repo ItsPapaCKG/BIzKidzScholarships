@@ -2,6 +2,7 @@
 using BizKidzScholarships.Data.NetworkedModels;
 using BIzKidzScholarships.API.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BIzKidzScholarships.API.Controllers
@@ -14,10 +15,12 @@ namespace BIzKidzScholarships.API.Controllers
 
         private ICurrentUser _user;
         private IUserDataService _udService;
-        public UserDataController(ICurrentUser currentUser, IUserDataService svc)
+        private UserManager<IdentityUser<Guid>> _userManager;
+        public UserDataController(ICurrentUser currentUser, IUserDataService svc, UserManager<IdentityUser<Guid>> UserManager)
         {
             _user = currentUser;
             _udService = svc;
+            _userManager = UserManager;
         }
 
         [HttpGet]
@@ -40,6 +43,27 @@ namespace BIzKidzScholarships.API.Controllers
                 return BadRequest(result.Errors);
 
             return Ok(new { Message = "Profile successfull registered." });
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetUserTasks()
+        {
+            var userId = _user.Id;
+            var tasks = await _udService.GetUserTasks(userId);
+
+            return Ok(tasks);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult UserPoints()
+        {
+            var userId = _user.Id;
+            var pointsView = _udService.GetUserPoints(userId);
+
+            if (pointsView is null)
+                return BadRequest("No points information found");
+
+            return Ok(pointsView);
         }
     }
 }

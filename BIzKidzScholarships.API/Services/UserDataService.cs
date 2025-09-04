@@ -80,6 +80,9 @@ namespace BIzKidzScholarships.API.Services
         {
             var tasks = await _context.UserTasks.Where(ut => ut.UserId == userId).ToListAsync();
 
+            if (tasks is null)
+                return [];
+
             var newList = _mapper.Map<List<DashboardTaskDTO>>(tasks);
 
             return newList;
