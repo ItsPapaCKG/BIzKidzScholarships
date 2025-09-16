@@ -1,5 +1,4 @@
 import React, { useState, Component } from 'react'
-import { BrowserRouter as Router, Route  } from 'react-router-dom'
 import './App.css'
 import { UserPointsContext, UserProfileContext, UserTasksContext } from './context';
 import type { IUserProfile, ITask, IUserPoints } from './models/ViewModels';
@@ -14,7 +13,6 @@ function App({ }) {
         KidFullName: "Grant Shaun Putnam",
         BusinessLogoURL: "https://tse1.mm.bing.net/th/id/OIP.7TsQHOGwjUs-ztCTbB43XwHaEj?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"
     });
-
     const [tasks, setTasks] = useState<ITask[]>([
         {
             TaskId: 4,
@@ -41,7 +39,6 @@ function App({ }) {
             Points: 15
         }
     ])
-
     const [points, setPoints] = useState<IUserPoints>({
         Total: 50,
         Entries: 5

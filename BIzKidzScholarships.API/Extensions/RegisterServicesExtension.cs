@@ -24,6 +24,19 @@ namespace BIzKidzScholarships.API.Extensions
             services.AddIdentityApiEndpoints<IdentityUser<Guid>>()
                 .AddEntityFrameworkStores<BizKidzDbContext>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "frontend",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:8080",
+                                            "https://localhost:50666")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                    });
+            });
+
             services.AddIdentityCore<IdentityUser<Guid>>(options =>
                 {
                     options.User.RequireUniqueEmail = true;
@@ -45,7 +58,7 @@ namespace BIzKidzScholarships.API.Extensions
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.Name = "BizKidzCookie";
-                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SameSite = SameSiteMode.None;
 
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(15);

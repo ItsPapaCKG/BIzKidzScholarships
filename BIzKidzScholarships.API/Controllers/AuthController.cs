@@ -1,4 +1,5 @@
 ﻿using BizKidzScholarships.Data.dto;
+using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +12,14 @@ namespace BIzKidzScholarships.API.Controllers
         private UserManager<IdentityUser<Guid>> _userManager;
         private RoleManager<IdentityRole<Guid>> _roleManager;
         private SignInManager<IdentityUser<Guid>> _signInManager;
+        private IHttpContextAccessor _httpContextAccessor;
 
-        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM)
+        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM, IHttpContextAccessor acc)
         {
             _userManager = uM;
             _roleManager = rM;
             _signInManager = siM;
+            _httpContextAccessor = acc;
         }
 
         [HttpPost("[action]")]
@@ -57,6 +60,19 @@ namespace BIzKidzScholarships.API.Controllers
 
             return Ok(new { Message = "Login Successful" });
             
+        }
+
+        [HttpGet("me")]
+        public IActionResult Self()
+        {
+            var ctx = _httpContextAccessor.HttpContext;
+
+            if (ctx?.User.Identity?.IsAuthenticated != true)
+                return Unauthorized();
+
+            var email = ctx.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+
+            return Ok(new { email });
         }
     }
 }

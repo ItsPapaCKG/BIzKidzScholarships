@@ -43,8 +43,10 @@ namespace BIzKidzScholarships.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseCors("frontend");
 
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
 
