@@ -1,8 +1,12 @@
 import { useUserPointsContext } from "../context";
+import type { IUserPoints } from "../models/ViewModels";
 
 
 function UserPoints() {
-    const points = useUserPointsContext();
+    const [points, setPoints] = useState<IUserPoints>({
+        Total: 0,
+        Entries: 0
+    });
 
   return (
       <div>

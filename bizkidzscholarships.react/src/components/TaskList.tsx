@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useTasksContext } from "../context";
+import type { ITask } from "../models/ViewModels";
 import Task from "./Task";
 
 function TasksList() {
-    const tasks = useTasksContext();
+    const [tasks, setTasks] = useState<ITask[]>([])
 
   return (
       <div>
