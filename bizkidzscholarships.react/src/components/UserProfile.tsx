@@ -1,10 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserProfileContext } from "../context";
 import "../models/ViewModels"
 import type { IUserProfile } from "../models/ViewModels";
+import GetUserProfile from "../services/UserDataService";
 
 function UserProfile() {
     const [userProfile, setUserProfile] = useState<IUserProfile | null>(null);
+
+    useEffect(() => {
+        var getProfile = async () => {
+            var p = await GetUserProfile();
+
+            if (p == null)
+                return;
+
+            setUserProfile(p);
+        }
+
+        getProfile();
+    }, []);
 
     if (userProfile == null) return <p>Loading Profile...</p>
     return (
