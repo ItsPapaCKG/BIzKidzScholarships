@@ -1,4 +1,5 @@
 ﻿using BizKidzScholarships.Data.dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +64,7 @@ namespace BIzKidzScholarships.API.Controllers
         }
 
         [HttpGet("me")]
+        [Authorize]
         public IActionResult Self()
         {
             var ctx = _httpContextAccessor.HttpContext;

@@ -18,7 +18,7 @@ export default async function GetUserProfile(): Promise<IUserProfile | null> {
     });
 
     if (!res.ok)
-        throw new Error(res.message);
+        throw new Error("Unspecified error");
 
     var rjson = await res.json();
     var jsonprofile: UserProfileJSON = rjson as UserProfileJSON;
