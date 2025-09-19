@@ -1,7 +1,7 @@
 ﻿using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
 
-namespace BIzKidzScholarships.API.Extensions
+namespace BizKidzScholarships.API.Extensions
 {
     public static class AutoMapperRegistration
     {
@@ -13,6 +13,8 @@ namespace BIzKidzScholarships.API.Extensions
                 cfg.CreateMap<UserProfileDTO, UserProfile>()
                     .ForMember(m => m.User, a => a.Ignore());
 
+                cfg.CreateMap<DashboardTaskDTO, TaskItem>();
+                cfg.CreateMap<TaskItem, DashboardTaskDTO>();
 
                 cfg.CreateMap<UserProfile, RegisterUserProfileDTO>();
                 cfg.CreateMap<RegisterUserProfileDTO, UserProfile>()

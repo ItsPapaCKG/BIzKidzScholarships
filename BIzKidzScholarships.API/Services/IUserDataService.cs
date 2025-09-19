@@ -1,7 +1,7 @@
 ﻿using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
 
-namespace BIzKidzScholarships.API.Services
+namespace BizKidzScholarships.API.Services
 {
     public interface IUserDataService
     {

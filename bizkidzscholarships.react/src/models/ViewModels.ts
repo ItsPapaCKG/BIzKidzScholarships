@@ -17,12 +17,12 @@ export interface IUserProfile {
 }
 
 export interface ITask {
-    Title: string,
-    Description: string,
-    Points: number,
-    Status: UserTaskStatus,
-    TaskImageURL: string,
-    TaskId: number
+    taskTitle: string,
+    taskDescription: string,
+    reward: number,
+    status: UserTaskStatus,
+    taskImageKey: string,
+    taskId: number
 }
 
 export interface IUserPoints {

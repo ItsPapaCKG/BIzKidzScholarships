@@ -1,23 +1,28 @@
 ﻿using AutoMapper;
+using BizKidzScholarships.API.Services.Base;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
 using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using System.Diagnostics;
 
-namespace BIzKidzScholarships.API.Services
+namespace BizKidzScholarships.API.Services
 {
-    public class UserDataService : IUserDataService
+    public class UserDataService : BaseCRUDService, IUserDataService
     {
-        private ICurrentUser _user;
-        private BizKidzDbContext _context;
-        private IMapper _mapper;
+        //private ICurrentUser _user;
+        //private BizKidzDbContext _context;
+        //private IMapper _mapper;
 
-        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context)
+        protected Guid userId => _user.Id;
+
+        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context) : base(user, mapper, context)
         {
-            _user = user;
-            _context = context;
-            _mapper = mapper;
+            //_user = user;
+            //_context = context;
+            //_mapper = mapper;
         }
         public UserPointsView? GetUserPoints(Guid userId)
         {
@@ -43,7 +48,7 @@ namespace BIzKidzScholarships.API.Services
             return model;
         }
 
-        public async Task<ResponseModel> RegisterUserProfile(Guid userId, RegisterUserProfileDTO profile)
+        public async Task<ResponseModel> RegisterUserProfile(Guid userId,RegisterUserProfileDTO profile)
         {
             ResponseModel response = new();
 
@@ -78,14 +83,32 @@ namespace BIzKidzScholarships.API.Services
 
         public async Task<List<DashboardTaskDTO>> GetUserTasks(Guid userId)
         {
-            var tasks = await _context.UserTasks.Where(ut => ut.UserId == userId).ToListAsync();
+            //var tasks = await _context.UserTasks.Where(t => t.UserId == userId).ToListAsync();
+
+            var tasksQueryable = from userTask in _context.UserTasks
+                                 join t in _context.Tasks on userTask.TaskId equals t.Id
+                                 where t.TaskEnabled && userTask.UserId == userId
+                                 select new DashboardTaskDTO { TaskTitle = t.TaskTitle, Reward = t.Reward, Status = userTask.Status, TaskId = t.Id, TaskDescription = t.TaskDescription, TaskImageKey = t.TaskImageKey };
+
+            var tasks = await tasksQueryable.ToListAsync();
 
             if (tasks is null)
                 return [];
 
-            var newList = _mapper.Map<List<DashboardTaskDTO>>(tasks);
+            return tasks;
+        }
 
-            return newList;
+        public async Task<bool> UpdateUserProfile(UserProfileDTO profile)
+        {
+            var existing = _context.Profiles.Any(ut => ut.UserId == userId);
+
+            if (!existing) return false;
+
+            var ent = _mapper.Map<UserProfile>(profile);
+
+            var result = await SafeUpdateAsync(ent);
+
+            return result;
         }
     }
 }

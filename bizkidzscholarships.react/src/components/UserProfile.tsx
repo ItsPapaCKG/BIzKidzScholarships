@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useUserProfileContext } from "../context";
 import "../models/ViewModels"
 import type { IUserProfile } from "../models/ViewModels";
 import GetUserProfile from "../services/UserDataService";

@@ -53,6 +53,19 @@ namespace BizKidzScholarships.Data.Contexts
                 b.HasIndex(c => c.TaskNameInternal);
             });
 
+            modelBuilder.Entity<TaskItem>().HasData(
+                new TaskItem
+                {
+                    Id = 1,
+                    TaskTitle = "First Added Task",
+                    TaskDescription = "Task Description Goes Here!",
+                    TaskEnabled = true,
+                    TaskNameInternal = "First Task",
+                    Reward = 1000,
+                    Created = DateTime.Now,
+                    Updated = DateTime.Now
+                });
+
             modelBuilder.Entity<UserTask>(t =>
             {
                 t.HasOne(ut => ut.User)

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useUserPointsContext } from "../context";
 import type { IUserPoints } from "../models/ViewModels";
 
 

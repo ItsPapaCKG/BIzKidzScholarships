@@ -11,14 +11,15 @@ namespace BizKidzScholarships.Data.dto
 {
     public class DashboardTaskDTO
     {
-        [MaxLength(150)]
+        public int TaskId { get; set; }
+
         public required string TaskTitle { get; set; }
 
-        [MaxLength(500)]
         public string TaskDescription { get; set; } = string.Empty;
 
-        [MaxLength(150)]
         public string? TaskImageKey { get; set; }
+
+        public int? Reward { get; set; }
 
         public TaskStatus Status { get; set; } = TaskStatus.Disabled;
 

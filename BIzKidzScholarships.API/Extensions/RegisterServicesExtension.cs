@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.NetworkedModels;
-using BIzKidzScholarships.API.Services;
+using BizKidzScholarships.API.Services;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace BIzKidzScholarships.API.Extensions
+namespace BizKidzScholarships.API.Extensions
 {
     public static class RegisterServicesExtension
     {

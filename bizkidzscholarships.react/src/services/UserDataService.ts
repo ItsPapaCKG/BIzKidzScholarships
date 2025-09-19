@@ -1,4 +1,4 @@
-import type { IUserProfile } from "../models/ViewModels";
+import type { ITask, IUserProfile } from "../models/ViewModels";
 
 interface UserProfileJSON {
     userId: number,
@@ -12,13 +12,11 @@ interface UserProfileJSON {
 
 export default async function GetUserProfile(): Promise<IUserProfile | null> {
     var res = await fetch("https://localhost:7095/api/user", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
         credentials: "include",
     });
 
     if (!res.ok)
-        throw new Error("Unspecified error");
+        console.log("[User Profile] Unspecified error!");
 
     var rjson = await res.json();
     var jsonprofile: UserProfileJSON = rjson as UserProfileJSON;
@@ -32,4 +30,16 @@ export default async function GetUserProfile(): Promise<IUserProfile | null> {
     }
 
     return profile;
+}
+
+export async function GetUserTasks(): Promise<ITask[]> {
+    var res = await fetch("https://localhost:7095/api/user/tasks", {
+        credentials: "include"
+    });
+
+    var jsonResult = await res.json();
+
+    var tasks = jsonResult as ITask[];
+
+    return tasks;
 }

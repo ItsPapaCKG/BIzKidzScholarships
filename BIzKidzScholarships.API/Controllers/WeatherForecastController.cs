@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace BIzKidzScholarships.API.Controllers;
+namespace BizKidzScholarships.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]

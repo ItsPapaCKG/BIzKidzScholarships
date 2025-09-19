@@ -57,11 +57,12 @@ namespace BizKidzScholarships.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TaskNameInternal = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    TaskNameInternal = table.Column<string>(type: "text", nullable: false),
                     TaskTitle = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    TaskDescription = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    TaskImageKey = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    TaskDescription = table.Column<string>(type: "text", nullable: false),
+                    TaskImageKey = table.Column<string>(type: "text", nullable: true),
                     TaskEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    Reward = table.Column<int>(type: "integer", nullable: false),
                     Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

@@ -33,22 +33,22 @@ namespace BizKidzScholarships.Data.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Reward")
+                        .HasColumnType("integer");
+
                     b.Property<string>("TaskDescription")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("TaskEnabled")
                         .HasColumnType("boolean");
 
                     b.Property<string>("TaskImageKey")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                        .HasColumnType("text");
 
                     b.Property<string>("TaskNameInternal")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
+                        .HasColumnType("text");
 
                     b.Property<string>("TaskTitle")
                         .IsRequired()

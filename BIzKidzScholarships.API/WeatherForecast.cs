@@ -1,4 +1,4 @@
-namespace BIzKidzScholarships.API
+namespace BizKidzScholarships.API
 {
     public class WeatherForecast
     {

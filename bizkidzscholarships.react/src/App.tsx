@@ -28,6 +28,8 @@ function App({ }) {
 
             if (!loggedIn)
                 navigate("/login");
+
+            setIsAuthenticated(true);
         })();
 
         return () => ac.abort()
@@ -35,7 +37,9 @@ function App({ }) {
     }, []);
 
     return (
-        <Dashboard />
+        <>
+            {isAuthenticated ? < Dashboard /> : <p>Loading...</p>}
+        </>
     );
 }
 

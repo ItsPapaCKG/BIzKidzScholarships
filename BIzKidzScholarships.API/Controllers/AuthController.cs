@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BIzKidzScholarships.API.Controllers
+namespace BizKidzScholarships.API.Controllers
 {
     [ApiController]
     [Route("auth")]

@@ -1,11 +1,11 @@
 ﻿using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.NetworkedModels;
-using BIzKidzScholarships.API.Services;
+using BizKidzScholarships.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BIzKidzScholarships.API.Controllers
+namespace BizKidzScholarships.API.Controllers
 {
     [ApiController]
     [Route("api/user")]
@@ -45,7 +45,7 @@ namespace BIzKidzScholarships.API.Controllers
             return Ok(new { Message = "Profile successfull registered." });
         }
 
-        [HttpGet("[action]")]
+        [HttpGet("tasks")]
         public async Task<IActionResult> GetUserTasks()
         {
             var userId = _user.Id;
