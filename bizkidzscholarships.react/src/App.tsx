@@ -14,8 +14,10 @@ function App({ }) {
     const check = async () => {
         var res = await fetch("https://localhost:7095/auth/me", { credentials: "include" });
 
-        if (!res.ok)
+        if (!res.ok) {
             navigate("/login")
+            return;
+        }
 
         userAccountContext.setIsAuthenticated(true);
     }
@@ -30,7 +32,7 @@ function App({ }) {
 
     return (
         <>
-            {isAuthenticated ? < Dashboard /> : <p>Loading...</p>}
+            {isAuthenticated ? <Dashboard /> : <p>Loading...</p>}
         </>
     );
 }

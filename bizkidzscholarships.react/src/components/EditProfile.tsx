@@ -1,0 +1,80 @@
+import { useState, type ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import type { IUserProfile } from "../models/ViewModels";
+import { UseUserAccountContext } from "../contexts/UserAccountContext";
+
+function EditProfile() {
+    const [userProfile, setUserProfile] = useState({} as IUserProfile)
+    const [errorState, setErrorState] = useState("")
+
+    const navigate = useNavigate();
+    const userAccountContext = UseUserAccountContext();
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        // validate inputs
+        e.preventDefault();
+
+        // attempt registration
+        var res = await fetch("https://localhost:7095/api/user/registerprofile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(userProfile)
+        });
+
+        // catch errors
+        if (!res.ok) {
+            var txt = await res.text();
+            console.log(`[Register Profile] Server Response: ${txt}`);
+            setErrorState(txt);
+            return
+        }
+
+        //await setTimeout(() => { userAccountContext.setUserHasNoProfile(false); }, 5000);
+        userAccountContext.setUserProfile(userProfile);
+        userAccountContext.setUserHasNoProfile(false);
+        
+    };
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        setUserProfile(prev => ({...prev, [name]: value }));
+    }
+    // onChange={handleChange}
+    return (
+        <div className="border-2 border-danger">
+            <form onSubmit={handleSubmit}>
+                <label>TEMP: Business Logo URL:
+                    <input name="BusinessLogoKey" value={userProfile.BusinessLogoKey} onChange={handleChange} />
+                </label>
+
+                <label>First Name:
+                    <input name="FirstName" value={userProfile.FirstName} onChange={handleChange} />
+                </label>
+
+                <label>Last Name:
+                    <input name="LastName" value={userProfile.LastName} onChange={handleChange} />
+                </label>
+
+                <label>Business Name:
+                    <input name="BusinessName" value={userProfile.BusinessName} onChange={handleChange} />
+                </label>
+
+                <label>Business Email:
+                    <input name="BusinessEmail" value={userProfile.BusinessEmail} onChange={handleChange} />
+                </label>
+
+                <label>Business Phone:
+                    <input name="PhoneNumber" value={userProfile.PhoneNumber} onChange={handleChange} />
+                </label>
+
+                <button type="submit">{ userAccountContext.userHasNoProfile ? "Submit Profile" : "Save Profile" }</button>
+
+                <p className="danger">{errorState}</p>
+            </form>
+        </div>
+    );
+}
+
+export default EditProfile;

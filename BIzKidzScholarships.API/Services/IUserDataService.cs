@@ -15,7 +15,7 @@ namespace BizKidzScholarships.API.Services
         // Get User Points and Entries Total
         UserPointsView? GetUserPoints(Guid userId);
 
-        Task<ResponseModel> RegisterUserProfile(Guid userId, RegisterUserProfileDTO profile);
+        Task<ResponseModel> SetUserProfile(Guid userId, RegisterUserProfileDTO profile);
 
     }
 }

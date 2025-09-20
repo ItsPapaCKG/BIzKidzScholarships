@@ -3,13 +3,15 @@ import "../models/ViewModels"
 import type { IUserProfile } from "../models/ViewModels";
 import { UseUserAccountContext } from "../contexts/UserAccountContext";
 import { useNavigate } from "react-router-dom";
+import EditProfile from "./EditProfile";
 
 function UserProfile() {
-    const [userProfile, setUserProfile] = useState<IUserProfile | null>(null);
     const navigate = useNavigate();
 
     const userAccountContext = UseUserAccountContext();
     const userHasNotRegisteredProfile = userAccountContext.userHasNoProfile;
+
+    const [userProfile, setUserProfile] = [userAccountContext.userProfile, userAccountContext.setUserProfile];
 
     useEffect(() => {
         var getProfile = async () => {
@@ -22,14 +24,14 @@ function UserProfile() {
         }
 
         getProfile();
-    }, []);
+    }, [userHasNotRegisteredProfile]);
 
     if (userProfile == null && !userHasNotRegisteredProfile) return <p>Loading Profile...</p>
-    else if (userHasNotRegisteredProfile && userProfile == null) return <p>You have not registered a profile!</p>
+    else if (userHasNotRegisteredProfile && userProfile == null) return <EditProfile />
     else if (userProfile != null)
         return (
             <div className="d-flex gap-3" >
-                <img src={ userProfile.BusinessLogoURL }/>
+                <img src={ userProfile.BusinessLogoKey }/>
 
                 <p className="p-2">
                     <strong>Business Name</strong>: {userProfile.BusinessName}
@@ -40,11 +42,11 @@ function UserProfile() {
                 </p>
 
                 <p className="p-2">
-                    <strong>Owner Name</strong>: {userProfile.KidFullName}
+                    <strong>Owner Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
                 </p>
 
                 <p className="p-2">
-                    <strong>Phone</strong>: {userProfile.BusinessPhone}
+                    <strong>Phone</strong>: {userProfile.PhoneNumber}
                 </p>
           </div>
       );

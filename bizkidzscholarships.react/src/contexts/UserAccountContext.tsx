@@ -7,7 +7,8 @@ export type userAccountContextType = {
     userHasNoProfile: boolean,
     setUserHasNoProfile: React.Dispatch<React.SetStateAction<boolean>>,
     GetUserProfile: () => Promise<IUserProfile | null>
-
+    userProfile: IUserProfile,
+    setUserProfile: React.Dispatch<React.SetStateAction<IUserProfile>>
 }
 interface UserProfileJSON {
     userId: number,
@@ -24,41 +25,42 @@ const UserAccountContext = createContext<userAccountContextType>({} as userAccou
 function UserAccountProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userHasNoProfile, setUserHasNoProfile] = useState(false);
+    const [userProfile, setUserProfile] = useState({} as IUserProfile);
 
     const GetUserProfile = async () => {
         var res = await fetch("https://localhost:7095/api/user", {
             credentials: "include",
         });
 
+        if (res.status == 400) {
+            setUserHasNoProfile(true);
+        }
+
         if (!res.ok) {
-            console.log("[User Profile] Unspecified error!");
             var response = await res.text();
+            if (response == "") response = "Server did not provide an error.";
+
             console.log(`[User Profile] Text: ${response}`);
-
-            if (res.status == 400) {
-                setUserHasNoProfile(true);
-            }
-        }
-        else {
-            var rjson = await res.json();
-            var jsonprofile: UserProfileJSON = rjson as UserProfileJSON;
-
-            var profile: IUserProfile = {
-                KidFullName: jsonprofile.firstName + " " + jsonprofile.lastName,
-                BusinessEmail: jsonprofile.businessEmail,
-                BusinessName: jsonprofile.businessName,
-                BusinessPhone: jsonprofile.phoneNumber,
-                BusinessLogoURL: jsonprofile.businessLogoKey
-            }
-
-            return profile;
+            return null;
         }
 
-        return null;
+        var rjson = await res.json();
+        var jsonprofile: UserProfileJSON = rjson as UserProfileJSON;
+
+        var profile: IUserProfile = {
+            FirstName: jsonprofile.firstName,
+            LastName: jsonprofile.lastName,
+            BusinessEmail: jsonprofile.businessEmail,
+            BusinessName: jsonprofile.businessName,
+            PhoneNumber: jsonprofile.phoneNumber,
+            BusinessLogoKey: jsonprofile.businessLogoKey
+        }
+
+        return profile;
     }
 
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile }}>
           { children }
       </UserAccountContext.Provider>
   );

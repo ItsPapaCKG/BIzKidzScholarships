@@ -31,7 +31,7 @@ function LoginComponent() {
 
     return (
         <div className="border-2 border-danger">
-            <Form>
+            <form>
                 <label>Email:
                     <input name="email" value={email} onChange={e => setEmail(e.target.value)} />
                 </label>
@@ -43,7 +43,7 @@ function LoginComponent() {
                 <button onClick={e => { e.preventDefault(); login(); } }>Submit</button>
 
                 <p className="danger">{errorState}</p>
-            </Form>
+            </form>
         </div>
   );
 }

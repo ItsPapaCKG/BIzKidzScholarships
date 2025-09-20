@@ -48,7 +48,8 @@ namespace BizKidzScholarships.API.Services
             return model;
         }
 
-        public async Task<ResponseModel> RegisterUserProfile(Guid userId,RegisterUserProfileDTO profile)
+        // TODO: Include step to upload byte[] image to S3, retrieve the link, and set to profile column LogoKey
+        public async Task<ResponseModel> SetUserProfile(Guid userId,RegisterUserProfileDTO profile)
         {
             ResponseModel response = new();
 

@@ -31,6 +31,7 @@ namespace BizKidzScholarships.Data.dto
         public string? BusinessLogoKey { get; set; }
     }
 
+    // TODO: Include step to upload byte[] image to S3, retrieve the link, and set to profile column LogoKey
     public class RegisterUserProfileDTO
     {
         [MaxLength(30)]

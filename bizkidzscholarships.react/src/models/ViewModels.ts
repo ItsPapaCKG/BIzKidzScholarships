@@ -10,10 +10,11 @@ export enum UserTaskStatus {
 
 export interface IUserProfile {
     BusinessName: string,
-    KidFullName: string,
+    FirstName: string,
+    LastName: string,
     BusinessEmail: string,
-    BusinessPhone: string,
-    BusinessLogoURL: string
+    PhoneNumber: string,
+    BusinessLogoKey: string
 }
 
 export interface ITask {
