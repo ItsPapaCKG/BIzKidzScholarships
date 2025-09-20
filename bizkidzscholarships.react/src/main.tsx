@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { BrowserRouter as Router, Route, createBrowserRouter, RouterProvider } from 'react-router-dom'
 import LoginComponent from './components/Login.tsx'
+import UserAccountProvider from './contexts/UserAccountContext.tsx'
 
 export const router = createBrowserRouter([
     { path: "/", element: <App/> },
@@ -11,7 +12,9 @@ export const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-        <RouterProvider router={router } />
+    <StrictMode>
+        <UserAccountProvider>
+            <RouterProvider router={router} />
+        </UserAccountProvider>
   </StrictMode>,
 )
