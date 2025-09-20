@@ -53,6 +53,8 @@ namespace BizKidzScholarships.API.Services
         {
             ResponseModel response = new();
 
+            var exists = _context.Profiles.FirstOrDefault(p => p.UserId == userId);
+
             var ent = _mapper.Map<UserProfile>(profile);
 
             ent.UserId = userId;
@@ -61,7 +63,13 @@ namespace BizKidzScholarships.API.Services
             {
                 try
                 {
-                    await _context.Profiles.AddAsync(ent);
+                    if (exists is null)
+                        await _context.Profiles.AddAsync(ent);
+                    else {
+                        _context.Entry(exists).State = EntityState.Detached;
+
+                        _context.Profiles.Update(ent);
+                    }
 
                     await _context.SaveChangesAsync();
 

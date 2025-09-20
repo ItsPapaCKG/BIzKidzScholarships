@@ -9,6 +9,8 @@ export type userAccountContextType = {
     GetUserProfile: () => Promise<IUserProfile | null>
     userProfile: IUserProfile,
     setUserProfile: React.Dispatch<React.SetStateAction<IUserProfile>>
+    editMode: boolean,
+    setEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 interface UserProfileJSON {
     userId: number,
@@ -26,6 +28,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userHasNoProfile, setUserHasNoProfile] = useState(false);
     const [userProfile, setUserProfile] = useState({} as IUserProfile);
+    const [editMode, setEditMode] = useState(false);
 
     const GetUserProfile = async () => {
         var res = await fetch("https://localhost:7095/api/user", {
@@ -56,11 +59,12 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
             BusinessLogoKey: jsonprofile.businessLogoKey
         }
 
+        setUserProfile(profile);
         return profile;
     }
 
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode }}>
           { children }
       </UserAccountContext.Provider>
   );

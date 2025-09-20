@@ -4,19 +4,23 @@ import type { IUserProfile } from "../models/ViewModels";
 import { UseUserAccountContext } from "../contexts/UserAccountContext";
 
 function EditProfile() {
-    const [userProfile, setUserProfile] = useState({} as IUserProfile)
     const [errorState, setErrorState] = useState("")
 
     const navigate = useNavigate();
     const userAccountContext = UseUserAccountContext();
+    const [userProfile, setUserProfile] = [userAccountContext.userProfile, userAccountContext.setUserProfile]
+    const [editMode, setEditMode] = [userAccountContext.editMode, userAccountContext.setEditMode]
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // validate inputs
         e.preventDefault();
 
+        var endpoint = userAccountContext.userHasNoProfile ? "registerprofile" : "updateprofile";
+        var httpMethod = userAccountContext.userHasNoProfile ? "POST" : "PUT";
+
         // attempt registration
-        var res = await fetch("https://localhost:7095/api/user/registerprofile", {
-            method: "POST",
+        var res = await fetch(`https://localhost:7095/api/user/${endpoint}`, {
+            method: httpMethod,
             headers: { "Content-Type": "application/json" },
             credentials: "include",
             body: JSON.stringify(userProfile)
@@ -33,7 +37,7 @@ function EditProfile() {
         //await setTimeout(() => { userAccountContext.setUserHasNoProfile(false); }, 5000);
         userAccountContext.setUserProfile(userProfile);
         userAccountContext.setUserHasNoProfile(false);
-        
+        setEditMode(false);
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
