@@ -16,11 +16,13 @@ namespace BizKidzScholarships.API.Controllers
         private ICurrentUser _user;
         private IUserDataService _udService;
         private UserManager<IdentityUser<Guid>> _userManager;
-        public UserDataController(ICurrentUser currentUser, IUserDataService svc, UserManager<IdentityUser<Guid>> UserManager)
+        private FileUploadService _fileService;
+        public UserDataController(ICurrentUser currentUser, IUserDataService svc, UserManager<IdentityUser<Guid>> UserManager, FileUploadService fus)
         {
             _user = currentUser;
             _udService = svc;
             _userManager = UserManager;
+            _fileService = fus;
         }
 
         [HttpGet]
@@ -78,5 +80,16 @@ namespace BizKidzScholarships.API.Controllers
 
             return Ok(pointsView);
         }
+
+        [HttpGet("[action]")]
+        public IActionResult GetPresignedURL()
+        {
+            var objectKey = "testFile.jpg";
+
+            var url = _fileService.Generate_Presigned_URL(objectKey);
+
+            return Ok(url);
+        }
+
     }
 }

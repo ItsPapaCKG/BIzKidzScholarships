@@ -13,7 +13,13 @@ namespace BizKidzScholarships.API.Extensions
 
         public static void RegisterServices(this IServiceCollection services)
         {
+#if DEBUG
+            var aws_access = Environment.GetEnvironmentVariable("AWS_Access");
+            var aws_secret = Environment.GetEnvironmentVariable("AWS_Secret");
+#endif
+
             services.AddHttpContextAccessor();
+
             services.AddScoped<ICurrentUser, CurrentUser>();
 
             services.AddScoped<IUserDataService, UserDataService>();
@@ -66,6 +72,8 @@ namespace BizKidzScholarships.API.Extensions
                 options.LoginPath = "/auth/login";
                 options.AccessDeniedPath = "/auth/accessdenied";
             });
+
+            services.AddTransient<FileUploadService>();
         }
     }
 }

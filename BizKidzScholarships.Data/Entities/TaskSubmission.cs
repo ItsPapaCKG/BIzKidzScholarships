@@ -20,10 +20,7 @@ namespace BizKidzScholarships.Data.Entities
 
         public required TaskItem Task { get; set; }
 
-        [MaxLength(50)]
-        public string? FieldName { get; set; }
-
-        [MaxLength(256)]
+        [MaxLength(512)]
         public required string SubmissionData { get; set; }
     }
 }

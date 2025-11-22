@@ -1,4 +1,5 @@
 ﻿using BizKidzScholarships.Data.Base;
+using BizKidzScholarships.Data.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace BizKidzScholarships.Data.Entities
@@ -19,7 +20,13 @@ namespace BizKidzScholarships.Data.Entities
 
         public required Boolean TaskEnabled { get; set; } = false;
 
+        public required TaskType TaskType { get; set; } = TaskType.ImageUpload;
+
         public required int Reward { get; set; }
+
+        public required string TaskPromptTitle { get; set; }
+
+        public required string TaskPromptSubtitle { get; set; }
 
         public ICollection<TaskSubmission> TaskSubmissions { get; set; } = [];
 

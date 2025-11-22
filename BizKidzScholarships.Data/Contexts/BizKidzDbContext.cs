@@ -58,12 +58,15 @@ namespace BizKidzScholarships.Data.Contexts
                 {
                     Id = 1,
                     TaskTitle = "First Added Task",
+                    TaskPromptTitle = "Task Prompt",
+                    TaskPromptSubtitle = "",
                     TaskDescription = "Task Description Goes Here!",
                     TaskEnabled = true,
                     TaskNameInternal = "First Task",
                     Reward = 1000,
                     Created = DateTime.Now,
-                    Updated = DateTime.Now
+                    Updated = DateTime.Now,
+                    TaskType = Enums.TaskType.ImageUpload
                 });
 
             modelBuilder.Entity<UserTask>(t =>
