@@ -90,6 +90,19 @@ namespace BizKidzScholarships.API.Services
             return response;
         }
 
+        public async Task<bool> UpdateUserProfile(UserProfileDTO profile)
+        {
+            var existing = _context.Profiles.Any(ut => ut.UserId == userId);
+
+            if (!existing) return false;
+
+            var ent = _mapper.Map<UserProfile>(profile);
+
+            var result = await SafeUpdateAsync(ent);
+
+            return result;
+        }
+
         public async Task<List<DashboardTaskDTO>> GetUserTasks(Guid userId)
         {
             //var tasks = await _context.UserTasks.Where(t => t.UserId == userId).ToListAsync();
@@ -107,17 +120,11 @@ namespace BizKidzScholarships.API.Services
             return tasks;
         }
 
-        public async Task<bool> UpdateUserProfile(UserProfileDTO profile)
+        public async void UpdateUserProfilePicture(Guid userId, string imageKey)
         {
-            var existing = _context.Profiles.Any(ut => ut.UserId == userId);
+            var profile = GetUserProfile(userId);
 
-            if (!existing) return false;
-
-            var ent = _mapper.Map<UserProfile>(profile);
-
-            var result = await SafeUpdateAsync(ent);
-
-            return result;
+            profile.BusinessLogoKey = imageKey;
         }
     }
 }

@@ -37,4 +37,10 @@ export interface IDashboardContext {
     Tasks: ITask[]
 }
 
+export interface PresignedURLData {
+    Url: string,
+    Key: string,
+    Fields: { [key: string]: string }
+}
+
 export default '.'

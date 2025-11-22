@@ -45,7 +45,7 @@ export type APIErrorMessage = |
 }
 
 
-function ResponseError(code: number, text?: string): APIErrorMessage {
+export function ResponseError(code: number, text?: string): APIErrorMessage {
 
     if (code == 401) {
         return {
@@ -73,7 +73,7 @@ function ResponseError(code: number, text?: string): APIErrorMessage {
 
 }
 
-async function APICall<Output = unknown, Input = unknown>(urlPath: string, method: string, data?: Input): Promise<APIResponse<Output>> {
+export async function APICall<Output = unknown, Input = unknown>(urlPath: string, method: string, data?: Input): Promise<APIResponse<Output>> {
     var config: RequestInit = {
         method: method,
         credentials: "include"

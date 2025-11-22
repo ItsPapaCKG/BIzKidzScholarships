@@ -73,7 +73,7 @@ namespace BizKidzScholarships.API.Extensions
                 options.AccessDeniedPath = "/auth/accessdenied";
             });
 
-            services.AddTransient<FileUploadService>();
+            services.AddTransient<TaskFileUploadService>();
         }
     }
 }
