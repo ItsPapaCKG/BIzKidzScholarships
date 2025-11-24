@@ -1,15 +1,17 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv, type UserConfigExport } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import mkcert from "vite-plugin-mkcert";
-import { config } from './src/services/ConfigService'
 
-// https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [plugin(), mkcert()],
+export default (({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+
+  return defineConfig({
+    plugins: [mkcert(), plugin()],
     server: {
-        https: true,
-        port: 50666,
-        strictPort: true,
-        open: "/",
+      https: true,
+      port: Number(env.VITE_API_PORT),
+      strictPort: true,
+      open: "/"
     }
-})
+  });
+}) satisfies UserConfigExport

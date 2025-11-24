@@ -89,11 +89,11 @@ namespace BizKidzScholarships.API.Controllers
             return Ok(url);
         }
 
-        [HttpPost]
-        public IActionResult SetUserProfileS3Key(string key)
-        {
+        //[HttpPost]
+        //public IActionResult SetUserProfileS3Key(string key)
+        //{
 
-        }
+        //}
 
     }
 }

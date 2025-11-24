@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-    VITE_API_BASE: z.url().default("https://localhost/"),
-    VITE_API_PORT: z.number().default(80)
+    VITE_API_BASE: z.url(),
+    VITE_API_PORT: z.number()
 })
 
 const env = envSchema.parse(import.meta.env);

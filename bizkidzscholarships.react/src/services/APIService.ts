@@ -83,7 +83,7 @@ export async function APICall<Output = unknown, Input = unknown>(urlPath: string
         config.body = JSON.stringify(data)
     }
 
-    var res = await fetch(appConfig.baseAPIURL + urlPath, config);
+    var res = await fetch(`${appConfig.baseAPIURL}:${appConfig.apiPort}/api/${urlPath}`, config);
 
     if (!res.ok) {
         var code = res.status;
