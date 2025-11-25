@@ -1,6 +1,7 @@
-﻿using BizKidzScholarships.Data.dto;
+﻿using BizKidzScholarships.API.Services;
+using BizKidzScholarships.Data.dto;
+using BizKidzScholarships.Data.Models;
 using BizKidzScholarships.Data.NetworkedModels;
-using BizKidzScholarships.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -81,10 +82,10 @@ namespace BizKidzScholarships.API.Controllers
             return Ok(pointsView);
         }
 
-        [HttpGet("[action]")]
-        public IActionResult GetPresignedURL()
+        [HttpPost("[action]")]
+        public IActionResult GetPresignedURL([FromBody] PresignedRequestModel request)
         {
-            var url = _fileService.Generate_Presigned_URL();
+            var url = _fileService.Generate_Presigned_URL(request.extension);
 
             return Ok(url);
         }

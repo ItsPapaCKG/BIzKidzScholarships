@@ -17,18 +17,18 @@ namespace BizKidzScholarships.API.Services
             //_mapper = mapper;
         }
 
-        public PresignedPostURLDataModel Generate_Presigned_URL()
+        public PresignedPostURLDataModel Generate_Presigned_URL(string ext)
         {
             try
             {
                 using (AmazonS3Client client = new AmazonS3Client(RegionEndpoint.USEast2))
                 {
-                    string key = "uploads/" + new Guid();
+                    string key = "uploads/" + Guid.NewGuid() + "." + ext;
 
                     CreatePresignedPostRequest presignedPostRequest = new CreatePresignedPostRequest();
                     presignedPostRequest.BucketName = "bizkidz-task-bucket";
                     presignedPostRequest.Key = key;
-                    presignedPostRequest.Expires = DateTime.Now.AddMinutes(2);
+                    presignedPostRequest.Expires = DateTime.UtcNow.AddMinutes(10);
 
                     var response = client.CreatePresignedPost(presignedPostRequest);
 

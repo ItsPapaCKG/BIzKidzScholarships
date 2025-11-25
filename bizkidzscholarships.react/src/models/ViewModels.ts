@@ -38,9 +38,9 @@ export interface IDashboardContext {
 }
 
 export interface PresignedURLData {
-    Url: string,
-    Key: string,
-    Fields: { [key: string]: string }
+    url: string,
+    key: string,
+    fields: { [key: string]: string }
 }
 
 export default '.'

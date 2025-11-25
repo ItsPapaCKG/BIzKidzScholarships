@@ -29,7 +29,7 @@ export async function TaskUploadChange(file: File | undefined) {
         return alert("Invalid upload.");
     }
 
-    let { url, fields } = await GetPresignedS3Url();
+    let { url, fields, key } = await GetPresignedS3Url(file.name.split(".").pop()!.toLowerCase());
 
     if (url == null || fields == null) {
         console.error("Could not get Presigned POST from AWS.");
@@ -49,20 +49,27 @@ export async function TaskUploadChange(file: File | undefined) {
     })
 
     if (upload.ok) {
-        return alert("Upload successful! See: " + url)
+        return alert("Upload successful! See: " + url + key)
     }
 
-    return alert("Upload failed.")
+    let responseText = await upload.text().catch(() => "(no body)");
+
+    console.log(responseText);
+    return alert("Upload failed.");
 }
 
-async function GetPresignedS3Url() {
-    var res = await APICall<PresignedURLData>("user/GetPresignedURL", "GET", null);
-
-    if (res.success) {
-        return {url: res.data.Url, fields: res.data.Fields};
+async function GetPresignedS3Url(ext: string) {
+    var data = {
+        "extension": ext
     }
 
-    return { url: null, fields: null }
+    var res = await APICall<PresignedURLData>("user/GetPresignedURL", "POST", data);
+
+    if (res.success) {
+        return {url: res.data.url, fields: res.data.fields, key: res.data.key};
+    }
+
+    return { url: null, fields: null, key: null }
 }
 
 //async function UploadS3FileToURL(PostData: PresignedURLData, file: File) {
