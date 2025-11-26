@@ -24,10 +24,10 @@ function TasksList() {
 
   return (
       <div>
-        { viewedTask && (<p>Selected task: { viewedTask.taskId }</p>) }
+        { viewedTask && (<p>Selected task: { viewedTask.TaskId }</p>) }
           {
               tasks.map((task) => {
-                  return <Task key={ task.taskId } task={ task } />
+                  return <Task key={ task.TaskId } task={ task } />
               }) 
           }
           <TaskWindow/>

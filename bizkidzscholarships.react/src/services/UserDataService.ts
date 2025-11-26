@@ -1,4 +1,4 @@
-import { type PresignedURLData, type ITask } from "../models/ViewModels";
+import { type PresignedURLData, type ITask, type ITaskJSON } from "../models/ViewModels";
 import { APICall } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
@@ -12,7 +12,21 @@ export async function GetUserTasks(): Promise<ITask[]> {
 
     var jsonResult = await res.json();
 
-    var tasks = jsonResult as ITask[];
+    var tasksJSON = jsonResult as ITaskJSON[];
+
+    var tasks: ITask[] = [];
+
+    tasksJSON.forEach((i) => {
+        tasks.push({
+            TaskTitle: i.taskTitle,
+            TaskDescription: i.taskDescription,
+            Reward: i.reward,
+            Status: i.status,
+            TaskImageKey: i.taskImageKey,
+            TaskId: i.taskId,
+            TaskType: i.taskType
+        } as ITask)
+    });
 
     return tasks;
 }
@@ -64,7 +78,7 @@ async function GetPresignedS3Url(ext: string) {
         "extension": ext
     }
 
-    var res = await APICall<PresignedURLData>("user/GetPresignedURL", "POST", data);
+    var res = await APICall<PresignedURLData>("user/NewUploadRequest", "POST", data);
 
     if (res.success) {
         return {url: res.data.url, fields: res.data.fields, key: res.data.key};

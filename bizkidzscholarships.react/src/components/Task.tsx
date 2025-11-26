@@ -8,10 +8,10 @@ function Task({ task }: { task: ITask }) {
 
     return (
         <div>
-            <h3>{task.taskTitle} </h3>
-            <p>{ task.taskDescription }</p>
-            <p>{ task.reward }</p>
-            <p>Status: { UserTaskStatus[task.status] }</p>
+            <h3>{task.TaskTitle} </h3>
+            <p>{ task.TaskDescription }</p>
+            <p>{ task.Reward }</p>
+            <p>Status: { UserTaskStatus[task.Status] }</p>
             <button type="submit" className="submit-btn" onClick={() => { setViewedTask(task) }}>View Task</button>
         </div>
   );

@@ -83,7 +83,7 @@ namespace BizKidzScholarships.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult GetPresignedURL([FromBody] PresignedRequestModel request)
+        public IActionResult NewUploadRequest([FromBody] PresignedRequestModel request)
         {
             var url = _fileService.Generate_Presigned_URL(request.extension);
 

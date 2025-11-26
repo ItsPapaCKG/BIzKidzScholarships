@@ -18,15 +18,15 @@ function TaskWindow() {
               <button type="button" className="btn-close popup-close" aria-label="Close" onClick={ () => { setTask(null) } }></button>
               <div className="popup-body">
                   
-                    <h1>{task.taskTitle}</h1>
-                    <p>{task.taskDescription}</p>
+                    <h1>{task.TaskTitle}</h1>
+                    <p>{task.TaskDescription}</p>
                     {/* <p>{task.taskType}</p> */}
 
-                    {task.taskType == TaskType.SocialMedia && <SocialMedia/> }
-                    {task.taskType == TaskType.ImageUpload && <ImageUpload/> }
-                    {task.taskType == TaskType.VideoUpload && <VideoUpload/> }
-                    {task.taskType == TaskType.Quiz && <Quiz/> }
-                    {task.taskType == TaskType.Contest && <p>Contest goes here</p> }
+                    {task.TaskType == TaskType.SocialMedia && <SocialMedia/> }
+                    {task.TaskType == TaskType.ImageUpload && <ImageUpload/> }
+                    {task.TaskType == TaskType.VideoUpload && <VideoUpload/> }
+                    {task.TaskType == TaskType.Quiz && <Quiz/> }
+                    {task.TaskType == TaskType.Contest && <p>Contest goes here</p> }
                   
               </div>
           </div>

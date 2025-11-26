@@ -25,7 +25,7 @@ export interface IUserProfile {
     BusinessLogoKey: string
 }
 
-export interface ITask {
+export interface ITaskJSON {
     taskTitle: string,
     taskDescription: string,
     reward: number,
@@ -33,6 +33,16 @@ export interface ITask {
     taskImageKey: string,
     taskId: number,
     taskType: TaskType
+}
+
+export interface ITask {
+    TaskTitle: string,
+    TaskDescription: string,
+    Reward: number,
+    Status: UserTaskStatus,
+    TaskImageKey: string,
+    TaskId: number,
+    TaskType: TaskType
 }
 
 export interface IUserPoints {
