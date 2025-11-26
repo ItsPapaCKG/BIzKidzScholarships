@@ -8,6 +8,14 @@ export enum UserTaskStatus {
     Completed
 }
 
+export enum TaskType {
+    SocialMedia,
+    ImageUpload,
+    VideoUpload,
+    Quiz,
+    Contest
+}
+
 export interface IUserProfile {
     BusinessName: string,
     FirstName: string,
@@ -23,7 +31,8 @@ export interface ITask {
     reward: number,
     status: UserTaskStatus,
     taskImageKey: string,
-    taskId: number
+    taskId: number,
+    TaskType: TaskType
 }
 
 export interface IUserPoints {

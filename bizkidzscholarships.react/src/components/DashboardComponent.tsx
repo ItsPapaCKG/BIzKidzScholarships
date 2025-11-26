@@ -1,5 +1,4 @@
 import TaskList from "./TaskList";
-import ImageUpload from "./tasks/ImageUpload";
 import UserPoints from "./UserPoints";
 import UserProfile from "./UserProfile";
 
@@ -10,7 +9,6 @@ function Dashboard() {
         <UserProfile />
         <UserPoints/>
         <TaskList />
-        <ImageUpload />
         </>
   );
 }

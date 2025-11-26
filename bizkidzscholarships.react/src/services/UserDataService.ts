@@ -1,6 +1,4 @@
-import { object } from "zod";
-import { UseUserAccountContext } from "../contexts/UserAccountContext";
-import { type PresignedURLData, type ITask, type IUserProfile } from "../models/ViewModels";
+import { type PresignedURLData, type ITask } from "../models/ViewModels";
 import { APICall } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
