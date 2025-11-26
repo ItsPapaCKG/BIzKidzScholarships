@@ -64,8 +64,8 @@ namespace BizKidzScholarships.Data.Contexts
                     TaskEnabled = true,
                     TaskNameInternal = "First Task",
                     Reward = 1000,
-                    Created = DateTime.Now,
-                    Updated = DateTime.Now,
+                    Created = DateTime.UtcNow,
+                    Updated = DateTime.UtcNow,
                     TaskType = Enums.TaskType.ImageUpload
                 });
 

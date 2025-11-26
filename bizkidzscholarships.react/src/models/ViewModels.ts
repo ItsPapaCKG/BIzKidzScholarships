@@ -32,7 +32,7 @@ export interface ITask {
     status: UserTaskStatus,
     taskImageKey: string,
     taskId: number,
-    TaskType: TaskType
+    taskType: TaskType
 }
 
 export interface IUserPoints {

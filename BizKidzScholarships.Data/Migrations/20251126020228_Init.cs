@@ -62,9 +62,12 @@ namespace BizKidzScholarships.Data.Migrations
                     TaskDescription = table.Column<string>(type: "text", nullable: false),
                     TaskImageKey = table.Column<string>(type: "text", nullable: true),
                     TaskEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    TaskType = table.Column<int>(type: "integer", nullable: false),
                     Reward = table.Column<int>(type: "integer", nullable: false),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    TaskPromptTitle = table.Column<string>(type: "text", nullable: false),
+                    TaskPromptSubtitle = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -188,8 +191,8 @@ namespace BizKidzScholarships.Data.Migrations
                     BusinessEmail = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
                     BusinessName = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
                     BusinessLogoKey = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -209,8 +212,7 @@ namespace BizKidzScholarships.Data.Migrations
                     AttemptNumber = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     TaskId = table.Column<int>(type: "integer", nullable: false),
-                    FieldName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    SubmissionData = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false)
+                    SubmissionData = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -281,6 +283,11 @@ namespace BizKidzScholarships.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "Id", "Created", "Reward", "TaskDescription", "TaskEnabled", "TaskImageKey", "TaskNameInternal", "TaskPromptSubtitle", "TaskPromptTitle", "TaskTitle", "TaskType", "Updated" },
+                values: new object[] { 1, new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5781), new TimeSpan(0, 0, 0, 0, 0)), 1000, "Task Description Goes Here!", true, null, "First Task", "", "Task Prompt", "First Added Task", 1, new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5790), new TimeSpan(0, 0, 0, 0, 0)) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

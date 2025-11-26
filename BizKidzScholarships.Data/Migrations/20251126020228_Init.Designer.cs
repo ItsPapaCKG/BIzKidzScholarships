@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BizKidzScholarships.Data.Migrations
 {
     [DbContext(typeof(BizKidzDbContext))]
-    [Migration("20250919223948_Init")]
+    [Migration("20251126020228_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -33,7 +33,7 @@ namespace BizKidzScholarships.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Reward")
@@ -53,12 +53,23 @@ namespace BizKidzScholarships.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("TaskPromptSubtitle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TaskPromptTitle")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("TaskTitle")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<DateTime>("Updated")
+                    b.Property<int>("TaskType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
@@ -66,6 +77,22 @@ namespace BizKidzScholarships.Data.Migrations
                     b.HasIndex("TaskNameInternal");
 
                     b.ToTable("Tasks", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Created = new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5781), new TimeSpan(0, 0, 0, 0, 0)),
+                            Reward = 1000,
+                            TaskDescription = "Task Description Goes Here!",
+                            TaskEnabled = true,
+                            TaskNameInternal = "First Task",
+                            TaskPromptSubtitle = "",
+                            TaskPromptTitle = "Task Prompt",
+                            TaskTitle = "First Added Task",
+                            TaskType = 1,
+                            Updated = new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5790), new TimeSpan(0, 0, 0, 0, 0))
+                        });
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskSubmission", b =>
@@ -79,14 +106,10 @@ namespace BizKidzScholarships.Data.Migrations
                     b.Property<int>("TaskId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("FieldName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<string>("SubmissionData")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
 
                     b.HasKey("AttemptNumber", "UserId", "TaskId");
 
@@ -141,7 +164,7 @@ namespace BizKidzScholarships.Data.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
-                    b.Property<DateTime>("Created")
+                    b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FirstName")
@@ -158,7 +181,7 @@ namespace BizKidzScholarships.Data.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("character varying(12)");
 
-                    b.Property<DateTime>("Updated")
+                    b.Property<DateTimeOffset>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId");

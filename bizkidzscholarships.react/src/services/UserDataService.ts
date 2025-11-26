@@ -22,16 +22,17 @@ export async function GetUserTasks(): Promise<ITask[]> {
 // POST file with presigned fields
 // get response. If successful
 // API Call to set URL of object attached to field
-export async function TaskUploadChange(file: File | undefined) {
+export async function TaskUploadChange(file: File | undefined): Promise<boolean> {
     if (file == undefined) {
-        return alert("Invalid upload.");
+        alert("Invalid upload.") 
+        return false;
     }
 
     let { url, fields, key } = await GetPresignedS3Url(file.name.split(".").pop()!.toLowerCase());
 
     if (url == null || fields == null) {
         console.error("Could not get Presigned POST from AWS.");
-        return;
+        return false;
     }
 
     var formdata = new FormData();
@@ -47,13 +48,15 @@ export async function TaskUploadChange(file: File | undefined) {
     })
 
     if (upload.ok) {
-        return alert("Upload successful! See: " + url + key)
+        alert("Upload successful! See: " + url + key)
+        return true;
     }
 
     let responseText = await upload.text().catch(() => "(no body)");
 
     console.log(responseText);
-    return alert("Upload failed.");
+    alert("Upload failed.");
+    return false;
 }
 
 async function GetPresignedS3Url(ext: string) {

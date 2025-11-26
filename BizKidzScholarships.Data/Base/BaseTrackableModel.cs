@@ -8,8 +8,8 @@ namespace BizKidzScholarships.Data.Base
 {
     public abstract class BaseTrackableModel
     {
-        public DateTime Created { get; set; }
+        public DateTimeOffset Created { get; set; }
 
-        public DateTime Updated { get; set; }
+        public DateTimeOffset Updated { get; set; }
     }
 }
