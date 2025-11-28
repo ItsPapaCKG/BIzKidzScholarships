@@ -1,5 +1,5 @@
-import { type PresignedURLData, type ITask, type ITaskJSON } from "../models/ViewModels";
-import { APICall } from "./APIService";
+import { type PresignedURLData, type ITask, type ITaskJSON, type StartUploadRequest, type StartUploadHandshakeResponse, ActionType } from "../models/ViewModels";
+import { APICall, type APIResponse } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
     return false;
@@ -36,33 +36,40 @@ export async function GetUserTasks(): Promise<ITask[]> {
 // POST file with presigned fields
 // get response. If successful
 // API Call to set URL of object attached to field
-export async function TaskUploadChange(file: File | undefined): Promise<boolean> {
+export async function TaskUploadChange(taskid: Number, file: File | undefined): Promise<boolean> {
     if (file == undefined) {
         alert("Invalid upload.") 
         return false;
     }
+//file.name.split(".").pop()!.toLowerCase()
 
-    let { url, fields, key } = await GetPresignedS3Url(file.name.split(".").pop()!.toLowerCase());
+    let request = {
+        ActionType: ActionType.TaskUpload,
+        Extension: file.name.split(".").pop()!.toLowerCase(),
+        TaskId: taskid
+    } as StartUploadRequest
 
-    if (url == null || fields == null) {
+    let presignedData: PresignedURLData | null = await GetPresignedS3Url(request);
+
+    if (presignedData == null) {
         console.error("Could not get Presigned POST from AWS.");
         return false;
     }
 
     var formdata = new FormData();
-    Object.entries(fields).forEach(([k, v]) => {
+    Object.entries(presignedData.fields).forEach(([k, v]) => {
         formdata.append(k, v);
     });
 
     formdata.append("file",file);
 
-    var upload = await fetch(url, {
+    var upload = await fetch(presignedData.url, {
         method: "POST",
         body: formdata
     })
 
     if (upload.ok) {
-        alert("Upload successful! See: " + url + key)
+        alert("Upload successful! See: " + presignedData.url + presignedData.key)
         return true;
     }
 
@@ -73,18 +80,15 @@ export async function TaskUploadChange(file: File | undefined): Promise<boolean>
     return false;
 }
 
-async function GetPresignedS3Url(ext: string) {
-    var data = {
-        "extension": ext
-    }
+async function GetPresignedS3Url(request: StartUploadRequest)  {
 
-    var res = await APICall<PresignedURLData>("user/NewUploadRequest", "POST", data);
+    var res = await APICall<StartUploadHandshakeResponse>("user/NewUploadRequest", "POST", request);
 
     if (res.success) {
-        return {url: res.data.url, fields: res.data.fields, key: res.data.key};
+        return res.data.PresignedData;
     }
 
-    return { url: null, fields: null, key: null }
+    return null;
 }
 
 //async function UploadS3FileToURL(PostData: PresignedURLData, file: File) {

@@ -11,12 +11,14 @@ namespace BizKidzScholarships.API.Services.Base
         protected ICurrentUser _user;
         protected BizKidzDbContext _context;
         protected IMapper _mapper;
+        protected IHttpClientFactory _httpClientFactory;
 
-        public BaseCRUDService(ICurrentUser user, IMapper mapper, BizKidzDbContext context)
+        public BaseCRUDService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac)
         {
             _user = user;
             _context = context;
             _mapper = mapper;
+            _httpClientFactory = _fac;
         }
 
         protected async Task<bool> SafeUpdateAsync <T> (T entity) where T : class

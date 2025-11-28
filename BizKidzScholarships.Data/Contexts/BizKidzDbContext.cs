@@ -17,6 +17,8 @@ namespace BizKidzScholarships.Data.Contexts
 
         public DbSet<ActionRequest> ActionRequests { get; set; }
 
+        public DbSet<TaskSubmission> Submissions { get; set; }
+
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
 

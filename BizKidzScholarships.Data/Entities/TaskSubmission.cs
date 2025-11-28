@@ -13,12 +13,12 @@ namespace BizKidzScholarships.Data.Entities
         [ForeignKey("User")]
         public required Guid UserId { get; set; }
 
-        public required IdentityUser<Guid> User { get; set; }
+        public IdentityUser<Guid> User { get; set; }
 
         [ForeignKey("Task")]
         public required int TaskId { get; set; }
 
-        public required TaskItem Task { get; set; }
+        public TaskItem Task { get; set; }
 
         [MaxLength(512)]
         public required string SubmissionData { get; set; }

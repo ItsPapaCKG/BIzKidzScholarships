@@ -19,6 +19,7 @@ namespace BizKidzScholarships.API.Extensions
 #endif
 
             services.AddHttpContextAccessor();
+            services.AddHttpClient();
 
             services.AddScoped<ICurrentUser, CurrentUser>();
 

@@ -16,6 +16,11 @@ export enum TaskType {
     Contest
 }
 
+export enum ActionType {
+    TaskUpload,
+    ProfileImageUpload
+}
+
 export interface IUserProfile {
     BusinessName: string,
     FirstName: string,
@@ -60,6 +65,21 @@ export interface PresignedURLData {
     url: string,
     key: string,
     fields: { [key: string]: string }
+}
+
+export interface StartUploadHandshakeResponse {
+    RequestId: Number,
+    PresignedData: PresignedURLData
+}
+
+export interface ServerResponse {
+
+}
+
+export interface StartUploadRequest {
+    ActionType: ActionType,
+    TaskId?: Number,
+    Extension: string
 }
 
 export default '.'

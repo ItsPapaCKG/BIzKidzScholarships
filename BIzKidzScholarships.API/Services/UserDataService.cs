@@ -1,12 +1,21 @@
-﻿using AutoMapper;
+﻿using Amazon;
+using Amazon.Runtime.Internal;
+using Amazon.S3;
+using Amazon.S3.Model;
+using AutoMapper;
 using BizKidzScholarships.API.Services.Base;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
+using BizKidzScholarships.Data.Enums;
+using BizKidzScholarships.Data.Models;
 using BizKidzScholarships.Data.NetworkedModels;
+using Microsoft.AspNetCore.Connections.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace BizKidzScholarships.API.Services
 {
@@ -18,11 +27,9 @@ namespace BizKidzScholarships.API.Services
 
         protected Guid userId => _user.Id;
 
-        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context) : base(user, mapper, context)
+        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac) : base(user, mapper, context, _fac)
         {
-            //_user = user;
-            //_context = context;
-            //_mapper = mapper;
+
         }
         public UserPointsView? GetUserPoints(Guid userId)
         {
@@ -81,7 +88,7 @@ namespace BizKidzScholarships.API.Services
 
                     var error = ex.Message;
 
-                    response.Succeeded = false;
+                    response.Success = false;
                     response.Errors.Add(error);
                     return response;
                 }
@@ -120,11 +127,214 @@ namespace BizKidzScholarships.API.Services
             return tasks;
         }
 
-        public async void UpdateUserProfilePicture(Guid userId, string imageKey)
+        public async Task<ResponseModel> UpdateUserProfilePicture(Guid userId, string imageKey)
         {
             var profile = GetUserProfile(userId);
 
             profile.BusinessLogoKey = imageKey;
+
+            var ent = _mapper.Map<UserProfile>(profile);
+
+            bool success = await SafeUpdateAsync(ent);
+
+            return new ResponseModel { Success = success };
+        }
+
+        public ResponseModel StartUploadHandshake(PresignedRequestModel req)
+        {
+            PresignedHandshakeModel handshake = new PresignedHandshakeModel();
+
+            // first, get a Presigned URL from Amazon
+            try
+            {
+                using (AmazonS3Client client = new AmazonS3Client(RegionEndpoint.USEast2))
+                {
+                    string key = "uploads/" + Guid.NewGuid() + "." + req.extension;
+
+                    CreatePresignedPostRequest presignedPostRequest = new CreatePresignedPostRequest();
+                    presignedPostRequest.BucketName = "bizkidz-task-bucket";
+                    presignedPostRequest.Key = key;
+                    presignedPostRequest.Expires = DateTime.UtcNow.AddMinutes(10);
+
+                    var response = client.CreatePresignedPost(presignedPostRequest);
+
+                    handshake.PresignedUrlPayload = new PresignedPostURLDataModel() { Url = response.Url, Key = key, Fields = response.Fields };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel() { Success = false, Errors = { ex.Message } };
+            }
+
+            // Create the request in the DB to track actions needed after upload is confirmed
+            var request = new ActionRequest()
+            {
+                UserId = _user.Id,
+                ActionType = req.ActionType,
+                Status = RequestStatus.Pending,
+                Created = DateTimeOffset.UtcNow,
+                Updated = DateTimeOffset.UtcNow,
+                Expiration = DateTimeOffset.UtcNow.AddMinutes(10)
+            };
+
+            using (var t = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    // Attach request Entity to DbSet
+                    _context.ActionRequests.Add(request);
+
+                    if (request.RequestId == Guid.Empty)
+                        throw new Exception("Unable to generate Handshake Request ID.");
+
+                    handshake.RequestId = request.RequestId;
+
+                    // SaveChanges()
+                    _context.SaveChanges();
+
+                    // Commit()
+                    t.Commit();
+                }
+                catch (Exception ex)
+                {
+                    t.Rollback();
+
+                    return new ResponseModel() { Success = false, Errors = { ex.Message } };
+                }
+                finally
+                {
+                    t.Dispose();
+                }
+            }
+
+            // send the handshake required data to the user
+            return handshake;
+        }
+
+        public async Task<ResponseModel> UploadConfirmation(UploadHandshakeConfirmationModel confirmation)
+        {
+            try
+            {
+                var request = _context.ActionRequests.FirstOrDefault(r => r.RequestId == confirmation.RequestId);
+
+                // check that request exists
+                if (request is null)
+                    return new ResponseModel() { Success = false, Errors = { $"Invalid Request Id: {confirmation.RequestId}" } };
+
+                bool fileUploaded = false;
+                var payload = request.Payload as dynamic;
+
+                // try and access the s3 file
+                if (payload is not null)
+                {
+                    var client = _httpClientFactory.CreateClient();
+                    var uri = new Uri(payload.S3Link);
+
+                    var response = await client.GetAsync(uri);
+                    fileUploaded = response.IsSuccessStatusCode;
+                }
+
+                // if not successful, set status of request and return ResponseModel
+                if (!fileUploaded && payload is not null)
+                {
+                    SetRequestStatus(request, RequestStatus.Failed);
+                    return new ResponseModel() { Success = false, Errors = { $"Request {confirmation.RequestId} failed validation." } };
+                }
+
+                // switch to check upload types
+                switch (request.ActionType)
+                {
+                    case ActionType.ProfileImageUpload:
+                        if (payload is null)
+                        {
+                            SetRequestStatus(request, RequestStatus.Cancelled);
+                            throw new Exception($"Payload must be specified for Profile Image Uploads. Cancelling request {request.RequestId}");
+                        }
+
+                        // update the profile picture
+                        var res = UpdateUserProfilePicture(request.UserId, payload.S3Link);
+
+                        return res;
+                    case ActionType.TaskUpload:
+                        if (payload is null)
+                        {
+                            SetRequestStatus(request, RequestStatus.Cancelled);
+                            throw new Exception($"Payload must be specified for Profile Image Uploads. Cancelling request {request.RequestId}");
+                        }
+
+                        // create task submission
+                        dynamic submissionPayload = new { S3Link = payload.S3Link };
+                        int taskid = (int)payload.TaskId;
+                        Guid userid = request.UserId;
+
+                        return await NewUserSubmission(taskid, userid, submissionPayload);
+                    default:
+                        throw new Exception($"Could not determine the task type of request {request.RequestId}.");
+                }
+            }
+            catch (Exception e)
+            {
+                return new ResponseModel() { Success = false, Errors = { e.Message } };
+            }
+        }
+
+        private async Task<ResponseModel> NewUserSubmission(int taskid, Guid userid, string payload)
+        {
+            // get previous submissions
+
+            int attemptNumber = 0;
+
+            var previous = _context.Submissions.Where(s => s.TaskId == taskid && s.UserId == userid).OrderByDescending(x => x.AttemptNumber).FirstOrDefault();
+
+            if (previous != null) {
+                attemptNumber = previous.AttemptNumber + 1;
+            }
+
+            //
+
+            var submission = new TaskSubmission() { AttemptNumber = attemptNumber, SubmissionData = payload, TaskId = taskid, UserId = userid };
+
+            using (var t = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    await _context.Submissions.AddAsync(submission);
+
+                    await _context.SaveChangesAsync();
+                    await t.CommitAsync();
+                }
+                catch (Exception e)
+                {
+                    await t.RollbackAsync();
+
+                    await t.DisposeAsync();
+
+                    throw new Exception($"Could not submit submission for task {taskid} for user {userid}");
+                }
+            }
+
+            return new ResponseModel { Success = true };
+        }
+
+        private async void SetRequestStatus(ActionRequest request, RequestStatus status)
+        {
+            using (var t = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    _context.ActionRequests.Update(request);
+
+                    await _context.SaveChangesAsync();
+
+                    await t.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await t.RollbackAsync();
+
+                    throw new Exception(ex.Message);
+                }
+            }
         }
     }
 }

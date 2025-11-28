@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect } from "react";
 import "../models/ViewModels"
-import type { IUserProfile } from "../models/ViewModels";
 import { UseUserAccountContext } from "../contexts/UserAccountContext";
 import { useNavigate } from "react-router-dom";
 import EditProfile from "./EditProfile";

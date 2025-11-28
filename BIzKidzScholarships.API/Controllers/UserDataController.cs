@@ -5,6 +5,7 @@ using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BizKidzScholarships.API.Controllers
 {
@@ -43,7 +44,7 @@ namespace BizKidzScholarships.API.Controllers
         {
             var result = await _udService.SetUserProfile(_user.Id, profile);
 
-            if (!result.Succeeded)
+            if (!result.Success)
                 return BadRequest(result.Errors);
 
             return Ok(new { Message = "Profile successfull registered." });
@@ -55,7 +56,7 @@ namespace BizKidzScholarships.API.Controllers
         {
             var result = await _udService.SetUserProfile(_user.Id, profile);
 
-            if (!result.Succeeded)
+            if (!result.Success)
                 return BadRequest(result.Errors);
 
             return Ok(new { Message = "Profile successfull updated." });
@@ -82,19 +83,25 @@ namespace BizKidzScholarships.API.Controllers
             return Ok(pointsView);
         }
 
+        // TODO request validation
         [HttpPost("[action]")]
         public IActionResult NewUploadRequest([FromBody] PresignedRequestModel request)
         {
-            var url = _fileService.StartUploadHandshake(request);
+            var url = _udService.StartUploadHandshake(request);
 
             return Ok(url);
         }
 
-        //[HttpPost]
-        //public IActionResult SetUserProfileS3Key(string key)
-        //{
+        [HttpPost]
+        public async Task<IActionResult> UploadHandshake(UploadHandshakeConfirmationModel confirmation)
+        {
+            var response = await _udService.UploadConfirmation(confirmation);
 
-        //}
+            if (response.Success)
+                return Ok(response);
+
+            return BadRequest(response);
+        }
 
     }
 }

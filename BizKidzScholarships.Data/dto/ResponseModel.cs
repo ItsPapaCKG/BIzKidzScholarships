@@ -8,7 +8,7 @@ namespace BizKidzScholarships.Data.dto
 {
     public class ResponseModel
     {
-        public bool Succeeded { get; set; } = true;
+        public bool Success { get; set; } = true;
 
         public List<string> Errors { get; set; } = [];
     }

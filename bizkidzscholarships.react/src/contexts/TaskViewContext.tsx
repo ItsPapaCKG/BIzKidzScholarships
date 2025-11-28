@@ -5,15 +5,18 @@ import type { ITask } from "../models/ViewModels";
 export type viewedContextType = {
     viewedTask: ITask | null,
     setViewedTask: React.Dispatch<React.SetStateAction<ITask | null>>,
+    handshakeRequestId: string | null
+    setHandshakeRequestId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const ViewedTaskContext = createContext<viewedContextType>({} as viewedContextType);
 
 function ViewedTaskProvider({ children }: { children: ReactNode }) {
     const [viewedTask, setViewedTask] = useState<ITask | null>(null);
+    const [handshakeRequestId, setHandshakeRequestId] = useState<string | null>(null);
 
   return (
-      <ViewedTaskContext.Provider value={{ viewedTask, setViewedTask }}>
+      <ViewedTaskContext.Provider value={{ viewedTask, setViewedTask, handshakeRequestId, setHandshakeRequestId }}>
           { children }
       </ViewedTaskContext.Provider>
   );

@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace BizKidzScholarships.Data.Models
 {
-    public class PresignedRequestModel
+    public class UploadHandshakeConfirmationModel
     {
-        public required ActionType ActionType { get; set; }
-        public int? TaskId { get; set; }
-        public required string extension { get; set; }
+        public required Guid RequestId { get; set; }
+        public required RequestStatus Status { get; set; }
     }
 }
