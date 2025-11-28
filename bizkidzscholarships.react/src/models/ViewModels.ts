@@ -68,18 +68,32 @@ export interface PresignedURLData {
 }
 
 export interface StartUploadHandshakeResponse {
-    RequestId: Number,
+    RequestId: string,
     PresignedData: PresignedURLData
 }
 
 export interface ServerResponse {
+    
+}
 
+export enum RequestStatus
+{
+    Denied = -1,
+    Cancelled,
+    Pending,
+    Success,
+    Failed
 }
 
 export interface StartUploadRequest {
     ActionType: ActionType,
     TaskId?: Number,
     Extension: string
+}
+
+export interface UploadHandshakeConfirmation {
+    RequestId: string,
+    RequestStatus: RequestStatus
 }
 
 export default '.'

@@ -298,7 +298,17 @@ namespace BizKidzScholarships.API.Services
             {
                 try
                 {
+                    var userTask = _context.UserTasks.FirstOrDefault(ut => ut.TaskId == taskid && ut.UserId == userid);
+
+                    if (userTask is null)
+                    {
+                        throw new Exception($"No user task found with Task Id {taskid} that belongs to User {userid}.");
+                    }
+
+                    userTask.Status = Data.Enums.TaskStatus.Completed;
+
                     await _context.Submissions.AddAsync(submission);
+                    _context.UserTasks.Update(userTask);
 
                     await _context.SaveChangesAsync();
                     await t.CommitAsync();
@@ -309,7 +319,7 @@ namespace BizKidzScholarships.API.Services
 
                     await t.DisposeAsync();
 
-                    throw new Exception($"Could not submit submission for task {taskid} for user {userid}");
+                    throw new Exception($"Could not submit submission for task {taskid} for user {userid}. " + e.Message);
                 }
             }
 

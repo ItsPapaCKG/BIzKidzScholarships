@@ -12,15 +12,22 @@ function ImageUpload() {
     }
 
     const UploadForTask = async () => {
-        let successful = await TaskUploadChange(currentFile);
+        if (task?.TaskId == null) {
+            return;
+        }
+
+        let successful = await TaskUploadChange(task.TaskId, currentFile);
 
         if (successful) {
             setTask(null);
         }
+
+        setError("Error Uploading File. Please try again.");
     }
 
     const viewedTask = UseViewedTaskContext();
     const [task, setTask] = [viewedTask.viewedTask, viewedTask.setViewedTask];
+    const [error, setError] = useState<string>("");
 
     return (
       <>
@@ -36,6 +43,8 @@ function ImageUpload() {
             )}
             
         </label>
+
+        <p>{ error }</p>
       </>
   );
 }
