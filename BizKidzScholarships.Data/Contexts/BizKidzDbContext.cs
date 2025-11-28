@@ -15,6 +15,8 @@ namespace BizKidzScholarships.Data.Contexts
 
         public DbSet<UserPointsReward> UserPoints { get; set; }
 
+        public DbSet<ActionRequest> ActionRequests { get; set; }
+
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
 
@@ -95,6 +97,15 @@ namespace BizKidzScholarships.Data.Contexts
                 .WithMany(t => t.TaskSubmissions)
                 .HasForeignKey(ts => ts.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ActionRequest>(ar =>
+            {
+                ar.HasKey(a => a.RequestId);
+
+                ar.HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserId);
             });
 
             base.OnModelCreating(modelBuilder);

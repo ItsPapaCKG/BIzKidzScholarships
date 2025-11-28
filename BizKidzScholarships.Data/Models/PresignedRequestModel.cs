@@ -9,7 +9,7 @@ namespace BizKidzScholarships.Data.Models
 {
     public class PresignedRequestModel
     {
-        public UploadType UploadType { get; set; }
+        public ActionType ActionType { get; set; }
         public int? TaskId { get; set; }
         public required string extension { get; set; }
     }

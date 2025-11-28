@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BizKidzScholarships.Data.Models
 {
-    public class PresignedPostURLDataModel
+    public class PresignedPostURLDataModel : ResponseModel
     {
         public string? Url { get; set; }
         public string? Key { get; set; }

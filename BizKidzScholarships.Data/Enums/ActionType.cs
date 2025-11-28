@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BizKidzScholarships.Data.Enums
 {
-    public enum UploadType
+    public enum ActionType
     {
         TaskUpload,
         ProfileImageUpload
