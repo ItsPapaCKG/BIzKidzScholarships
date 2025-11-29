@@ -232,7 +232,7 @@ namespace BizKidzScholarships.API.Services
                     return new ResponseModel() { Success = false, Errors = { $"Request is already confirmed, awaiting further action: {confirmation.RequestId}" } };
                 }
 
-                if (request.Expiration > DateTimeOffset.UtcNow)
+                if (request.Expiration < DateTimeOffset.UtcNow)
                 {
                     SetRequestStatus(request, RequestStatus.Denied);
                     return new ResponseModel() { Success = false, Errors = { $"Expired Request: {confirmation.RequestId}" } };
@@ -344,19 +344,15 @@ namespace BizKidzScholarships.API.Services
 
         private async Task SetRequestStatus(ActionRequest request, RequestStatus status)
         {
-            var t = await _context.Database.BeginTransactionAsync();
             try
             {
                 _context.ActionRequests.Update(request);
 
                 await _context.SaveChangesAsync();
 
-                await t.CommitAsync();
             }
             catch (Exception ex)
             {
-                await t.RollbackAsync();
-
                 throw new Exception(ex.Message);
             }
             

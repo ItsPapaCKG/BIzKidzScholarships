@@ -32,7 +32,15 @@ function App({ }) {
 
     return (
         <>
-            {isAuthenticated ? <Dashboard /> : <p>Loading...</p>}
+            <nav className='top-bar'>
+                <div id="website-logo">
+                    <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png"/>
+                </div>
+            </nav>
+
+            <main>
+                {isAuthenticated ? <Dashboard /> : <p>Loading...</p>}
+            </main>
         </>
     );
 }

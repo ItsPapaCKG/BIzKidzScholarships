@@ -43,7 +43,7 @@ export async function TaskUpload(taskid: Number, file: File): Promise<boolean> {
 
 export async function ProfileUpload(file: File) {
     let request = {
-        ActionType: ActionType.TaskUpload,
+        ActionType: ActionType.ProfileImageUpload,
         Extension: file.name.split(".").pop()!.toLowerCase()
     } as StartUploadRequest
 

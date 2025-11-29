@@ -7,12 +7,18 @@ function Task({ task }: { task: ITask }) {
     const [viewedTask, setViewedTask] = [taskWindowContext.viewedTask, taskWindowContext.setViewedTask ]
 
     return (
-        <div>
-            <h3>{task.TaskTitle} </h3>
-            <p>{ task.TaskDescription }</p>
-            <p>Reward: { task.Reward }</p>
-            <p>Status: { UserTaskStatus[task.Status] }</p>
-            <button type="submit" className="submit-btn" onClick={() => { setViewedTask(task) }}>View Task</button>
+        <div className="card">
+            <div className="card-header">
+                <h3 className="mb-0">{task.TaskTitle} </h3>
+            </div>
+            
+            <div className="card-body">
+                <p>{ task.TaskDescription }</p>
+                <p>Reward: { task.Reward }</p>
+                <p>Status: { UserTaskStatus[task.Status] }</p>
+                <button type="submit" className="btn btn-success" onClick={() => { setViewedTask(task) }}>View Task</button>
+            </div>
+            
         </div>
   );
 }

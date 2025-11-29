@@ -20,6 +20,10 @@ function EditProfile() {
         var endpoint = userAccountContext.userHasNoProfile ? "registerprofile" : "updateprofile";
         var httpMethod = userAccountContext.userHasNoProfile ? "POST" : "PUT";
 
+        if (profilePictureURL != "") {
+            userProfile.BusinessLogoKey = profilePictureURL;
+        }
+
         // attempt registration
         var res = await fetch(`https://localhost:7095/api/user/${endpoint}`, {
             method: httpMethod,
@@ -34,10 +38,6 @@ function EditProfile() {
             console.log(`[Register Profile] Server Response: ${txt}`);
             setErrorState(txt);
             return
-        }
-
-        if (profilePictureURL != "") {
-            userProfile.BusinessLogoKey = profilePictureURL;
         }
 
         //await setTimeout(() => { userAccountContext.setUserHasNoProfile(false); }, 5000);

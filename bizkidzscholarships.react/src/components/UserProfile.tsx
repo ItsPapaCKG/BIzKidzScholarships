@@ -31,31 +31,52 @@ function UserProfile() {
     else if (userProfile != null)
         return (
             <>
-                { editMode ? 
-                    <EditProfile />
-                :
-                    <div className="d-flex gap-3" >
-                        <img src={userProfile.BusinessLogoKey} />
+                
+                    <div className="d-flex gap-3 userProfile card" >
+                        { editMode ? 
+                            <EditProfile />
+                                :
+                                <>
+                        {/* <div className="card-header text-center">
+                            <h4 className="mb-0">Your Business Profile</h4>
+                        </div> */}
 
-                        <p className="p-2">
-                            <strong>Business Name</strong>: {userProfile.BusinessName}
-                        </p>
+                        <div className="card-body p-2 m-3">
+                            <div className="row mb-3">
+                                <div className="col profile-ctn">
+                                    <img src={userProfile.BusinessLogoKey} />
+                                </div>
 
-                        <p className="p-2">
-                            <strong>Business Email</strong>: {userProfile.BusinessEmail}
-                        </p>
+                                <div className="col">
+                                    <p className="p-2">
+                                        <strong>Business Name</strong>: {userProfile.BusinessName}
+                                    </p>
 
-                        <p className="p-2">
-                            <strong>Owner Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
-                        </p>
+                                    <p className="p-2">
+                                        <strong>Business Email</strong>: {userProfile.BusinessEmail}
+                                    </p>
 
-                        <p className="p-2">
-                            <strong>Phone</strong>: {userProfile.PhoneNumber}
-                        </p>
+                                    <p className="p-2">
+                                        <strong>Owner Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
+                                    </p>
 
-                        <button onClick={() => setEditMode(true)}>Edit Profile</button>
+                                    <p className="p-2">
+                                        <strong>Phone</strong>: {userProfile.PhoneNumber}
+                                    </p>
+                                </div>    
+                            </div>
+                        
+                            <div className="row">
+                                <div className="col d-grid">
+                                    <button onClick={() => setEditMode(true)} className="btn btn-primary">Edit Profile</button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        </>
+                        }
                     </div>
-                }
+                
             </>
       );
 }
