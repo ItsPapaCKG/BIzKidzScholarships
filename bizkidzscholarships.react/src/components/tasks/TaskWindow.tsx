@@ -1,6 +1,6 @@
 import { UseTaskContext } from "../../contexts/TaskViewContext";
-import { TaskType } from "../../models/ViewModels";
-import ImageUpload from "./ImageUpload";
+import { ActionType, TaskType } from "../../models/ViewModels";
+import FileUpload from "./FileUpload";
 import Quiz from "./Quiz";
 import SocialMedia from "./SocialMedia";
 import VideoUpload from "./VideoUpload";
@@ -23,7 +23,7 @@ function TaskWindow() {
                     {/* <p>{task.taskType}</p> */}
 
                     {task.TaskType == TaskType.SocialMedia && <SocialMedia/> }
-                    {task.TaskType == TaskType.ImageUpload && <ImageUpload/> }
+                    {task.TaskType == TaskType.ImageUpload && <FileUpload action={ActionType.TaskUpload}/> }
                     {task.TaskType == TaskType.VideoUpload && <VideoUpload/> }
                     {task.TaskType == TaskType.Quiz && <Quiz/> }
                     {task.TaskType == TaskType.Contest && <p>Contest goes here</p> }

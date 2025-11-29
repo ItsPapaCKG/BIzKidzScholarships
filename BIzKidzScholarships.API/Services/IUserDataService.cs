@@ -18,7 +18,7 @@ namespace BizKidzScholarships.API.Services
 
         Task<ResponseModel> SetUserProfile(Guid userId, RegisterUserProfileDTO profile);
 
-        ResponseModel StartUploadHandshake(PresignedRequestModel req);
+        Task<ResponseModel> StartUploadHandshake(PresignedRequestModel req);
 
         Task<ResponseModel> UploadConfirmation(UploadHandshakeConfirmationModel confirmation);
 

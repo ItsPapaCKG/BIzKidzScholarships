@@ -85,9 +85,9 @@ namespace BizKidzScholarships.API.Controllers
 
         // TODO request validation
         [HttpPost("[action]")]
-        public IActionResult NewUploadRequest([FromBody] PresignedRequestModel request)
+        public async Task<IActionResult> NewUploadRequest([FromBody] PresignedRequestModel request)
         {
-            var url = _udService.StartUploadHandshake(request);
+            var url = await _udService.StartUploadHandshake(request);
 
             return Ok(url);
         }

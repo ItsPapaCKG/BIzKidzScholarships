@@ -11,6 +11,7 @@ namespace BizKidzScholarships.Data.Enums
         Denied = -1,
         Cancelled,
         Pending,
+        Closed,
         Success,
         Failed
     }

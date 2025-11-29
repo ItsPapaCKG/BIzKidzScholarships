@@ -72,8 +72,9 @@ export interface StartUploadHandshakeResponseJSON {
     presignedUrlPayload: PresignedURLData
 }
 
-export interface ServerResponse {
-    
+export interface ServerUploadResponse {
+    Success: boolean,
+    Url?: string
 }
 
 export enum RequestStatus
@@ -81,6 +82,7 @@ export enum RequestStatus
     Denied = -1,
     Cancelled,
     Pending,
+    Closed,
     Success,
     Failed
 }

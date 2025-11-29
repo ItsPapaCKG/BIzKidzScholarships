@@ -63,33 +63,33 @@ namespace BizKidzScholarships.API.Services
 
             ent.UserId = userId;
 
-            using (var t = _context.Database.BeginTransaction())
+            var t = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                try
-                {
-                    if (exists is null)
-                        await _context.Profiles.AddAsync(ent);
-                    else {
-                        _context.Entry(exists).State = EntityState.Detached;
+                if (exists is null)
+                    await _context.Profiles.AddAsync(ent);
+                else {
+                    _context.Entry(exists).State = EntityState.Detached;
 
-                        _context.Profiles.Update(ent);
-                    }
-
-                    await _context.SaveChangesAsync();
-
-                    await t.CommitAsync();
+                    _context.Profiles.Update(ent);
                 }
-                catch (Exception ex)
-                {
-                    t.Rollback();
 
-                    var error = ex.Message;
+                await _context.SaveChangesAsync();
 
-                    response.Success = false;
-                    response.Errors.Add(error);
-                    return response;
-                }
+                await t.CommitAsync();
             }
+            catch (Exception ex)
+            {
+                t.Rollback();
+
+                var error = ex.Message;
+
+                response.Success = false;
+                response.Errors.Add(error);
+                return response;
+            }
+            
 
             return response;
         }
@@ -130,13 +130,14 @@ namespace BizKidzScholarships.API.Services
             var payload = JsonConvert.SerializeObject(payloadObject);
 
             request.Payload = payload;
+            request.Status = RequestStatus.Success;
 
             bool success = await SafeUpdateAsync(request);
 
             return new ResponseModel { Success = success };
         }
 
-        public ResponseModel StartUploadHandshake(PresignedRequestModel req)
+        public async Task<ResponseModel> StartUploadHandshake(PresignedRequestModel req)
         {
             PresignedHandshakeModel handshake = new PresignedHandshakeModel();
 
@@ -180,35 +181,31 @@ namespace BizKidzScholarships.API.Services
                 Expiration = DateTimeOffset.UtcNow.AddMinutes(10)
             };
 
-            using (var t = _context.Database.BeginTransaction())
+            var t = await _context.Database.BeginTransactionAsync();
+            
+            try
             {
-                try
-                {
-                    // Attach request Entity to DbSet
-                    _context.ActionRequests.Add(request);
+                // Attach request Entity to DbSet
+                _context.ActionRequests.Add(request);
 
-                    if (request.RequestId == Guid.Empty)
-                        throw new Exception("Unable to generate Handshake Request ID.");
+                if (request.RequestId == Guid.Empty)
+                    throw new Exception("Unable to generate Handshake Request ID.");
 
-                    handshake.RequestId = request.RequestId;
+                handshake.RequestId = request.RequestId;
 
-                    // SaveChanges()
-                    _context.SaveChanges();
+                // SaveChanges()
+                _context.SaveChanges();
 
-                    // Commit()
-                    t.Commit();
-                }
-                catch (Exception ex)
-                {
-                    t.Rollback();
-
-                    return new ResponseModel() { Success = false, Errors = { ex.Message } };
-                }
-                finally
-                {
-                    t.Dispose();
-                }
+                // Commit()
+                await t.CommitAsync();
             }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+
+                return new ResponseModel() { Success = false, Errors = { ex.Message } };
+            }
+            
 
             // send the handshake required data to the user
             return handshake;
@@ -221,8 +218,26 @@ namespace BizKidzScholarships.API.Services
                 var request = _context.ActionRequests.FirstOrDefault(r => r.RequestId == confirmation.RequestId);
 
                 // check that request exists
-                if (request is null)
+                if (request is null) {                     
                     return new ResponseModel() { Success = false, Errors = { $"Invalid Request Id: {confirmation.RequestId}" } };
+                }
+
+                if (request.Status == RequestStatus.Closed)
+                {
+                    return new ResponseModel() { Success = false, Errors = { $"Request is closed: {confirmation.RequestId}" } };
+                }
+
+                if (request.Status == RequestStatus.Success)
+                {
+                    return new ResponseModel() { Success = false, Errors = { $"Request is already confirmed, awaiting further action: {confirmation.RequestId}" } };
+                }
+
+                if (request.Expiration > DateTimeOffset.UtcNow)
+                {
+                    SetRequestStatus(request, RequestStatus.Denied);
+                    return new ResponseModel() { Success = false, Errors = { $"Expired Request: {confirmation.RequestId}" } };
+                }
+
 
                 bool fileUploaded = false;
                 var payload = JsonConvert.DeserializeObject<UploadActionPayload>(request.Payload);
@@ -250,7 +265,7 @@ namespace BizKidzScholarships.API.Services
                     case ActionType.ProfileImageUpload:
                         if (payload is null)
                         {
-                            SetRequestStatus(request, RequestStatus.Cancelled);
+                            await SetRequestStatus(request, RequestStatus.Cancelled);
                             throw new Exception($"Payload must be specified for Profile Image Uploads. Cancelling request {request.RequestId}");
                         }
 
@@ -261,7 +276,7 @@ namespace BizKidzScholarships.API.Services
                     case ActionType.TaskUpload:
                         if (payload is null)
                         {
-                            SetRequestStatus(request, RequestStatus.Cancelled);
+                            await SetRequestStatus(request, RequestStatus.Cancelled);
                             throw new Exception($"Payload must be specified for Profile Image Uploads. Cancelling request {request.RequestId}");
                         }
 
@@ -297,8 +312,8 @@ namespace BizKidzScholarships.API.Services
 
             var submission = new TaskSubmission() { AttemptNumber = attemptNumber, SubmissionData = payload, TaskId = taskid, UserId = userid };
 
-            using (var t = _context.Database.BeginTransaction())
-            {
+            var t = await _context.Database.BeginTransactionAsync();
+
                 try
                 {
                     var userTask = _context.UserTasks.FirstOrDefault(ut => ut.TaskId == taskid && ut.UserId == userid);
@@ -320,34 +335,31 @@ namespace BizKidzScholarships.API.Services
                 {
                     await t.RollbackAsync();
 
-                    await t.DisposeAsync();
-
                     throw new Exception($"Could not submit submission for task {taskid} for user {userid}. " + e.Message);
                 }
-            }
+            
 
             return new ResponseModel { Success = true };
         }
 
-        private async void SetRequestStatus(ActionRequest request, RequestStatus status)
+        private async Task SetRequestStatus(ActionRequest request, RequestStatus status)
         {
-            using (var t = _context.Database.BeginTransaction())
+            var t = await _context.Database.BeginTransactionAsync();
+            try
             {
-                try
-                {
-                    _context.ActionRequests.Update(request);
+                _context.ActionRequests.Update(request);
 
-                    await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
-                    await t.CommitAsync();
-                }
-                catch (Exception ex)
-                {
-                    await t.RollbackAsync();
-
-                    throw new Exception(ex.Message);
-                }
+                await t.CommitAsync();
             }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+
+                throw new Exception(ex.Message);
+            }
+            
         }
     }
 }

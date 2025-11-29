@@ -1,7 +1,8 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import type { IUserProfile } from "../models/ViewModels";
+import { ActionType, type IUserProfile } from "../models/ViewModels";
 import { UseUserAccountContext } from "../contexts/UserAccountContext";
+import FileUpload from "./tasks/FileUpload";
 
 function EditProfile() {
     const [errorState, setErrorState] = useState("")
@@ -10,6 +11,7 @@ function EditProfile() {
     const userAccountContext = UseUserAccountContext();
     const [userProfile, setUserProfile] = [userAccountContext.userProfile, userAccountContext.setUserProfile]
     const [editMode, setEditMode] = [userAccountContext.editMode, userAccountContext.setEditMode]
+    const [profilePictureURL, setProfilePictureUrl] = useState<string>("");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // validate inputs
@@ -34,6 +36,10 @@ function EditProfile() {
             return
         }
 
+        if (profilePictureURL != "") {
+            userProfile.BusinessLogoKey = profilePictureURL;
+        }
+
         //await setTimeout(() => { userAccountContext.setUserHasNoProfile(false); }, 5000);
         userAccountContext.setUserProfile(userProfile);
         userAccountContext.setUserHasNoProfile(false);
@@ -45,12 +51,16 @@ function EditProfile() {
 
         setUserProfile(prev => ({...prev, [name]: value }));
     }
+
+    useEffect(() => {
+
+    },[])
     // onChange={handleChange}
     return (
         <div className="border-2 border-danger">
             <form onSubmit={handleSubmit}>
-                <label>TEMP: Business Logo URL:
-                    <input name="BusinessLogoKey" value={userProfile.BusinessLogoKey} onChange={handleChange} />
+                <label>Business Logo:
+                    <FileUpload action={ActionType.ProfileImageUpload} setFileUrl={setProfilePictureUrl}/>
                 </label>
 
                 <label>First Name:

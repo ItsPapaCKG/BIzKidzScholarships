@@ -23,8 +23,8 @@ namespace BizKidzScholarships.API.Services.Base
 
         protected async Task<bool> SafeUpdateAsync <T> (T entity) where T : class
         {
-            using (var t = _context.Database.BeginTransaction())
-            {
+            var t = await _context.Database.BeginTransactionAsync();
+            
                 try
                 {
                     _context.Set<T>().Update(entity);
@@ -41,7 +41,7 @@ namespace BizKidzScholarships.API.Services.Base
                     // TODO post error
                     return false;
                 }
-            }
+            
         }
 
         

@@ -1,4 +1,4 @@
-import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON } from "../models/ViewModels";
+import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse } from "../models/ViewModels";
 import { APICall } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
@@ -38,10 +38,10 @@ export async function TaskUpload(taskid: Number, file: File): Promise<boolean> {
         TaskId: taskid
     } as StartUploadRequest
 
-    return await UploadToServer(request, file);
+    return (await UploadToServer(request, file)).Success;
 }
 
-async function ProfileUpload(file: File) {
+export async function ProfileUpload(file: File) {
     let request = {
         ActionType: ActionType.TaskUpload,
         Extension: file.name.split(".").pop()!.toLowerCase()
@@ -61,15 +61,18 @@ async function GetPresignedS3Url(request: StartUploadRequest)  {
     return null;
 }
 
-async function UploadToServer(request: StartUploadRequest, file: File): Promise<boolean> {
+async function UploadToServer(request: StartUploadRequest, file: File): Promise<ServerUploadResponse> {
     let presignedDataResponse: StartUploadHandshakeResponseJSON | null = await GetPresignedS3Url(request);
+    let result = { Success: false } as ServerUploadResponse
 
     if (presignedDataResponse == null || presignedDataResponse.presignedUrlPayload == null) {
         console.error("An internal error has occurred: No Presigned URL could be read from the server.");
-        return false;
+        return result;
     }
 
     let presignedData = presignedDataResponse.presignedUrlPayload;
+
+    result.Url = presignedData.url + presignedData.key;
 
     var formdata = new FormData();
     Object.entries(presignedData.fields).forEach(([k, v]) => {
@@ -84,8 +87,11 @@ async function UploadToServer(request: StartUploadRequest, file: File): Promise<
     })
 
     if (upload.ok) {
-        // alert("Upload successful! See: " + presignedData.url + presignedData.key)
-        return await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Success);
+        // alert("Upload successful! See: " + presignedData.url + presignedData.key) 
+        var success = await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Success);
+
+        result.Success = success;
+        return result;
     }
 
     let responseText = await upload.text().catch(() => "(no body)");
@@ -93,7 +99,10 @@ async function UploadToServer(request: StartUploadRequest, file: File): Promise<
     console.log(responseText);
     alert("Upload failed.");
 
-    return await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Failed);
+    var success = await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Failed);
+
+    result.Success = success;
+    return result;
 }
 
 async function CompleteUploadHandshake(requestId: string, requestStatus: RequestStatus) {

@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import "../models/ViewModels"
 import { UseUserAccountContext } from "../contexts/UserAccountContext";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import EditProfile from "./EditProfile";
 
 function UserProfile() {
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const userAccountContext = UseUserAccountContext();
     const userHasNotRegisteredProfile = userAccountContext.userHasNoProfile;
@@ -53,7 +53,7 @@ function UserProfile() {
                             <strong>Phone</strong>: {userProfile.PhoneNumber}
                         </p>
 
-                        <button onClick={e => setEditMode(true)}>Edit Profile</button>
+                        <button onClick={() => setEditMode(true)}>Edit Profile</button>
                     </div>
                 }
             </>
