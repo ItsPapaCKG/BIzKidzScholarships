@@ -1,8 +1,13 @@
 import { useRef, useState } from "react";
-import { TaskUploadChange } from "../../services/UserDataService"
-import { UseViewedTaskContext } from "../../contexts/TaskViewContext";
+import { TaskUpload } from "../../services/UserDataService"
+import { UseTaskContext } from "../../contexts/TaskViewContext";
+import { ActionType } from "../../models/ViewModels";
 
-function ImageUpload() {
+interface ImageUploadProps {
+    action: ActionType
+}
+
+function ImageUpload({ action }: ImageUploadProps) {
     let fileUploadRef = useRef<HTMLInputElement>(null);
 
     const [currentFile, setCurrentFile] = useState<File | undefined>(undefined);
@@ -11,22 +16,38 @@ function ImageUpload() {
         fileUploadRef.current!.click();
     }
 
-    const UploadForTask = async () => {
-        if (task?.TaskId == null) {
+    const UploadFile = async () => {
+        if (currentFile == undefined) {
+            alert("Invalid upload.") 
+            return false;
+        }
+        
+        if (task?.TaskId == null && action == ActionType.TaskUpload) {
             return;
         }
 
-        let successful = await TaskUploadChange(task.TaskId, currentFile);
+        setError("");
+        let successful = false;
+
+        switch (action) {
+            case ActionType.ProfileImageUpload:
+                break;
+            case ActionType.TaskUpload:
+                successful = await TaskUpload(task!.TaskId, currentFile);
+        }
+        
 
         if (successful) {
             setTask(null);
+            setTaskRefresh(true);
         }
 
         setError("Error Uploading File. Please try again.");
     }
 
-    const viewedTask = UseViewedTaskContext();
+    const viewedTask = UseTaskContext();
     const [task, setTask] = [viewedTask.viewedTask, viewedTask.setViewedTask];
+    const [setTaskRefresh] = [viewedTask.setTaskRefresh];
     const [error, setError] = useState<string>("");
 
     return (
@@ -38,7 +59,7 @@ function ImageUpload() {
             {currentFile && ( 
                 <>
                     <p>{ currentFile.name }</p> 
-                    <button type="submit" className="submit-btn" onClick={ UploadForTask }>Submit</button>
+                    <button type="submit" className="submit-btn" onClick={ UploadFile }>Submit</button>
                 </>
             )}
             

@@ -1,5 +1,4 @@
 ﻿using Amazon;
-using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
 using AutoMapper;
@@ -10,12 +9,10 @@ using BizKidzScholarships.Data.Entities;
 using BizKidzScholarships.Data.Enums;
 using BizKidzScholarships.Data.Models;
 using BizKidzScholarships.Data.NetworkedModels;
-using Microsoft.AspNetCore.Connections.Features;
-using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Net.Http.Headers;
+
+using Newtonsoft.Json;
 
 namespace BizKidzScholarships.API.Services
 {
@@ -127,15 +124,14 @@ namespace BizKidzScholarships.API.Services
             return tasks;
         }
 
-        public async Task<ResponseModel> UpdateUserProfilePicture(Guid userId, string imageKey)
+        public async Task<ResponseModel> ValidateUserProfilePicture(ActionRequest request, string imageLink)
         {
-            var profile = GetUserProfile(userId);
+            var payloadObject = new { S3Link = imageLink };
+            var payload = JsonConvert.SerializeObject(payloadObject);
 
-            profile.BusinessLogoKey = imageKey;
+            request.Payload = payload;
 
-            var ent = _mapper.Map<UserProfile>(profile);
-
-            bool success = await SafeUpdateAsync(ent);
+            bool success = await SafeUpdateAsync(request);
 
             return new ResponseModel { Success = success };
         }
@@ -167,6 +163,12 @@ namespace BizKidzScholarships.API.Services
             }
 
             // Create the request in the DB to track actions needed after upload is confirmed
+            var payload = new
+            {
+                S3Link = $"{handshake.PresignedUrlPayload.Url}{handshake.PresignedUrlPayload.Key}",
+                TaskId = req.TaskId
+            };
+
             var request = new ActionRequest()
             {
                 UserId = _user.Id,
@@ -174,6 +176,7 @@ namespace BizKidzScholarships.API.Services
                 Status = RequestStatus.Pending,
                 Created = DateTimeOffset.UtcNow,
                 Updated = DateTimeOffset.UtcNow,
+                Payload = JsonConvert.SerializeObject(payload),
                 Expiration = DateTimeOffset.UtcNow.AddMinutes(10)
             };
 
@@ -222,7 +225,7 @@ namespace BizKidzScholarships.API.Services
                     return new ResponseModel() { Success = false, Errors = { $"Invalid Request Id: {confirmation.RequestId}" } };
 
                 bool fileUploaded = false;
-                var payload = request.Payload as dynamic;
+                var payload = JsonConvert.DeserializeObject<UploadActionPayload>(request.Payload);
 
                 // try and access the s3 file
                 if (payload is not null)
@@ -252,7 +255,7 @@ namespace BizKidzScholarships.API.Services
                         }
 
                         // update the profile picture
-                        var res = UpdateUserProfilePicture(request.UserId, payload.S3Link);
+                        var res = await ValidateUserProfilePicture(request, payload.S3Link);
 
                         return res;
                     case ActionType.TaskUpload:
@@ -263,7 +266,7 @@ namespace BizKidzScholarships.API.Services
                         }
 
                         // create task submission
-                        dynamic submissionPayload = new { S3Link = payload.S3Link };
+                        string submissionPayload = JsonConvert.SerializeObject(new { S3Link = payload.S3Link });
                         int taskid = (int)payload.TaskId;
                         Guid userid = request.UserId;
 

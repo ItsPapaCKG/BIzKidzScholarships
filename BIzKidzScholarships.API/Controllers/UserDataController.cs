@@ -92,7 +92,7 @@ namespace BizKidzScholarships.API.Controllers
             return Ok(url);
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> UploadHandshake(UploadHandshakeConfirmationModel confirmation)
         {
             var response = await _udService.UploadConfirmation(confirmation);

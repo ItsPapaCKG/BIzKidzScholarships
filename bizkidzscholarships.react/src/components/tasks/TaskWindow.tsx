@@ -1,4 +1,4 @@
-import { UseViewedTaskContext } from "../../contexts/TaskViewContext";
+import { UseTaskContext } from "../../contexts/TaskViewContext";
 import { TaskType } from "../../models/ViewModels";
 import ImageUpload from "./ImageUpload";
 import Quiz from "./Quiz";
@@ -7,7 +7,7 @@ import VideoUpload from "./VideoUpload";
 
 function TaskWindow() {
 
-    const viewedTask = UseViewedTaskContext();
+    const viewedTask = UseTaskContext();
     const [task, setTask] = [viewedTask.viewedTask, viewedTask.setViewedTask];
 
     return (

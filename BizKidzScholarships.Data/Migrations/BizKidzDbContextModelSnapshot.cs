@@ -22,6 +22,40 @@ namespace BizKidzScholarships.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.ActionRequest", b =>
+                {
+                    b.Property<Guid>("RequestId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ActionType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("Expiration")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("RequestId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ActionRequests");
+                });
+
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskItem", b =>
                 {
                     b.Property<int>("Id")
@@ -79,7 +113,7 @@ namespace BizKidzScholarships.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5781), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4929), new TimeSpan(0, 0, 0, 0, 0)),
                             Reward = 1000,
                             TaskDescription = "Task Description Goes Here!",
                             TaskEnabled = true,
@@ -88,7 +122,7 @@ namespace BizKidzScholarships.Data.Migrations
                             TaskPromptTitle = "Task Prompt",
                             TaskTitle = "First Added Task",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5790), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4936), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
@@ -106,7 +140,7 @@ namespace BizKidzScholarships.Data.Migrations
                     b.Property<string>("SubmissionData")
                         .IsRequired()
                         .HasMaxLength(512)
-                        .HasColumnType("character varying(512)");
+                        .HasColumnType("jsonb");
 
                     b.HasKey("AttemptNumber", "UserId", "TaskId");
 
@@ -114,7 +148,7 @@ namespace BizKidzScholarships.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TaskSubmission");
+                    b.ToTable("Submissions");
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.UserPointsReward", b =>
@@ -399,6 +433,17 @@ namespace BizKidzScholarships.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.ActionRequest", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<System.Guid>", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskSubmission", b =>

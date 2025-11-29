@@ -99,6 +99,8 @@ namespace BizKidzScholarships.Data.Contexts
                 .WithMany(t => t.TaskSubmissions)
                 .HasForeignKey(ts => ts.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+                s.Property(s => s.SubmissionData).HasColumnType("jsonb");
             });
 
             modelBuilder.Entity<ActionRequest>(ar =>

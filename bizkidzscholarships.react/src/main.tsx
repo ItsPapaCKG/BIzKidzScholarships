@@ -5,7 +5,7 @@ import App from './App.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import LoginComponent from './components/Login.tsx'
 import UserAccountProvider from './contexts/UserAccountContext.tsx'
-import ViewedTaskProvider from './contexts/TaskViewContext.tsx'
+import TaskProvider from './contexts/TaskViewContext.tsx'
 
 export const router = createBrowserRouter([
     { path: "/", element: <App/> },
@@ -15,9 +15,9 @@ export const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <UserAccountProvider>
-            <ViewedTaskProvider>
+            <TaskProvider>
                 <RouterProvider router={router} />
-            </ViewedTaskProvider>
+            </TaskProvider>
         </UserAccountProvider>
   </StrictMode>
 )

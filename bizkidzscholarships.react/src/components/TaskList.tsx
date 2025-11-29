@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
-import type { ITask } from "../models/ViewModels";
 import Task from "./Task";
 import { GetUserTasks } from "../services/UserDataService";
-import ImageUpload from "./tasks/TaskWindow";
-import { UseViewedTaskContext } from "../contexts/TaskViewContext";
+import { UseTaskContext } from "../contexts/TaskViewContext";
 import TaskWindow from "./tasks/TaskWindow";
 
 function TasksList() {
-    const [tasks, setTasks] = useState<ITask[]>([])
+    const taskContext = UseTaskContext();
+    const [viewedTask, setViewedTask] = [taskContext.viewedTask, taskContext.setViewedTask ]
+    const [tasks, setTasks] = [taskContext.tasks, taskContext.setTasks]
+    const [taskRefresh, setTaskRefresh] = [taskContext.taskRefresh, taskContext.setTaskRefresh]
 
-    const taskWindowContext = UseViewedTaskContext();
-    const [viewedTask, setViewedTask] = [taskWindowContext.viewedTask, taskWindowContext.setViewedTask ]
+    const getTasks = async () => {
+        var userTasks = await GetUserTasks();
+
+        setTasks(userTasks);
+    }
 
     useEffect(() => {
-        const getTasks = async () => {
-            var userTasks = await GetUserTasks();
-
-            setTasks(userTasks);
-        }
-
         getTasks();
     }, []);
+
+    useEffect(() => {
+        if (taskRefresh == true) {
+            getTasks();
+            setTaskRefresh(false);
+        }
+    }, [taskRefresh])
 
   return (
       <div>

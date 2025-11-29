@@ -96,6 +96,30 @@ namespace BizKidzScholarships.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ActionRequests",
+                columns: table => new
+                {
+                    RequestId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ActionType = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    Expiration = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Payload = table.Column<string>(type: "text", nullable: true),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActionRequests", x => x.RequestId);
+                    table.ForeignKey(
+                        name: "FK_ActionRequests_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -206,25 +230,25 @@ namespace BizKidzScholarships.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TaskSubmission",
+                name: "Submissions",
                 columns: table => new
                 {
                     AttemptNumber = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     TaskId = table.Column<int>(type: "integer", nullable: false),
-                    SubmissionData = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false)
+                    SubmissionData = table.Column<string>(type: "jsonb", maxLength: 512, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TaskSubmission", x => new { x.AttemptNumber, x.UserId, x.TaskId });
+                    table.PrimaryKey("PK_Submissions", x => new { x.AttemptNumber, x.UserId, x.TaskId });
                     table.ForeignKey(
-                        name: "FK_TaskSubmission_AspNetUsers_UserId",
+                        name: "FK_Submissions_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TaskSubmission_Tasks_TaskId",
+                        name: "FK_Submissions_Tasks_TaskId",
                         column: x => x.TaskId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
@@ -287,7 +311,12 @@ namespace BizKidzScholarships.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Tasks",
                 columns: new[] { "Id", "Created", "Reward", "TaskDescription", "TaskEnabled", "TaskImageKey", "TaskNameInternal", "TaskPromptSubtitle", "TaskPromptTitle", "TaskTitle", "TaskType", "Updated" },
-                values: new object[] { 1, new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5781), new TimeSpan(0, 0, 0, 0, 0)), 1000, "Task Description Goes Here!", true, null, "First Task", "", "Task Prompt", "First Added Task", 1, new DateTimeOffset(new DateTime(2025, 11, 26, 2, 2, 28, 642, DateTimeKind.Unspecified).AddTicks(5790), new TimeSpan(0, 0, 0, 0, 0)) });
+                values: new object[] { 1, new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4929), new TimeSpan(0, 0, 0, 0, 0)), 1000, "Task Description Goes Here!", true, null, "First Task", "", "Task Prompt", "First Added Task", 1, new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4936), new TimeSpan(0, 0, 0, 0, 0)) });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActionRequests_UserId",
+                table: "ActionRequests",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -327,19 +356,19 @@ namespace BizKidzScholarships.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_TaskNameInternal",
-                table: "Tasks",
-                column: "TaskNameInternal");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TaskSubmission_TaskId",
-                table: "TaskSubmission",
+                name: "IX_Submissions_TaskId",
+                table: "Submissions",
                 column: "TaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskSubmission_UserId",
-                table: "TaskSubmission",
+                name: "IX_Submissions_UserId",
+                table: "Submissions",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_TaskNameInternal",
+                table: "Tasks",
+                column: "TaskNameInternal");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserPoints_TaskId",
@@ -361,6 +390,9 @@ namespace BizKidzScholarships.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ActionRequests");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -379,7 +411,7 @@ namespace BizKidzScholarships.Data.Migrations
                 name: "Profiles");
 
             migrationBuilder.DropTable(
-                name: "TaskSubmission");
+                name: "Submissions");
 
             migrationBuilder.DropTable(
                 name: "UserPoints");

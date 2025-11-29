@@ -67,9 +67,9 @@ export interface PresignedURLData {
     fields: { [key: string]: string }
 }
 
-export interface StartUploadHandshakeResponse {
-    RequestId: string,
-    PresignedData: PresignedURLData
+export interface StartUploadHandshakeResponseJSON {
+    requestId: string,
+    presignedUrlPayload: PresignedURLData
 }
 
 export interface ServerResponse {
@@ -93,7 +93,7 @@ export interface StartUploadRequest {
 
 export interface UploadHandshakeConfirmation {
     RequestId: string,
-    RequestStatus: RequestStatus
+    Status: RequestStatus
 }
 
 export default '.'

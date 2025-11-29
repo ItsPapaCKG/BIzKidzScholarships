@@ -1,5 +1,5 @@
-import { type PresignedURLData, type ITask, type ITaskJSON, type StartUploadRequest, type StartUploadHandshakeResponse, ActionType, type UploadHandshakeConfirmation, RequestStatus } from "../models/ViewModels";
-import { APICall, type APIResponse } from "./APIService";
+import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON } from "../models/ViewModels";
+import { APICall } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
     return false;
@@ -31,27 +31,45 @@ export async function GetUserTasks(): Promise<ITask[]> {
     return tasks;
 }
 
-export async function TaskUploadChange(taskid: Number, file: File | undefined): Promise<boolean> {
-    if (file == undefined) {
-        alert("Invalid upload.") 
-        return false;
-    }
-//file.name.split(".").pop()!.toLowerCase()
-
+export async function TaskUpload(taskid: Number, file: File): Promise<boolean> {
     let request = {
         ActionType: ActionType.TaskUpload,
         Extension: file.name.split(".").pop()!.toLowerCase(),
         TaskId: taskid
     } as StartUploadRequest
 
-    let presignedDataResponse: StartUploadHandshakeResponse | null = await GetPresignedS3Url(request);
+    return await UploadToServer(request, file);
+}
 
-    if (presignedDataResponse == null || presignedDataResponse.PresignedData == null) {
+async function ProfileUpload(file: File) {
+    let request = {
+        ActionType: ActionType.TaskUpload,
+        Extension: file.name.split(".").pop()!.toLowerCase()
+    } as StartUploadRequest
+
+    return await UploadToServer(request, file);
+}
+
+async function GetPresignedS3Url(request: StartUploadRequest)  {
+
+    var res = await APICall<StartUploadHandshakeResponseJSON>("user/NewUploadRequest", "POST", request);
+
+    if (res.success) {
+        return res.data;
+    }
+
+    return null;
+}
+
+async function UploadToServer(request: StartUploadRequest, file: File): Promise<boolean> {
+    let presignedDataResponse: StartUploadHandshakeResponseJSON | null = await GetPresignedS3Url(request);
+
+    if (presignedDataResponse == null || presignedDataResponse.presignedUrlPayload == null) {
         console.error("An internal error has occurred: No Presigned URL could be read from the server.");
         return false;
     }
 
-    let presignedData = presignedDataResponse.PresignedData;
+    let presignedData = presignedDataResponse.presignedUrlPayload;
 
     var formdata = new FormData();
     Object.entries(presignedData.fields).forEach(([k, v]) => {
@@ -67,7 +85,7 @@ export async function TaskUploadChange(taskid: Number, file: File | undefined): 
 
     if (upload.ok) {
         // alert("Upload successful! See: " + presignedData.url + presignedData.key)
-        return await CompleteUploadHandshake(presignedDataResponse.RequestId, RequestStatus.Success);
+        return await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Success);
     }
 
     let responseText = await upload.text().catch(() => "(no body)");
@@ -75,31 +93,18 @@ export async function TaskUploadChange(taskid: Number, file: File | undefined): 
     console.log(responseText);
     alert("Upload failed.");
 
-    return await CompleteUploadHandshake(presignedDataResponse.RequestId, RequestStatus.Failed);
-}
-
-async function GetPresignedS3Url(request: StartUploadRequest)  {
-
-    var res = await APICall<StartUploadHandshakeResponse>("user/NewUploadRequest", "POST", request);
-
-    if (res.success) {
-        return res.data;
-    }
-
-    return null;
+    return await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Failed);
 }
 
 async function CompleteUploadHandshake(requestId: string, requestStatus: RequestStatus) {
     var confirmation = {
         RequestId: requestId,
-        RequestStatus: requestStatus
+        Status: requestStatus
     } as UploadHandshakeConfirmation;
 
-    var response = await APICall("user/UploadConfirmation", "POST", confirmation);
+    var response = await APICall("user/UploadHandshake", "POST", confirmation);
 
     return response.success;
 }
 
-//async function UploadS3FileToURL(PostData: PresignedURLData, file: File) {
-    
-//}
+//async function 
