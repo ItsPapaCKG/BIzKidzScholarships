@@ -67,6 +67,9 @@ namespace BizKidzScholarships.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsGlobalTask")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Reward")
                         .HasColumnType("integer");
 
@@ -113,28 +116,57 @@ namespace BizKidzScholarships.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4929), new TimeSpan(0, 0, 0, 0, 0)),
-                            Reward = 1000,
-                            TaskDescription = "Task Description Goes Here!",
+                            Created = new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2940), new TimeSpan(0, 0, 0, 0, 0)),
+                            IsGlobalTask = true,
+                            Reward = 50,
+                            TaskDescription = "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.",
                             TaskEnabled = true,
-                            TaskNameInternal = "First Task",
-                            TaskPromptSubtitle = "",
-                            TaskPromptTitle = "Task Prompt",
-                            TaskTitle = "First Added Task",
+                            TaskNameInternal = "Business Photo Upload Task",
+                            TaskPromptSubtitle = "Download and print the Biz Kidz USA Logo, and pose with it at your vendor table at a Biz Kidz Market event. Submit your photo and earn points!",
+                            TaskPromptTitle = "Upload a Photo of you and your team operating your Business at a Biz Kidz Market",
+                            TaskTitle = "Sell your products at a Biz Kidz Market",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4936), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2948), new TimeSpan(0, 0, 0, 0, 0))
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Created = new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2951), new TimeSpan(0, 0, 0, 0, 0)),
+                            IsGlobalTask = true,
+                            Reward = 50,
+                            TaskDescription = "Give your business's elevator pitch in 90 seconds or less.",
+                            TaskEnabled = true,
+                            TaskNameInternal = "Pitch Video Task",
+                            TaskPromptSubtitle = "Showcase your business' brilliance by uploading a 90-second video of you pitching your products.",
+                            TaskPromptTitle = "Upload Pitch Video",
+                            TaskTitle = "Submit a 90-second Pitch Video",
+                            TaskType = 1,
+                            Updated = new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2951), new TimeSpan(0, 0, 0, 0, 0))
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Created = new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2954), new TimeSpan(0, 0, 0, 0, 0)),
+                            IsGlobalTask = true,
+                            Reward = 50,
+                            TaskDescription = "Take the quiz and show what you've learned from the Launch Kit.",
+                            TaskEnabled = true,
+                            TaskNameInternal = "Pitch Video Task",
+                            TaskPromptSubtitle = "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!",
+                            TaskPromptTitle = "Pass the Quiz for the Biz Kidz Launch Kit",
+                            TaskTitle = "Complete the Biz Kidz Launch Kit",
+                            TaskType = 1,
+                            Updated = new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2954), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskSubmission", b =>
                 {
-                    b.Property<int>("AttemptNumber")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("SubmissionId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("TaskId")
+                    b.Property<int>("AttemptNumber")
                         .HasColumnType("integer");
 
                     b.Property<string>("SubmissionData")
@@ -142,7 +174,13 @@ namespace BizKidzScholarships.Data.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("jsonb");
 
-                    b.HasKey("AttemptNumber", "UserId", "TaskId");
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("SubmissionId");
 
                     b.HasIndex("TaskId");
 
@@ -165,10 +203,16 @@ namespace BizKidzScholarships.Data.Migrations
                     b.Property<int>("AwardId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsNew")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Points")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("Updated")
+                    b.Property<DateTimeOffset>("Updated")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("UserId", "TaskId", "AttemptNumber");

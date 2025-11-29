@@ -16,8 +16,8 @@ namespace BizKidzScholarships.Data.Entities
 
         public TaskStatus Status { get; set; } = TaskStatus.Disabled;
 
-        public required IdentityUser<Guid> User { get; set; }
+        public IdentityUser<Guid> User { get; set; }
 
-        public required TaskItem Task { get; set; }
+        public TaskItem Task { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BizKidzScholarships.Data.dto;
+﻿using BizKidzScholarships.API.Services;
+using BizKidzScholarships.Data.dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +15,15 @@ namespace BizKidzScholarships.API.Controllers
         private RoleManager<IdentityRole<Guid>> _roleManager;
         private SignInManager<IdentityUser<Guid>> _signInManager;
         private IHttpContextAccessor _httpContextAccessor;
+        private IUserDataService _udService;
 
-        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM, IHttpContextAccessor acc)
+        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM, IHttpContextAccessor acc, IUserDataService svc)
         {
             _userManager = uM;
             _roleManager = rM;
             _signInManager = siM;
             _httpContextAccessor = acc;
+            _udService = svc;
         }
 
         [HttpPost("[action]")]
@@ -40,6 +43,8 @@ namespace BizKidzScholarships.API.Controllers
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
+
+            await _udService.SetGlobalTasksForUser(newUser.Id);
 
             return Ok(new { Message = "User registered successfully", Redirect = "http://example.com/" });
         }

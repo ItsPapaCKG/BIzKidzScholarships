@@ -57,21 +57,52 @@ namespace BizKidzScholarships.Data.Contexts
                 b.HasIndex(c => c.TaskNameInternal);
             });
 
-            modelBuilder.Entity<TaskItem>().HasData(
+            modelBuilder.Entity<TaskItem>().HasData([
                 new TaskItem
                 {
                     Id = 1,
-                    TaskTitle = "First Added Task",
-                    TaskPromptTitle = "Task Prompt",
-                    TaskPromptSubtitle = "",
-                    TaskDescription = "Task Description Goes Here!",
+                    TaskTitle = "Sell your products at a Biz Kidz Market",
+                    TaskPromptTitle = "Upload a Photo of you and your team operating your Business at a Biz Kidz Market",
+                    TaskPromptSubtitle = "Download and print the Biz Kidz USA Logo, and pose with it at your vendor table at a Biz Kidz Market event. Submit your photo and earn points!",
+                    TaskDescription = "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.",
                     TaskEnabled = true,
-                    TaskNameInternal = "First Task",
-                    Reward = 1000,
+                    TaskNameInternal = "Business Photo Upload Task",
+                    Reward = 50,
+                    IsGlobalTask = true,
                     Created = DateTime.UtcNow,
                     Updated = DateTime.UtcNow,
-                    TaskType = Enums.TaskType.ImageUpload
-                });
+                    TaskType = Enums.TaskType.FileUpload
+                },
+                new TaskItem
+                {
+                    Id = 2,
+                    TaskTitle = "Submit a 90-second Pitch Video",
+                    TaskPromptTitle = "Upload Pitch Video",
+                    TaskPromptSubtitle = "Showcase your business' brilliance by uploading a 90-second video of you pitching your products.",
+                    TaskDescription = "Give your business's elevator pitch in 90 seconds or less.",
+                    TaskEnabled = true,
+                    TaskNameInternal = "Pitch Video Task",
+                    Reward = 50,
+                    IsGlobalTask = true,
+                    Created = DateTime.UtcNow,
+                    Updated = DateTime.UtcNow,
+                    TaskType = Enums.TaskType.FileUpload
+                },
+                new TaskItem
+                {
+                    Id = 3,
+                    TaskTitle = "Complete the Biz Kidz Launch Kit",
+                    TaskPromptTitle = "Pass the Quiz for the Biz Kidz Launch Kit",
+                    TaskPromptSubtitle = "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!",
+                    TaskDescription = "Take the quiz and show what you've learned from the Launch Kit.",
+                    TaskEnabled = true,
+                    TaskNameInternal = "Pitch Video Task",
+                    Reward = 50,
+                    Created = DateTime.UtcNow,
+                    Updated = DateTime.UtcNow,
+                    TaskType = Enums.TaskType.FileUpload
+                },
+            ]);
 
             modelBuilder.Entity<UserTask>(t =>
             {
@@ -89,7 +120,7 @@ namespace BizKidzScholarships.Data.Contexts
 
             modelBuilder.Entity<TaskSubmission>(s =>
             {
-                s.HasKey(ts => new { ts.AttemptNumber, ts.UserId, ts.TaskId });
+                s.HasKey(ts => ts.SubmissionId);
 
                 s.HasOne(ts => ts.User)
                 .WithMany()

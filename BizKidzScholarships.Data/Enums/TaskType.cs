@@ -9,7 +9,7 @@ namespace BizKidzScholarships.Data.Enums
     public enum TaskType
     {
         SocialMedia,
-        ImageUpload,
+        FileUpload,
         VideoUpload,
         Quiz,
         Contest

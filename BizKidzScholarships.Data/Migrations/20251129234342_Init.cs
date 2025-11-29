@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace BizKidzScholarships.Data.Migrations
 {
     /// <inheritdoc />
@@ -66,6 +68,7 @@ namespace BizKidzScholarships.Data.Migrations
                     Reward = table.Column<int>(type: "integer", nullable: false),
                     TaskPromptTitle = table.Column<string>(type: "text", nullable: false),
                     TaskPromptSubtitle = table.Column<string>(type: "text", nullable: false),
+                    IsGlobalTask = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
@@ -233,6 +236,7 @@ namespace BizKidzScholarships.Data.Migrations
                 name: "Submissions",
                 columns: table => new
                 {
+                    SubmissionId = table.Column<Guid>(type: "uuid", nullable: false),
                     AttemptNumber = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     TaskId = table.Column<int>(type: "integer", nullable: false),
@@ -240,7 +244,7 @@ namespace BizKidzScholarships.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Submissions", x => new { x.AttemptNumber, x.UserId, x.TaskId });
+                    table.PrimaryKey("PK_Submissions", x => x.SubmissionId);
                     table.ForeignKey(
                         name: "FK_Submissions_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -264,7 +268,9 @@ namespace BizKidzScholarships.Data.Migrations
                     AttemptNumber = table.Column<int>(type: "integer", nullable: false),
                     AwardId = table.Column<int>(type: "integer", nullable: false),
                     Points = table.Column<int>(type: "integer", nullable: false),
-                    Updated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    IsNew = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -310,8 +316,13 @@ namespace BizKidzScholarships.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Tasks",
-                columns: new[] { "Id", "Created", "Reward", "TaskDescription", "TaskEnabled", "TaskImageKey", "TaskNameInternal", "TaskPromptSubtitle", "TaskPromptTitle", "TaskTitle", "TaskType", "Updated" },
-                values: new object[] { 1, new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4929), new TimeSpan(0, 0, 0, 0, 0)), 1000, "Task Description Goes Here!", true, null, "First Task", "", "Task Prompt", "First Added Task", 1, new DateTimeOffset(new DateTime(2025, 11, 28, 22, 49, 54, 244, DateTimeKind.Unspecified).AddTicks(4936), new TimeSpan(0, 0, 0, 0, 0)) });
+                columns: new[] { "Id", "Created", "IsGlobalTask", "Reward", "TaskDescription", "TaskEnabled", "TaskImageKey", "TaskNameInternal", "TaskPromptSubtitle", "TaskPromptTitle", "TaskTitle", "TaskType", "Updated" },
+                values: new object[,]
+                {
+                    { 1, new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2940), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.", true, null, "Business Photo Upload Task", "Download and print the Biz Kidz USA Logo, and pose with it at your vendor table at a Biz Kidz Market event. Submit your photo and earn points!", "Upload a Photo of you and your team operating your Business at a Biz Kidz Market", "Sell your products at a Biz Kidz Market", 1, new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2948), new TimeSpan(0, 0, 0, 0, 0)) },
+                    { 2, new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2951), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Give your business's elevator pitch in 90 seconds or less.", true, null, "Pitch Video Task", "Showcase your business' brilliance by uploading a 90-second video of you pitching your products.", "Upload Pitch Video", "Submit a 90-second Pitch Video", 1, new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2951), new TimeSpan(0, 0, 0, 0, 0)) },
+                    { 3, new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2954), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Take the quiz and show what you've learned from the Launch Kit.", true, null, "Pitch Video Task", "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!", "Pass the Quiz for the Biz Kidz Launch Kit", "Complete the Biz Kidz Launch Kit", 1, new DateTimeOffset(new DateTime(2025, 11, 29, 23, 43, 41, 728, DateTimeKind.Unspecified).AddTicks(2954), new TimeSpan(0, 0, 0, 0, 0)) }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ActionRequests_UserId",

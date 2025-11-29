@@ -18,8 +18,8 @@ function TaskWindow() {
               <button type="button" className="btn-close popup-close" aria-label="Close" onClick={ () => { setTask(null) } }></button>
               <div className="popup-body">
                   
-                    <h1>{task.TaskTitle}</h1>
-                    <p>{task.TaskDescription}</p>
+                    <h1>{task.TaskPromptTitle}</h1>
+                    <p>{task.TaskPromptSubtitle}</p>
                     {/* <p>{task.taskType}</p> */}
 
                     {task.TaskType == TaskType.SocialMedia && <SocialMedia/> }

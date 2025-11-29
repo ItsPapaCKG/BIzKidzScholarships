@@ -7,15 +7,14 @@ namespace BizKidzScholarships.Data.Entities
 {
     public class TaskSubmission
     {
-        [Key]
+        public Guid SubmissionId { get; set; }
+
         public required int AttemptNumber { get; set; }
 
-        [ForeignKey("User")]
         public required Guid UserId { get; set; }
 
         public IdentityUser<Guid> User { get; set; }
 
-        [ForeignKey("Task")]
         public required int TaskId { get; set; }
 
         public TaskItem Task { get; set; }

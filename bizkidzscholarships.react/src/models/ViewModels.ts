@@ -47,7 +47,9 @@ export interface ITask {
     Status: UserTaskStatus,
     TaskImageKey: string,
     TaskId: number,
-    TaskType: TaskType
+    TaskType: TaskType,
+    TaskPromptTitle: string,
+    TaskPromptSubtitle: string
 }
 
 export interface IUserPoints {

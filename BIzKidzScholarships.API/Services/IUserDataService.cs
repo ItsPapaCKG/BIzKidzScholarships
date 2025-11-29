@@ -22,5 +22,12 @@ namespace BizKidzScholarships.API.Services
 
         Task<ResponseModel> UploadConfirmation(UploadHandshakeConfirmationModel confirmation);
 
+        Task<ResponseModel> AssignTask(int taskid, Guid userid);
+
+        Task<ResponseModel> SetGlobalTasksForUser(Guid userId);
+
+        Task<List<ResponseModel>> SetGlobalTasksForUsers(List<Guid> userIds);
+
+        Task<List<ResponseModel>> SetGlobalTasksAllUsers();
     }
 }

@@ -13,6 +13,7 @@ using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
+using TaskStatus = BizKidzScholarships.Data.Enums.TaskStatus;
 
 namespace BizKidzScholarships.API.Services
 {
@@ -113,7 +114,7 @@ namespace BizKidzScholarships.API.Services
 
             var tasksQueryable = from userTask in _context.UserTasks
                                  join t in _context.Tasks on userTask.TaskId equals t.Id
-                                 where t.TaskEnabled && userTask.UserId == userId
+                                 where t.TaskEnabled && userTask.UserId == userId && userTask.Status != TaskStatus.Disabled && userTask.Status != TaskStatus.Hidden
                                  select new DashboardTaskDTO { TaskTitle = t.TaskTitle, Reward = t.Reward, Status = userTask.Status, TaskId = t.Id, TaskDescription = t.TaskDescription, TaskImageKey = t.TaskImageKey, TaskType = t.TaskType };
 
             var tasks = await tasksQueryable.ToListAsync();
@@ -122,6 +123,126 @@ namespace BizKidzScholarships.API.Services
                 return [];
 
             return tasks;
+        }
+
+        public async Task<List<ResponseModel>> SetGlobalTasksForUsers(List<Guid> userIds)
+        {
+            var globalQueryable = from task in _context.Tasks
+                              where task.TaskEnabled == true && task.IsGlobalTask == true
+                              select new DashboardTaskDTO { TaskTitle = task.TaskTitle, Reward = task.Reward, Status = TaskStatus.Open, TaskId = task.Id, TaskDescription = task.TaskDescription, TaskImageKey = task.TaskImageKey, TaskType = task.TaskType };
+
+            var userTasksQueryable = from userTask in _context.UserTasks
+                                 select userTask.TaskId;
+
+            var userTasks = await userTasksQueryable.ToListAsync();
+
+            var globalTasks = await globalQueryable.ToListAsync();
+
+            var responseList = new List<ResponseModel>();
+
+            foreach (var userId in userIds)
+            {
+                var response = await UpdateUserWithGlobalTasks(userId, userTasks, globalTasks);
+
+                responseList.Add(response);
+            }
+
+            return responseList;
+        }
+
+        public async Task<List<ResponseModel>> SetGlobalTasksAllUsers()
+        {
+            var userQueryable = _context.Users.Select(u => u.Id);
+
+            var userIds = await userQueryable.ToListAsync();
+
+            return await SetGlobalTasksForUsers(userIds);
+        }
+
+        public async Task<ResponseModel> SetGlobalTasksForUser(Guid userId)
+        {
+            var globalQueryable = from task in _context.Tasks
+                                  where task.TaskEnabled == true && task.IsGlobalTask == true
+                                  select new DashboardTaskDTO { TaskTitle = task.TaskTitle, Reward = task.Reward, Status = TaskStatus.Open, TaskId = task.Id, TaskDescription = task.TaskDescription, TaskImageKey = task.TaskImageKey, TaskType = task.TaskType };
+
+            var userTasksQueryable = from userTask in _context.UserTasks
+                                     select userTask.TaskId;
+
+            var userTasks = await userTasksQueryable.ToListAsync();
+
+            var globalTasks = await globalQueryable.ToListAsync();
+
+            var response = await UpdateUserWithGlobalTasks(userId, userTasks, globalTasks);
+
+            return response;
+        }
+
+        private async Task<ResponseModel> UpdateUserWithGlobalTasks(Guid userId, List<int> userTaskIds, List<DashboardTaskDTO> globalTasks)
+        {
+            foreach (var task in globalTasks)
+            {
+                if (userTaskIds.Any(t => t == task.TaskId)) { continue; }
+
+                var status = await QueueAssignTask(task.TaskId, userId);
+
+                if (!status.Success)
+                {
+                    _context.ChangeTracker.Clear();
+
+                    status.Errors.Prepend($"Could not update user {userId} to latest Global Tasks. See errors for details.");
+
+                    return status;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            return new ResponseModel() { Success = true };
+        }
+
+        public async Task<ResponseModel> AssignTask(int taskid, Guid userid)
+        {
+            try
+            {
+                var userTask = new UserTask()
+                {
+                    TaskId = taskid,
+                    UserId = userid,
+                    Status = TaskStatus.Open
+                };
+
+                await _context.UserTasks.AddAsync(userTask);
+
+                await _context.SaveChangesAsync();
+
+            } catch (Exception e)
+            {
+                return new ResponseModel() { Success = false, Errors = { e.Message } };
+            }
+
+            return new ResponseModel() { Success = true };
+        }
+
+        private async Task<ResponseModel> QueueAssignTask(int taskid, Guid userid)
+        {
+            try
+            {
+                var userTask = new UserTask()
+                {
+                    TaskId = taskid,
+                    UserId = userid,
+                    Status = TaskStatus.Open
+                };
+
+                await _context.UserTasks.AddAsync(userTask);
+
+            }
+            catch (Exception e)
+            {
+                return new ResponseModel() { Success = false, Errors = { e.Message } };
+            }
+
+            return new ResponseModel() { Success = true };
         }
 
         public async Task<ResponseModel> ValidateUserProfilePicture(ActionRequest request, string imageLink)
