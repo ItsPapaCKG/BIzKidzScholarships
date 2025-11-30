@@ -63,10 +63,8 @@ namespace BizKidzScholarships.API.Controllers
             if (user is null)
                 return Unauthorized();
 
-            var result = await _signInManager.PasswordSignInAsync(user, login.Password, isPersistent: true, lockoutOnFailure: false);
-
-            if (!result.Succeeded)
-                return Unauthorized();
+            var check = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
+            if (!check.Succeeded) return Unauthorized();
 
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -82,9 +80,10 @@ namespace BizKidzScholarships.API.Controllers
 
         [Authorize]
         [HttpGet("me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
-            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+            //var user = await _userManager.FindByIdAsync(_user.Id.ToString());
+            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).Distinct().ToList();
 
             return Ok(new
             {
@@ -95,7 +94,7 @@ namespace BizKidzScholarships.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("GetAdminRole")]
+        [HttpGet("GetAdminRole")]
         public async Task<IActionResult> AdminRole()
         {
             try
@@ -107,7 +106,7 @@ namespace BizKidzScholarships.API.Controllers
                     return BadRequest("User not found");
                 }
 
-                await _userManager.AddToRoleAsync(user, "Admin");
+                var result = await _userManager.AddToRoleAsync(user, "Admin");
             } catch (Exception e)
             {
                 return BadRequest(e.Message);

@@ -28,22 +28,27 @@ namespace BizKidzScholarships.API.Extensions
 
             services.AddTransient<IMapper, Mapper>();
 
-            services.AddAuthorization();
-            services.AddIdentityApiEndpoints<IdentityUser<Guid>>()
-                .AddEntityFrameworkStores<BizKidzDbContext>();
+            //services.AddIdentityCore<IdentityUser<Guid>>(options =>
+            //{
+            //    options.User.RequireUniqueEmail = true;
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: "frontend",
-                    policy =>
-                    {
-                        policy.WithOrigins("http://localhost:8080",
-                                            "https://localhost:50666")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                    });
-            });
+            //    options.Password.RequiredLength = 9;
+            //    options.Password.RequiredUniqueChars = 2;
+            //    options.Password.RequireUppercase = true;
+            //    options.Password.RequireNonAlphanumeric = true;
+
+            //    //options.Stores.ProtectPersonalData = true;
+            //})
+
+            //    .AddRoles<IdentityRole<Guid>>()
+            //    .AddEntityFrameworkStores<BizKidzDbContext>()
+            //    .AddRoleManager<RoleManager<IdentityRole<Guid>>>()
+            //    .AddSignInManager<SignInManager<IdentityUser<Guid>>>()
+            //    .AddDefaultTokenProviders();
+
+            //services.AddAuthorization();
+            //services.AddIdentityApiEndpoints<IdentityUser<Guid>>()
+            //    .AddEntityFrameworkStores<BizKidzDbContext>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -51,22 +56,6 @@ namespace BizKidzScholarships.API.Extensions
                 options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Name;
                 options.ClaimsIdentity.RoleClaimType = ClaimTypes.Role;
             });
-
-            services.AddIdentityCore<IdentityUser<Guid>>(options =>
-                {
-                    options.User.RequireUniqueEmail = true;
-
-                    options.Password.RequiredLength = 9;
-                    options.Password.RequiredUniqueChars = 2;
-                    options.Password.RequireUppercase = true;
-                    options.Password.RequireNonAlphanumeric = true;
-
-                    //options.Stores.ProtectPersonalData = true;
-                })
-                .AddRoles<IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<BizKidzDbContext>()
-                .AddSignInManager()
-                .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -81,6 +70,60 @@ namespace BizKidzScholarships.API.Extensions
                 options.LoginPath = "/auth/login";
                 options.AccessDeniedPath = "/auth/accessdenied";
             });
+
+            services.AddIdentityCore<IdentityUser<Guid>>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+
+                options.Password.RequiredLength = 9;
+                options.Password.RequiredUniqueChars = 2;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+            })
+    .AddRoles<IdentityRole<Guid>>()                                    // Add role subsystem
+    .AddEntityFrameworkStores<BizKidzDbContext>()                      // Register UserStore + RoleStore + UserRoleStore
+    .AddRoleManager<RoleManager<IdentityRole<Guid>>>()                 // RoleManager requires RoleStore
+    .AddSignInManager<SignInManager<IdentityUser<Guid>>>()             // Cookie login requires SignInManager
+    .AddDefaultTokenProviders();
+
+            // Claims mapping
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
+                options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Name;
+                options.ClaimsIdentity.RoleClaimType = ClaimTypes.Role;
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "frontend",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:8080",
+                                            "https://localhost:50666")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                    });
+            });
+
+            // Cookie authentication (CRITICAL)
+            services.AddAuthentication(IdentityConstants.ApplicationScheme)
+                .AddCookie(IdentityConstants.ApplicationScheme, options =>
+                {
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.Name = "BizKidzCookie";
+                    options.Cookie.SameSite = SameSiteMode.None;
+
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+
+                    options.LoginPath = "/auth/login";
+                    options.AccessDeniedPath = "/auth/accessdenied";
+                });
+
+            services.AddAuthorization();
 
             services.AddTransient<TaskFileUploadService>();
         }
