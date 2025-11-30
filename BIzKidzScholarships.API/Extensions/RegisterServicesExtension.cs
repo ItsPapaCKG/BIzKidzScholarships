@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using BizKidzScholarships.API.Services;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.NetworkedModels;
-using BizKidzScholarships.API.Services;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 
 namespace BizKidzScholarships.API.Extensions
 {
@@ -42,6 +43,13 @@ namespace BizKidzScholarships.API.Extensions
                         .AllowAnyMethod()
                         .AllowCredentials();
                     });
+            });
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier;
+                options.ClaimsIdentity.UserNameClaimType = ClaimTypes.Name;
+                options.ClaimsIdentity.RoleClaimType = ClaimTypes.Role;
             });
 
             services.AddIdentityCore<IdentityUser<Guid>>(options =>

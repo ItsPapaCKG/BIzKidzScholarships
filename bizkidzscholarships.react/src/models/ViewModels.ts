@@ -21,6 +21,11 @@ export enum ActionType {
     ProfileImageUpload
 }
 
+export enum AppMode {
+    Dashboard,
+    Admin
+}
+
 export interface IUserProfile {
     BusinessName: string,
     FirstName: string,
@@ -98,6 +103,13 @@ export interface StartUploadRequest {
 export interface UploadHandshakeConfirmation {
     RequestId: string,
     Status: RequestStatus
+}
+
+export interface UserActivityLog {
+    FullName: string,
+    TaskName: string,
+    Reward: number,
+    ActivityDateTime: Date
 }
 
 export default '.'

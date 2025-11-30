@@ -1,10 +1,10 @@
-import { UserTaskStatus, type ITask } from "../models/ViewModels";
-import { UseTaskContext } from "../contexts/TaskViewContext";
+import { UserTaskStatus, type ITask } from "../../models/ViewModels";
+import { UseTaskContext } from "../../contexts/TaskViewContext";
 
 
 function Task({ task }: { task: ITask }) {
     const taskWindowContext = UseTaskContext();
-    const [viewedTask, setViewedTask] = [taskWindowContext.viewedTask, taskWindowContext.setViewedTask ]
+    const [setViewedTask] = [taskWindowContext.setViewedTask ]
 
     return (
         <div className="card">

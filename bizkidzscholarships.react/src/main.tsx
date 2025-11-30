@@ -6,10 +6,12 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import LoginComponent from './components/Login.tsx'
 import UserAccountProvider from './contexts/UserAccountContext.tsx'
 import TaskProvider from './contexts/TaskViewContext.tsx'
+import { AppMode } from './models/ViewModels.ts'
 
 export const router = createBrowserRouter([
-    { path: "/", element: <App/> },
-    { path: "/login", element: <LoginComponent /> }
+    { path: "/", element: <App Mode={AppMode.Dashboard}/> },
+    { path: "/login", element: <LoginComponent /> },
+    { path: "/admin", element: <App Mode={AppMode.Admin}/>}
 ]);
 
 createRoot(document.getElementById('root')!).render(

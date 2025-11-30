@@ -1,9 +1,11 @@
 ﻿using BizKidzScholarships.API.Services;
 using BizKidzScholarships.Data.dto;
+using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BizKidzScholarships.API.Controllers
 {
@@ -16,14 +18,16 @@ namespace BizKidzScholarships.API.Controllers
         private SignInManager<IdentityUser<Guid>> _signInManager;
         private IHttpContextAccessor _httpContextAccessor;
         private IUserDataService _udService;
+        private ICurrentUser _user;
 
-        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM, IHttpContextAccessor acc, IUserDataService svc)
+        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM, IHttpContextAccessor acc, IUserDataService svc, ICurrentUser usr)
         {
             _userManager = uM;
             _roleManager = rM;
             _signInManager = siM;
             _httpContextAccessor = acc;
             _udService = svc;
+            _user = usr;
         }
 
         [HttpPost("[action]")]
@@ -64,22 +68,52 @@ namespace BizKidzScholarships.API.Controllers
             if (!result.Succeeded)
                 return Unauthorized();
 
+            var roles = await _userManager.GetRolesAsync(user);
+
+            await _signInManager.SignInWithClaimsAsync(
+                user,
+                isPersistent: true,
+                roles.Select(r => new Claim(ClaimTypes.Role, r)).ToList()
+            );
+
             return Ok(new { Message = "Login Successful" });
-            
+
         }
 
-        [HttpGet("me")]
         [Authorize]
-        public IActionResult Self()
+        [HttpGet("me")]
+        public IActionResult Me()
         {
-            var ctx = _httpContextAccessor.HttpContext;
+            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-            if (ctx?.User.Identity?.IsAuthenticated != true)
-                return Unauthorized();
+            return Ok(new
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                email = User.FindFirstValue(ClaimTypes.Email),
+                roles
+            });
+        }
 
-            var email = ctx.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+        [Authorize]
+        [HttpPost("GetAdminRole")]
+        public async Task<IActionResult> AdminRole()
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(_user.Id.ToString());
 
-            return Ok(new { email });
+                if (user is null)
+                {
+                    return BadRequest("User not found");
+                }
+
+                await _userManager.AddToRoleAsync(user, "Admin");
+            } catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok("User added to role 'Admin' successfully.");
         }
     }
 }

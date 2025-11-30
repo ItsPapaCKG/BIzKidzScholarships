@@ -1,8 +1,8 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { ActionType, type IUserProfile } from "../models/ViewModels";
-import { UseUserAccountContext } from "../contexts/UserAccountContext";
-import FileUpload from "./tasks/FileUpload";
+import { ActionType, type IUserProfile } from "../../models/ViewModels";
+import { UseUserAccountContext } from "../../contexts/UserAccountContext";
+import FileUpload from "../tasks/FileUpload";
 
 function EditProfile() {
     const [errorState, setErrorState] = useState("")

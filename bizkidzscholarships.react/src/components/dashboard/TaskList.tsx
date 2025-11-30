@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Task from "./Task";
-import { GetUserTasks } from "../services/UserDataService";
-import { UseTaskContext } from "../contexts/TaskViewContext";
-import TaskWindow from "./tasks/TaskWindow";
+import { GetUserTasks } from "../../services/UserDataService";
+import { UseTaskContext } from "../../contexts/TaskViewContext";
+import TaskWindow from "../tasks/TaskWindow";
 
 function TasksList() {
     const taskContext = UseTaskContext();

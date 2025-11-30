@@ -1,12 +1,20 @@
-import { useState, useEffect, createContext } from 'react'
+import { useEffect, createContext } from 'react'
 import './App.css'
-import Dashboard from './components/DashboardComponent';
+import Dashboard from './components/dashboard/DashboardComponent';
 import { useNavigate } from 'react-router-dom';
 import { UseUserAccountContext } from './contexts/UserAccountContext';
+import { AppMode } from './models/ViewModels';
+import AdminDashboard from './components/admin/AdminDashboard';
 
 export const IsNewAccount = createContext(false);
 
-function App({ }) {
+
+
+interface AppProps {
+    Mode: AppMode
+}
+
+function App({ Mode }: AppProps) {
     const navigate = useNavigate();
     const userAccountContext = UseUserAccountContext();
     const isAuthenticated = userAccountContext.isAuthenticated;
@@ -39,7 +47,9 @@ function App({ }) {
             </nav>
 
             <main>
-                {isAuthenticated ? <Dashboard /> : <p>Loading...</p>}
+                {isAuthenticated && Mode == AppMode.Dashboard && (<Dashboard/>)}
+
+                {isAuthenticated && Mode == AppMode.Admin && (<AdminDashboard />)}
             </main>
         </>
     );

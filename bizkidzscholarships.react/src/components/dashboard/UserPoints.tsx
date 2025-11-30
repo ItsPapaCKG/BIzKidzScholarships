@@ -1,10 +1,10 @@
-import { UseTaskContext } from "../contexts/TaskViewContext";
+import { UseTaskContext } from "../../contexts/TaskViewContext";
 
 
 function UserPoints() {
     const context = UseTaskContext();
 
-    const [points, setPoints] = [context.points, context.setPoints];
+    const [points] = [context.points];
 
   return (
       <div className="card p-3 userpoints h-100 border-info">
