@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { UseUserAccountContext } from './contexts/UserAccountContext';
 import { AppMode, type UserCookieJSON } from './models/ViewModels';
 import AdminDashboard from './components/admin/AdminDashboard';
+import AdminProvider from './contexts/AdminContext';
 
 export const IsNewAccount = createContext(false);
 
@@ -53,10 +54,11 @@ function App({ Mode }: AppProps) {
             <main>
                 {isAuthenticated && Mode == AppMode.Dashboard && (<Dashboard/>)}
 
-                {isAuthenticated && Mode == AppMode.Admin && (<AdminDashboard />)}
+                {isAuthenticated && Mode == AppMode.Admin && (<AdminProvider><AdminDashboard /></AdminProvider>)}
             </main>
         </>
     );
 }
 
 export default App
+
