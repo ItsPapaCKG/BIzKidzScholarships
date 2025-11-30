@@ -9,6 +9,7 @@ import TaskProvider from './contexts/TaskViewContext.tsx'
 import { AppMode } from './models/ViewModels.ts'
 
 export const router = createBrowserRouter([
+    { path: "/access-denied", element: (<><h1>Access is Denied Loser!</h1></>) },
     { path: "/", element: <App Mode={AppMode.Dashboard}/> },
     { path: "/login", element: <LoginComponent /> },
     { path: "/admin", element: <App Mode={AppMode.Admin}/>}

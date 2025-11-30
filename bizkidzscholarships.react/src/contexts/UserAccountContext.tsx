@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import type { IUserProfile } from "../models/ViewModels";
+import type { IUserProfile, UserCookieJSON } from "../models/ViewModels";
 
 export type userAccountContextType = {
     isAuthenticated: boolean,
@@ -10,7 +10,9 @@ export type userAccountContextType = {
     userProfile: IUserProfile,
     setUserProfile: React.Dispatch<React.SetStateAction<IUserProfile>>
     editMode: boolean,
-    setEditMode: React.Dispatch<React.SetStateAction<boolean>>
+    setEditMode: React.Dispatch<React.SetStateAction<boolean>>,
+    userCookie: UserCookieJSON,
+    setUserCookie: React.Dispatch<React.SetStateAction<UserCookieJSON>>
 }
 interface UserProfileJSON {
     userId: number,
@@ -29,6 +31,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     const [userHasNoProfile, setUserHasNoProfile] = useState(false);
     const [userProfile, setUserProfile] = useState({} as IUserProfile);
     const [editMode, setEditMode] = useState(false);
+    const [userCookie, setUserCookie] = useState<UserCookieJSON>({} as UserCookieJSON)
 
     const GetUserProfile = async () => {
         var res = await fetch("https://localhost:7095/api/user", {
@@ -64,7 +67,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     }
 
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie }}>
           { children }
       </UserAccountContext.Provider>
   );

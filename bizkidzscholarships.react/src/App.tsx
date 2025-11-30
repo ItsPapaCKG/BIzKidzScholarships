@@ -3,7 +3,7 @@ import './App.css'
 import Dashboard from './components/dashboard/DashboardComponent';
 import { useNavigate } from 'react-router-dom';
 import { UseUserAccountContext } from './contexts/UserAccountContext';
-import { AppMode } from './models/ViewModels';
+import { AppMode, type UserCookieJSON } from './models/ViewModels';
 import AdminDashboard from './components/admin/AdminDashboard';
 
 export const IsNewAccount = createContext(false);
@@ -18,6 +18,7 @@ function App({ Mode }: AppProps) {
     const navigate = useNavigate();
     const userAccountContext = UseUserAccountContext();
     const isAuthenticated = userAccountContext.isAuthenticated;
+    const [setUserCookie] = [userAccountContext.setUserCookie];
 
     const check = async () => {
         var res = await fetch("https://localhost:7095/auth/me", { credentials: "include" });
@@ -27,6 +28,9 @@ function App({ Mode }: AppProps) {
             return;
         }
 
+        var cookie = await res.json() as UserCookieJSON;
+
+        setUserCookie(cookie);
         userAccountContext.setIsAuthenticated(true);
     }
 

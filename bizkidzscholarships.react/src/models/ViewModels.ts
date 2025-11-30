@@ -112,4 +112,9 @@ export interface UserActivityLog {
     ActivityDateTime: Date
 }
 
+export interface UserCookieJSON {
+    userId: string,
+    email: string,
+    roles: string[]
+}
 export default '.'

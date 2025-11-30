@@ -1,5 +1,20 @@
+import { useEffect } from "react";
+import { UseUserAccountContext } from "../../contexts/UserAccountContext";
+import { useNavigate } from "react-router-dom";
+
 function AdminDashboard() {
-    return (
+  const context = UseUserAccountContext();
+  const [cookie] = [context.userCookie];
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    if (!cookie.roles.includes("Admin")){
+      navigation("/access-denied");
+    }
+
+  }, []);
+  
+  return (
       <>
         <div className="dashboard">
           <div className="row">
@@ -30,3 +45,4 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+
