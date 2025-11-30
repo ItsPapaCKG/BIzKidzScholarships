@@ -431,7 +431,7 @@ namespace BizKidzScholarships.API.Services
 
             //
 
-            var submission = new TaskSubmission() { AttemptNumber = attemptNumber, SubmissionData = payload, TaskId = taskid, UserId = userid };
+            var submission = new TaskSubmission() { AttemptNumber = attemptNumber, SubmissionData = payload, TaskId = taskid, UserId = userid, Created = DateTimeOffset.UtcNow, Updated = DateTimeOffset.UtcNow };
 
             var t = await _context.Database.BeginTransactionAsync();
 

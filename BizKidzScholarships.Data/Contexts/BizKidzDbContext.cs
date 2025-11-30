@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using TaskItem = BizKidzScholarships.Data.Entities.TaskItem;
 
 namespace BizKidzScholarships.Data.Contexts
@@ -26,6 +27,22 @@ namespace BizKidzScholarships.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            //migrationBuilder.Sql(@"
+            //CREATE OR REPLACE VIEW "UserActivityView" AS
+            //SELECT
+
+            //    P."FirstName" || ' ' || P."LastName" AS "FullName",
+	           // T."TaskNameInternal" AS "Task",
+	           // T."Reward",
+	           // S."Created"
+            //FROM
+
+            //    "Submissions" S
+            //    INNER JOIN "Profiles" P ON P."UserId" = S."UserId"
+
+            //    INNER JOIN "Tasks" T ON T."Id" = S."TaskId";
+            //");
 
             modelBuilder.Entity<UserProfile>(s =>
             {
@@ -121,6 +138,9 @@ namespace BizKidzScholarships.Data.Contexts
             modelBuilder.Entity<TaskSubmission>(s =>
             {
                 s.HasKey(ts => ts.SubmissionId);
+
+                s.HasIndex(ts => new { ts.UserId, ts.TaskId, ts.AttemptNumber })
+                .IsUnique();
 
                 s.HasOne(ts => ts.User)
                 .WithMany()

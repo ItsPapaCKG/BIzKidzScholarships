@@ -45,6 +45,8 @@ namespace BizKidzScholarships.API.Controllers
 
             var result = await _userManager.CreateAsync(newUser, registration.Password);
 
+            await _userManager.AddToRoleAsync(newUser, "Kid");
+
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
@@ -107,6 +109,13 @@ namespace BizKidzScholarships.API.Controllers
                 }
 
                 var result = await _userManager.AddToRoleAsync(user, "Admin");
+
+                if (!result.Succeeded)
+                {
+                    return BadRequest(result.Errors.First());
+                }
+
+                await _signInManager.RefreshSignInAsync(user);
             } catch (Exception e)
             {
                 return BadRequest(e.Message);

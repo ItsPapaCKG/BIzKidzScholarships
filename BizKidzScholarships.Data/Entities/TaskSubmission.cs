@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BizKidzScholarships.Data.Entities
 {
-    public class TaskSubmission
+    public class TaskSubmission : BaseTrackableModel
     {
         public Guid SubmissionId { get; set; }
 

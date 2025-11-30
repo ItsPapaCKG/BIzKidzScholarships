@@ -1,10 +1,24 @@
+import { useNavigate } from "react-router-dom";
+import { UseUserAccountContext } from "../../contexts/UserAccountContext";
 import TaskList from "./TaskList";
 import UserPoints from "./UserPoints"
 import UserProfile from "./UserProfile";
+import { useEffect } from "react";
 
 
 function Dashboard() {
-    return (
+  const context = UseUserAccountContext();
+  const cookie = context.userCookie; 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!cookie.roles.includes("Kid")) {
+            navigate("/access-denied")
+        }
+
+  }, [cookie])  
+  
+  return (
       <>
         <div className="dashboard">
           <div className="row">
