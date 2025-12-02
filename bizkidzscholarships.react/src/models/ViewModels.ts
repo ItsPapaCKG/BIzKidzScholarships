@@ -42,7 +42,9 @@ export interface ITaskJSON {
     status: UserTaskStatus,
     taskImageKey: string,
     taskId: number,
-    taskType: TaskType
+    taskType: TaskType,
+    taskPromptTitle: string,
+    taskPromptSubtitle: string
 }
 
 export interface ITask {

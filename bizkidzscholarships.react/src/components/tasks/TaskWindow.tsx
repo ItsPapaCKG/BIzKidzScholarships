@@ -15,11 +15,12 @@ function TaskWindow() {
       { task !== null && (
       <div className="popup-background">
           <div className="popup-window">
-              <button type="button" className="btn-close popup-close" aria-label="Close" onClick={ () => { setTask(null) } }></button>
-              <div className="popup-body">
-                  
-                    <h1>{task.TaskPromptTitle}</h1>
-                    <p>{task.TaskPromptSubtitle}</p>
+                <button type="button" className="btn-close popup-close" aria-label="Close" onClick={ () => { setTask(null) } }></button>
+
+              <div className="popup-body gap-4">
+
+                    <h1 className="m-0">{task.TaskPromptTitle}</h1>
+                    <p className="fs-5 m-0">{task.TaskPromptSubtitle}</p>
                     {/* <p>{task.taskType}</p> */}
 
                     {task.TaskType == TaskType.SocialMedia && <SocialMedia/> }

@@ -12,6 +12,7 @@ function FileUpload({ action, setFileUrl }: ImageUploadProps) {
     let fileUploadRef = useRef<HTMLInputElement>(null);
 
     const [statefulFile, setCurrentFile] = useState<File | undefined>(undefined);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     let uploadClick = () => {
         fileUploadRef.current!.click();
@@ -70,18 +71,29 @@ function FileUpload({ action, setFileUrl }: ImageUploadProps) {
       <>
         {action == ActionType.TaskUpload && (
             <>
+
                 <label className="upload-label">
                 
-                    <input type="file" ref={ fileUploadRef } style={{ display: "none" } } onChange={(e) => { setCurrentFile(e.target.files?.[0]) } }/>
-                    <button type="button" className="upload-btn" onClick={uploadClick }>Upload File</button>
-                    {statefulFile && ( 
-                        <>
-                            <p>{ statefulFile.name }</p> 
-                            <button type="submit" className="submit-btn" onClick={() => UploadFile() }>Submit</button>
-                        </>
-                    )}
+                    <input type="file" ref={ fileUploadRef } style={{ display: "none" } } onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); } }/>
+                    <button type="button" className="btn btn-light btn-lg border-black" onClick={uploadClick }>Upload File</button>
                     
                 </label>
+
+                {statefulFile && ( 
+                        <>
+                            <p className="fs-5">{ statefulFile.name }</p> 
+                        </>
+                    )}
+
+                <div className="m-auto" style={{ width: "70%" }}>
+                    {previewUrl ? (
+                        <img src={previewUrl} className="object-cover w-100 h-100" />
+                    ) : (
+                        <span className="text-gray-400 text-sm m-auto text-center w-100">No image</span>
+                    )}
+                </div>
+
+                {statefulFile && (<button type="submit" className="btn btn-lg btn-success" onClick={() => UploadFile() }>Submit</button>)}
 
             <p>{ error }</p>
         </>

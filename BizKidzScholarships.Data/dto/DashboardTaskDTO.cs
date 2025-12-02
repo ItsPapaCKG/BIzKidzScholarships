@@ -18,6 +18,9 @@ namespace BizKidzScholarships.Data.dto
 
         public string TaskDescription { get; set; } = string.Empty;
 
+        public string TaskPromptTitle { get; set; }
+
+        public string TaskPromptSubtitle { get; set; }
         public string? TaskImageKey { get; set; }
 
         public int? Reward { get; set; }

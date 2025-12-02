@@ -28,11 +28,10 @@ function TasksList() {
     }, [taskRefresh])
 
   return (
-      <div>
-        { viewedTask && (<p>Selected task: { viewedTask.TaskId }</p>) }
+      <div className="row">
           {
               tasks.map((task) => {
-                  return <Task key={ task.TaskId } task={ task } />
+                  return (<div className="col-md-6 col-xs mb-3"><Task key={ task.TaskId } task={ task } /></div>);
               }) 
           }
           <TaskWindow/>

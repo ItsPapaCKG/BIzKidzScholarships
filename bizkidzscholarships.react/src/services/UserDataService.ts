@@ -24,7 +24,9 @@ export async function GetUserTasks(): Promise<ITask[]> {
             Status: i.status,
             TaskImageKey: i.taskImageKey,
             TaskId: i.taskId,
-            TaskType: i.taskType
+            TaskType: i.taskType,
+            TaskPromptTitle: i.taskPromptTitle,
+            TaskPromptSubtitle: i.taskPromptSubtitle
         } as ITask)
     });
 

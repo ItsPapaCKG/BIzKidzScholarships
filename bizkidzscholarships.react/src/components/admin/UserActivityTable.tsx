@@ -21,7 +21,7 @@ function UserActivity() {
                         userActivities.map((v)=>{
                             let isGain = v.Reward > 0;
 
-                            return (<tr><td>{v.FullName}</td><td>{v.TaskName}</td><td className="text-nowrap bg-primary" style={{ "width": "1px"}}><p className={(isGain ? "text-success" : "text-danger") + " m-0"}>{ isGain ? "+" : "-"}{v.Reward}</p></td><td>{v.ActivityDateTime.toString()}</td></tr>)
+                            return (<tr><td>{v.FullName}</td><td>{v.TaskName}</td><td className="text-nowrap" style={{ "width": "1px"}}><p className={(isGain ? "text-success" : "text-danger") + " m-0"}>{ isGain ? "+" : "-"}{v.Reward}</p></td><td>{v.ActivityDateTime.toString()}</td></tr>)
                         })
                     }
                 </tbody>

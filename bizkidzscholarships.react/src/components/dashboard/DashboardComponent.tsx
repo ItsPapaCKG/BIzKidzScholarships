@@ -26,18 +26,18 @@ function Dashboard() {
           </div>
 
           <div className="row g-4">
-            <div className="col-8">
+            <div className="col-12 col-md-8">
               <UserProfile />
             </div>
             
-            <div className="col-4">
+            <div className="col-12 col-md-4">
               <UserPoints/>
             </div>
           </div>
           
           
           <div className="row mt-4">
-            <div className="col col-lg-6 col-xs-12">
+            <div className="col">
               <TaskList />
             </div>
             
