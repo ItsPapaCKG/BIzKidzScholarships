@@ -54,13 +54,25 @@ namespace BizKidzScholarships.API.Services
         }
 
         // TODO: Include step to upload byte[] image to S3, retrieve the link, and set to profile column LogoKey
-        public async Task<ResponseModel> SetUserProfile(Guid userId,RegisterUserProfileDTO profile)
+        public async Task<ResponseModel> SetUserProfile(Guid userId,UpdateUserProfileDTO profile, bool isRegister = false)
         {
             ResponseModel response = new();
 
+            if (isRegister && profile.FirstName is null || profile.LastName is null)
+            {
+                response.Success = false;
+                response.Errors = new List<string> { "First and last name are required." };
+                return response;
+            }
+
             var exists = _context.Profiles.FirstOrDefault(p => p.UserId == userId);
 
+            string firstName = exists is not null && !isRegister ? exists.FirstName : profile.FirstName!; 
+            string lastName = exists is not null && !isRegister ? exists.LastName : profile.LastName!; 
+
             var ent = _mapper.Map<UserProfile>(profile);
+            ent.FirstName = firstName;
+            ent.LastName = lastName;
 
             ent.UserId = userId;
 
@@ -71,6 +83,9 @@ namespace BizKidzScholarships.API.Services
                 if (exists is null)
                     await _context.Profiles.AddAsync(ent);
                 else {
+                    exists.FirstName = firstName;
+                    exists.LastName = lastName;
+
                     _context.Entry(exists).State = EntityState.Detached;
 
                     _context.Profiles.Update(ent);

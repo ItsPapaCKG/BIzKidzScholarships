@@ -16,8 +16,8 @@ namespace BizKidzScholarships.API.Extensions
                 cfg.CreateMap<DashboardTaskDTO, TaskItem>();
                 cfg.CreateMap<TaskItem, DashboardTaskDTO>();
 
-                cfg.CreateMap<UserProfile, RegisterUserProfileDTO>();
-                cfg.CreateMap<RegisterUserProfileDTO, UserProfile>()
+                cfg.CreateMap<UserProfile, UpdateUserProfileDTO>();
+                cfg.CreateMap<UpdateUserProfileDTO, UserProfile>()
                     .ForMember(m => m.UserId, a => a.Ignore());
             });
         }

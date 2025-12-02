@@ -43,21 +43,21 @@ function UserProfile() {
 
                         <div className="card-body p-2 m-3">
                             <div className="row mb-3">
-                                <div className="col profile-ctn">
+                                <div className="col profile-ctn m-5">
                                     <img src={userProfile.BusinessLogoKey} />
                                 </div>
 
                                 <div className="col">
                                     <p className="p-2">
+                                        <strong>Student Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
+                                    </p>
+                                    
+                                    <p className="p-2">
                                         <strong>Business Name</strong>: {userProfile.BusinessName}
                                     </p>
 
                                     <p className="p-2">
-                                        <strong>Business Email</strong>: {userProfile.BusinessEmail}
-                                    </p>
-
-                                    <p className="p-2">
-                                        <strong>Owner Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
+                                        <strong>Student Email</strong>: {userProfile.BusinessEmail}
                                     </p>
 
                                     <p className="p-2">

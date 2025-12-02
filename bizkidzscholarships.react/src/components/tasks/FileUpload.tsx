@@ -101,9 +101,7 @@ function FileUpload({ action, setFileUrl }: ImageUploadProps) {
 
         {action == ActionType.ProfileImageUpload && (
             <>
-                    <input type="file" ref={fileUploadRef} style={{ display: "none" }} onChange={(e) => { UploadFile(e.target.files?.[0]); } }/>
-                    <button type="button" className="upload-btn" onClick={uploadClick }>Upload File</button>
-                    {statefulFile && (<p>{ statefulFile.name }</p>)} 
+                    <input type="file" name="BusinessLogoKey" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); UploadFile(e.target.files?.[0]); } }/>
             </>
         )}
       </>

@@ -114,11 +114,10 @@ main {
     /* border: 1px solid black; */
 }
 
-input[type="file"] {
-    color: transparent; /* hides the �No file chosen� text */
+/* input[type="file"] {
+    color: transparent;
     width: fit-content;
-    border: 1px solid black;
-}
+} */
 
 input[type="file"]::file-selector-button {
     color: initial; /* keep button text visible */

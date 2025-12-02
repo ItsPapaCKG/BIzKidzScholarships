@@ -57,37 +57,50 @@ function EditProfile() {
     },[])
     // onChange={handleChange}
     return (
-        <div className="border-2 border-danger">
+        <>
+        <div className="card-body container p-4">
             <form onSubmit={handleSubmit}>
-                <label>Business Logo:
-                    <FileUpload action={ActionType.ProfileImageUpload} setFileUrl={setProfilePictureUrl}/>
-                </label>
+                <div className="row justify-content-center m-4">
+                    <div className="col-12 col-md-8">
+                        <img src={userProfile.BusinessLogoKey} className="m-0"/>
+                    </div>
+                </div>
 
-                <label>First Name:
-                    <input name="FirstName" value={userProfile.FirstName} onChange={handleChange} />
-                </label>
+            
+                <div className="row mb-3">
+                    <div className="col">
+                        
+                        <div className="input-group mb-3">
+                            <span className="input-group-text" id="inputGroup-sizing-default">Logo</span>
+                            <FileUpload action={ActionType.ProfileImageUpload} setFileUrl={setProfilePictureUrl}/>
+                            {/* <span className="input-group-text">Logo saved</span> */}
+                        </div>
+                        <div className="input-group mb-3">
+                            <span className="input-group-text" id="inputGroup-sizing-default">Business Name</span>
+                            <input type="text" name="BusinessName" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleChange} value={userProfile.BusinessName}/>
+                        </div>
 
-                <label>Last Name:
-                    <input name="LastName" value={userProfile.LastName} onChange={handleChange} />
-                </label>
+                        <div className="input-group mb-3">
+                            <span className="input-group-text" id="inputGroup-sizing-default">Email</span>
+                            <input type="text" name="BusinessEmail" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sefault" onChange={handleChange}  value={userProfile.BusinessEmail}/>
+                        </div>
 
-                <label>Business Name:
-                    <input name="BusinessName" value={userProfile.BusinessName} onChange={handleChange} />
-                </label>
-
-                <label>Business Email:
-                    <input name="BusinessEmail" value={userProfile.BusinessEmail} onChange={handleChange} />
-                </label>
-
-                <label>Business Phone:
-                    <input name="PhoneNumber" value={userProfile.PhoneNumber} onChange={handleChange} />
-                </label>
-
-                <button type="submit">{ userAccountContext.userHasNoProfile ? "Submit Profile" : "Save Profile" }</button>
-
-                <p className="danger">{errorState}</p>
+                        <div className="input-group mb-3">
+                            <span className="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
+                            <input type="text" name="PhoneNumber" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleChange} value={userProfile.PhoneNumber}/>
+                        </div>
+                        
+                    </div>    
+                </div>
+        
+                <div className="row">
+                    <div className="col d-grid">
+                        <button type="submit" className="btn btn-lg btn-success">{ userAccountContext.userHasNoProfile ? "Submit Profile" : "Save Profile" }</button>
+                    </div>
+                </div>
             </form>
         </div>
+        </>
     );
 }
 

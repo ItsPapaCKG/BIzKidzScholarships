@@ -20,7 +20,7 @@ function Dashboard() {
   
   return (
       <>
-        <div className="dashboard">
+        <div className="container">
           <div className="row">
             <h1>Welcome, Grant!</h1>
           </div>
