@@ -1,4 +1,4 @@
-import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse } from "../models/ViewModels";
+import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type UserPoints } from "../models/ViewModels";
 import { APICall } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
@@ -118,4 +118,13 @@ async function CompleteUploadHandshake(requestId: string, requestStatus: Request
     return response.success;
 }
 
-//async function 
+export async function GetDashboardPoints(): Promise<UserPointsJSON | null> {
+    var res = await APICall<UserPointsJSON>("user/userpoints","GET", null);
+
+    if (!res.success) {
+        alert('Failed to get User Points.')
+        return null;
+    }
+
+    return res.data;
+}

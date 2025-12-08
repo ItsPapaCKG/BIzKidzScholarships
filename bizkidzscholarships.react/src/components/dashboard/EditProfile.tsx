@@ -12,10 +12,16 @@ function EditProfile() {
     const [userProfile, setUserProfile] = [userAccountContext.userProfile, userAccountContext.setUserProfile]
     const [editMode, setEditMode] = [userAccountContext.editMode, userAccountContext.setEditMode]
     const [profilePictureURL, setProfilePictureUrl] = useState<string>("");
+    const [hasDataChanged, dataChanged] = useState<boolean>(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // validate inputs
         e.preventDefault();
+
+        if (!hasDataChanged) {
+            setEditMode(false);
+            return;
+        }
 
         var endpoint = userAccountContext.userHasNoProfile ? "registerprofile" : "updateprofile";
         var httpMethod = userAccountContext.userHasNoProfile ? "POST" : "PUT";
@@ -43,18 +49,23 @@ function EditProfile() {
         //await setTimeout(() => { userAccountContext.setUserHasNoProfile(false); }, 5000);
         userAccountContext.setUserProfile(userProfile);
         userAccountContext.setUserHasNoProfile(false);
+        dataChanged(false);
         setEditMode(false);
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
+        dataChanged(true);
+
         setUserProfile(prev => ({...prev, [name]: value }));
     }
 
-    useEffect(() => {
+    const changeProfile = (profileUrl: string) => {
+        setProfilePictureUrl(profileUrl);
+        dataChanged(true);
+    };
 
-    },[])
     // onChange={handleChange}
     return (
         <>
@@ -72,7 +83,7 @@ function EditProfile() {
                         
                         <div className="input-group mb-3">
                             <span className="input-group-text" id="inputGroup-sizing-default">Logo</span>
-                            <FileUpload action={ActionType.ProfileImageUpload} setFileUrl={setProfilePictureUrl}/>
+                            <FileUpload action={ActionType.ProfileImageUpload} setFileUrl={changeProfile}/>
                             {/* <span className="input-group-text">Logo saved</span> */}
                         </div>
                         <div className="input-group mb-3">
@@ -95,7 +106,7 @@ function EditProfile() {
         
                 <div className="row">
                     <div className="col d-grid">
-                        <button type="submit" className="btn btn-lg btn-success">{ userAccountContext.userHasNoProfile ? "Submit Profile" : "Save Profile" }</button>
+                        <button type="submit" className="btn btn-lg btn-success">{ userAccountContext.userHasNoProfile ? "Submit Profile" : hasDataChanged ? "Save Profile" : "Cancel" }</button>
                     </div>
                 </div>
             </form>

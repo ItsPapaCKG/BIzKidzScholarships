@@ -11,9 +11,11 @@ namespace BizKidzScholarships.Data.dto
         public Guid UserId { get; set; }
 
         public int Points { get; set; }
+        public int PreviousPoints { get; set; }
 
         public int Entries { get; set; }
+        public int PreviousEntries { get; set; }
 
-        public DateTime Updated { get; set; }
+        public DateTimeOffset Updated { get; set; }
     }
 }

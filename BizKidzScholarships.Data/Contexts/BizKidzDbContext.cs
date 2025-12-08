@@ -28,21 +28,23 @@ namespace BizKidzScholarships.Data.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            //migrationBuilder.Sql(@"
+            //migrationBuilder.Sql("""
             //CREATE OR REPLACE VIEW "UserActivityView" AS
             //SELECT
 
             //    P."FirstName" || ' ' || P."LastName" AS "FullName",
-	           // T."TaskNameInternal" AS "Task",
-	           // T."Reward",
-	           // S."Created"
+            //    T."TaskNameInternal" AS "Task",
+            //    T."Reward",
+            //    S."Created"
             //FROM
 
             //    "Submissions" S
             //    INNER JOIN "Profiles" P ON P."UserId" = S."UserId"
 
             //    INNER JOIN "Tasks" T ON T."Id" = S."TaskId";
-            //");
+            //""");
+
+            //migrationBuilder.Sql(""" DROP VIEW "UserActivityView"; """);
 
             modelBuilder.Entity<UserProfile>(s =>
             {
@@ -56,7 +58,9 @@ namespace BizKidzScholarships.Data.Contexts
 
             modelBuilder.Entity<UserPointsReward>(upo =>
             {
-                upo.HasKey(upo => new { upo.UserId, upo.TaskId, upo.AttemptNumber });
+                upo.HasKey(upo => upo.AwardId);
+
+                upo.HasIndex(upo => new { upo.UserId, upo.TaskId, upo.AttemptNumber });
 
                 upo.HasOne(upo => upo.User)
                 .WithMany()

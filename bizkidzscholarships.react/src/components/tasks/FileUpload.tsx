@@ -5,7 +5,7 @@ import { ActionType } from "../../models/ViewModels";
 
 interface ImageUploadProps {
     action: ActionType,
-    setFileUrl?: React.Dispatch<React.SetStateAction<string>>
+    setFileUrl?: (url: string) => void
 }
 
 function FileUpload({ action, setFileUrl }: ImageUploadProps) {
@@ -55,6 +55,7 @@ function FileUpload({ action, setFileUrl }: ImageUploadProps) {
 
                 if (successful) {
                     setTask(null);
+                    setPointsRefresh(true);
                     setTaskRefresh(true);
                 }
         }
@@ -66,6 +67,7 @@ function FileUpload({ action, setFileUrl }: ImageUploadProps) {
     const [task, setTask] = [viewedTask.viewedTask, viewedTask.setViewedTask];
     const [setTaskRefresh] = [viewedTask.setTaskRefresh];
     const [error, setError] = useState<string>("");
+    const [setPointsRefresh] = [viewedTask.setPointsRefresh];
 
     return (
       <>
@@ -87,7 +89,7 @@ function FileUpload({ action, setFileUrl }: ImageUploadProps) {
 
                 <div className="m-auto" style={{ width: "70%" }}>
                     {previewUrl ? (
-                        <img src={previewUrl} className="object-cover w-100 h-100" />
+                        <img src={previewUrl} className="object-cover w-100 h-100 taskWindowPreview d-none d-md-block" />
                     ) : (
                         <span className="text-gray-400 text-sm m-auto text-center w-100">No image</span>
                     )}

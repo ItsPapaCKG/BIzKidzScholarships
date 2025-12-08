@@ -21,8 +21,8 @@ namespace BizKidzScholarships.Data.Entities
 
         public bool IsNew { get; set; }
 
-        public required IdentityUser<Guid> User { get; set; }
+        public IdentityUser<Guid> User { get; set; }
 
-        public required TaskItem Task { get; set; }
+        public TaskItem Task { get; set; }
     }
 }

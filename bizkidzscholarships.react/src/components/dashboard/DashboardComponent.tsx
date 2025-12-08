@@ -26,12 +26,12 @@ function Dashboard() {
           </div>
 
           <div className="row g-4">
-            <div className="col-12 col-md-8">
-              <UserProfile />
-            </div>
-            
-            <div className="col-12 col-md-4">
+            <div className="col-12 col-md-4 order-1 order-md-2">
               <UserPoints/>
+            </div>
+
+            <div className="col-12 col-md-8 order-2 order-md-1">
+              <UserProfile />
             </div>
           </div>
           

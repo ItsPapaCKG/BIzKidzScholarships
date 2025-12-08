@@ -3,6 +3,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using AutoMapper;
 using BizKidzScholarships.API.Services.Base;
+using BizKidzScholarships.API.Services.Utilities;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
@@ -24,21 +25,51 @@ namespace BizKidzScholarships.API.Services
         //private IMapper _mapper;
 
         protected Guid userId => _user.Id;
+        protected UserRewardFactory rewardFactory { get; set; }
 
         public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac) : base(user, mapper, context, _fac)
         {
-
+            rewardFactory = new UserRewardFactory(userId, context);
         }
         public UserPointsView? GetUserPoints(Guid userId)
         {
-            var ent = _context.UserPoints.FirstOrDefault(p => p.UserId == userId);
+            bool noUpdates = _context.UserPoints.All(up => !up.IsNew);
+            int totalPoints = _context.UserPoints
+                .GroupBy(p => p.TaskId)
+                .Select(t => t.OrderByDescending(up => up.AttemptNumber).First().Points)
+                .Sum();
+            int totalEntries = totalPoints / 100; // TODO: Points per entry configuration value
 
-            if (ent == null)
-                return null;
+            if (noUpdates)
+            {
+                var view = new UserPointsView()
+                {
+                    UserId = userId,
+                    Points = totalPoints,
+                    Entries = totalEntries,
+                    Updated = DateTimeOffset.UtcNow
+                };
 
-            var model = _mapper.Map<UserPointsView>(ent);
+                return view;
+            }
 
-            return model;
+            int oldPoints = _context.UserPoints
+                .GroupBy(p => p.TaskId)
+                .Select(t => t.Where(up => !up.IsNew).OrderByDescending(up => up.AttemptNumber).First().Points)
+                .Sum();
+            int oldEntries = oldPoints / 100;
+
+            var newView = new UserPointsView()
+            {
+                UserId = userId,
+                Points = totalPoints,
+                PreviousPoints = oldPoints,
+                Entries = totalEntries,
+                PreviousEntries = oldEntries,
+                Updated = DateTimeOffset.UtcNow
+            };
+
+            return newView;
         }
 
         public UserProfileDTO? GetUserProfile(Guid userId)
@@ -370,7 +401,7 @@ namespace BizKidzScholarships.API.Services
 
                 if (request.Expiration < DateTimeOffset.UtcNow)
                 {
-                    SetRequestStatus(request, RequestStatus.Denied);
+                    await SetRequestStatus(request, RequestStatus.Denied);
                     return new ResponseModel() { Success = false, Errors = { $"Expired Request: {confirmation.RequestId}" } };
                 }
 
@@ -391,7 +422,7 @@ namespace BizKidzScholarships.API.Services
                 // if not successful, set status of request and return ResponseModel
                 if (!fileUploaded && payload is not null)
                 {
-                    SetRequestStatus(request, RequestStatus.Failed);
+                    await SetRequestStatus(request, RequestStatus.Failed);
                     return new ResponseModel() { Success = false, Errors = { $"Request {confirmation.RequestId} failed validation." } };
                 }
 
@@ -413,7 +444,7 @@ namespace BizKidzScholarships.API.Services
                         if (payload is null)
                         {
                             await SetRequestStatus(request, RequestStatus.Cancelled);
-                            throw new Exception($"Payload must be specified for Profile Image Uploads. Cancelling request {request.RequestId}");
+                            throw new Exception($"Payload must be specified for Uploads. Cancelling request {request.RequestId}");
                         }
 
                         // create task submission
@@ -445,7 +476,6 @@ namespace BizKidzScholarships.API.Services
             }
 
             //
-
             var submission = new TaskSubmission() { AttemptNumber = attemptNumber, SubmissionData = payload, TaskId = taskid, UserId = userid, Created = DateTimeOffset.UtcNow, Updated = DateTimeOffset.UtcNow };
 
             var t = await _context.Database.BeginTransactionAsync();
@@ -453,6 +483,7 @@ namespace BizKidzScholarships.API.Services
                 try
                 {
                     var userTask = _context.UserTasks.FirstOrDefault(ut => ut.TaskId == taskid && ut.UserId == userid);
+                    UserPointsReward reward = rewardFactory.New(taskid);
 
                     if (userTask is null)
                     {
@@ -463,6 +494,8 @@ namespace BizKidzScholarships.API.Services
 
                     await _context.Submissions.AddAsync(submission);
                     _context.UserTasks.Update(userTask);
+
+                    _context.UserPoints.Add(reward);
 
                     await _context.SaveChangesAsync();
                     await t.CommitAsync();

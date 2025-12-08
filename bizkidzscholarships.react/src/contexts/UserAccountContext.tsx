@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { IUserProfile, UserCookieJSON } from "../models/ViewModels";
+import { GetDashboardPoints } from "../services/UserDataService";
 
 export type userAccountContextType = {
     isAuthenticated: boolean,

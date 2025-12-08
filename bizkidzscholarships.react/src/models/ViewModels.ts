@@ -60,8 +60,9 @@ export interface ITask {
 }
 
 export interface IUserPoints {
-    Total: number,
-    Entries: number
+    TotalPoints: number,
+    Entries: number,
+    IsError: boolean
 }
 
 export interface IDashboardContext {
@@ -118,6 +119,24 @@ export interface UserCookieJSON {
     userId: string,
     email: string,
     roles: string[]
+}
+
+export interface UserPointsJSON {
+    userId: string,
+    points: number,
+    previousPoints: number,
+    entries: number,
+    previousEntries: number,
+    updated: Date
+}
+
+export interface UserPoints {
+    UserId: string,
+    Points: number,
+    PreviousPoints: number,
+    Entries: number,
+    PreviousEntries: number,
+    Updated: Date
 }
 
 export default '.'
