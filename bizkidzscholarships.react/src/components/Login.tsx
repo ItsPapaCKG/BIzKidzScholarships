@@ -39,7 +39,10 @@ function LoginComponent() {
             return;
         }
 
-        if ()
+        if (password != confirmPassword) {
+            setErrorState('Passwords do not match.')
+            return;
+        }
     };
 
     return (
