@@ -4,6 +4,10 @@ import { Form, useNavigate } from "react-router";
 function LoginComponent() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [errorState, setErrorState] = useState('');
 
     const navigate = useNavigate();
@@ -27,6 +31,15 @@ function LoginComponent() {
             }
         });
             
+    };
+
+    const register = async () => {
+        if (!(email.length > 10) || !(password.length > 9)) {
+            setErrorState('Username or password is invalid.')
+            return;
+        }
+
+        if ()
     };
 
     return (
