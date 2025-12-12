@@ -2,11 +2,8 @@
 
 namespace BizKidzScholarships.Data.dto
 {
-    public class RegisterDTO
+    public class RegisterDTO : LoginDTO
     {
-        public required string Email { get; set; }
-
-        public required string Password { get; set; }
 
         [Phone]
         [MinLength(10)]

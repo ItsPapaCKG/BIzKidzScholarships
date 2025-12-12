@@ -38,10 +38,11 @@ export type APIErrorMessage = |
 } |
 {
     status: ResponseCode.ServerError
-    errorMessage: string
+    message: string
 } |
 {
     status: ResponseCode
+    message?: string
 }
 
 
@@ -68,12 +69,12 @@ export function ResponseError(code: number, text?: string): APIErrorMessage {
 
     return {
         status: ResponseCode.ServerError,
-        errorMessage: text ?? "An internal server error has occurred."
+        message: text ?? "An internal server error has occurred."
     } as APIErrorMessage
 
 }
 
-export async function APICall<Output = unknown, Input = unknown>(urlPath: string, method: string, data?: Input): Promise<APIResponse<Output>> {
+export async function APICall<Output = unknown, Input = unknown>(urlPath: string, method: string, data?: Input, auth = false): Promise<APIResponse<Output>> {
     var config: RequestInit = {
         method: method,
         credentials: "include"
@@ -87,7 +88,9 @@ export async function APICall<Output = unknown, Input = unknown>(urlPath: string
         }
     }
 
-    var res = await fetch(`${appConfig.baseAPIURL}:${appConfig.apiPort}/api/${urlPath}`, config);
+    let prefix = auth ? "/auth/" : "/api/"
+
+    var res = await fetch(`${appConfig.baseAPIURL}:${appConfig.apiPort}${prefix}${urlPath}`, config);
 
     if (!res.ok) {
         var code = res.status;

@@ -135,3 +135,9 @@ input[type="file"]::file-selector-button {
 .taskWindowPreview {
   max-height: 500px;
 }
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+  width: 100%;
+}

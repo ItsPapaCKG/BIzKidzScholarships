@@ -1,12 +1,8 @@
-import type { ITask } from "../models/ViewModels";
+import type { ITask, LoginJSON } from "../models/ViewModels";
+import { APICall, type APIResponse } from "./APIService";
 
-export async function AttemptLogin(email: string, password: string): Promise<number> {
-    var res = await fetch("https://localhost:7095/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password })
-    });
+export async function AttemptAuth(loginModel: LoginJSON, register = false): Promise<APIResponse> {
+    var res = await APICall<APIResponse, LoginJSON>("Login", "POST", loginModel, register)
 
-    return res.status;
+    return res;
 }

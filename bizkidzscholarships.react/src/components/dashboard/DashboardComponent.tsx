@@ -16,7 +16,19 @@ function Dashboard() {
             navigate("/access-denied")
         }
 
-  }, [cookie])  
+    if (!context.isAuthenticated)
+    {
+      navigate("/login")
+    }
+
+  }, [cookie])
+  
+  useEffect(() => {
+    if (!context.isAuthenticated)
+    {
+      navigate("/login")
+    }
+  }, [])
   
   return (
       <>

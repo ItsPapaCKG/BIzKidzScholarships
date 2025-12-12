@@ -93,7 +93,7 @@ function EditProfile() {
 
                         <div className="input-group mb-3">
                             <span className="input-group-text" id="inputGroup-sizing-default">Email</span>
-                            <input type="text" name="BusinessEmail" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sefault" onChange={handleChange}  value={userProfile.BusinessEmail}/>
+                            <input type="text" name="BusinessEmail" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userProfile.BusinessEmail}/>
                         </div>
 
                         <div className="input-group mb-3">

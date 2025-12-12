@@ -23,7 +23,9 @@ export enum ActionType {
 
 export enum AppMode {
     Dashboard,
-    Admin
+    Admin,
+    Login,
+    Register
 }
 
 export interface IUserProfile {
@@ -137,6 +139,19 @@ export interface UserPoints {
     Entries: number,
     PreviousEntries: number,
     Updated: Date
+}
+
+export interface LoginJSON {
+    Email: string,
+    Password: string
+}
+
+export interface RegisterJSON extends LoginJSON {
+    FirstName: string,
+    LastName: string,
+    Birthday: Date,
+    PhoneNumber: number,
+    ConfirmPassword: string
 }
 
 export default '.'
