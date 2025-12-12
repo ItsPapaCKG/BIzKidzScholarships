@@ -50,14 +50,17 @@ function App({ Mode }: AppProps) {
 
     return (
         <>
-        <div className="d-flex flex-column min-vh-100">
-            <nav className='navbar navbar-expand-lg navbar-light bg-light fixed-top'>
-                <div id="website-logo">
-                    <img src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png"/>
+        <div className="d-flex flex-column min-vh-100 bg-light">
+            <nav className='navbar navbar-expand-lg navbar-light bg-white fixed-top h-10 shadow-lg'>
+                <div className='container-xl'>
+                    <a className='navbar-brand ms-5'>
+                        <img className="navbarLogo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png" height="120"/>
+                    </a>
                 </div>
+                
             </nav>
 
-            <main className="flex-grow-1 d-flex justify-content-center align-items-center">
+            <main className="flex-grow-1 d-flex justify-content-center align-items-center container-xl h-100 mt-0">
                 {isAuthenticated && Mode == AppMode.Dashboard && (<Dashboard/>)}
 
                 {isAuthenticated && Mode == AppMode.Admin && (<AdminProvider><AdminDashboard /></AdminProvider>)}
