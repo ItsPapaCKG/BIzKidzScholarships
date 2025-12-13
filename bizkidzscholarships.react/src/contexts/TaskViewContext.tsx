@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import type { ITask, IUserPoints } from "../models/ViewModels";
+import type { ITask, IUserPoints, TaskList } from "../models/ViewModels";
 import { GetDashboardPoints } from "../services/UserDataService";
 
 
@@ -9,8 +9,8 @@ export type viewedContextType = {
     handshakeRequestId: string | null
     setHandshakeRequestId: React.Dispatch<React.SetStateAction<string | null>>,
     RequestPoints: () => Promise<IUserPoints>,
-    tasks: ITask[],
-    setTasks: React.Dispatch<React.SetStateAction<ITask[]>>,
+    tasks: TaskList,
+    setTasks: React.Dispatch<React.SetStateAction<TaskList>>,
     taskRefresh: boolean,
     setTaskRefresh: React.Dispatch<React.SetStateAction<boolean>>,
     points: IUserPoints,
@@ -22,14 +22,15 @@ export type viewedContextType = {
 const TaskContext = createContext<viewedContextType>({} as viewedContextType);
 
 function TaskProvider({ children }: { children: ReactNode }) {
-    const [tasks, setTasks] = useState<ITask[]>([])
+    const [tasks, setTasks] = useState<TaskList>({Tasks: [], Loaded: false} as TaskList)
     const [viewedTask, setViewedTask] = useState<ITask | null>(null);
     const [handshakeRequestId, setHandshakeRequestId] = useState<string | null>(null);
     const [taskRefresh, setTaskRefresh] = useState<boolean>(false);
     const [DoPointsRefresh, setPointsRefresh] = useState<boolean>(false);
     const [points, setPoints] = useState<IUserPoints>({
             TotalPoints: 0,
-            Entries: 0
+            Entries: 0,
+            Loaded: false
     } as IUserPoints);
 
     const RequestPoints = async (): Promise<IUserPoints> => {
@@ -39,14 +40,16 @@ function TaskProvider({ children }: { children: ReactNode }) {
             return {
                 TotalPoints: 0,
                 Entries: 0,
-                IsError: true
+                IsError: true,
+                Loaded: true
             } as IUserPoints;
         }
 
         return {
             TotalPoints: res.points,
             Entries: res.entries,
-            IsError: false
+            IsError: false,
+            Loaded: true
         } as IUserPoints;
     }
 

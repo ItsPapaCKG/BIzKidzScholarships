@@ -10,7 +10,7 @@ using BizKidzScholarships.Data.Entities;
 using BizKidzScholarships.Data.Enums;
 using BizKidzScholarships.Data.Models;
 using BizKidzScholarships.Data.NetworkedModels;
-
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -88,12 +88,14 @@ namespace BizKidzScholarships.API.Services
 
         public async Task<ResponseModel> RegisterUserProfile(Guid userId, RegisterDTO registration)
         {
-            var profile = _mapper.Map<UpdateUserProfileDTO>(registration);
+            var profile = _mapper.Map<UserProfileDTO>(registration);
+
+            profile.ProfileComplete = false;
 
             return await SetUserProfile(userId, profile);
         }
 
-        public async Task<ResponseModel> SetUserProfile(Guid userId,UpdateUserProfileDTO profile, bool isRegister = false)
+        public async Task<ResponseModel> SetUserProfile(Guid userId,UserProfileDTO profile, bool isRegister = false)
         {
             ResponseModel response = new();
 
@@ -161,6 +163,7 @@ namespace BizKidzScholarships.API.Services
             if (!existing) return false;
 
             var ent = _mapper.Map<UserProfile>(profile);
+            ent.ProfileComplete = true;
 
             var result = await SafeUpdateAsync(ent);
 

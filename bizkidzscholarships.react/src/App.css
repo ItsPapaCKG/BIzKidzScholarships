@@ -137,6 +137,10 @@ input[type="file"]::file-selector-button {
   height: 100%;
 }
 
+main {
+    padding-top: 120px;
+  }
+
 @media only screen and (max-width: 600px) {
   .navbarLogo {
     width: 60px;

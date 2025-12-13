@@ -35,7 +35,8 @@ export interface IUserProfile {
     Email: string,
     PhoneNumber: string,
     BusinessLogoKey: string,
-    Birthday: Date
+    Birthday: Date,
+    Loaded: boolean
 }
 
 export interface ITaskJSON {
@@ -65,7 +66,8 @@ export interface ITask {
 export interface IUserPoints {
     TotalPoints: number,
     Entries: number,
-    IsError: boolean
+    IsError: boolean,
+    Loaded: boolean
 }
 
 export interface IDashboardContext {
@@ -153,6 +155,11 @@ export interface RegisterJSON extends LoginJSON {
     Birthday: string,
     PhoneNumber: number,
     ConfirmPassword: string
+}
+
+export interface TaskList {
+    Tasks: ITask[],
+    Loaded: boolean
 }
 
 export default '.'

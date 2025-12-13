@@ -31,9 +31,10 @@ function UserPoints() {
       }
     }, [DoPointsRefresh])
 
-  return (
-      <div className="card p-3 userpoints h-100 border-info">
-        <div className="card-body d-flex flex-column justify-content-center">
+  if (!points.Loaded) return (<></>)
+  else return (
+      <div className="card p-3 userpoints border-info flex-fill">
+        <div className="card-body">
           <div className="row text-center">
             <div className="col">
             <h4>Points:</h4>

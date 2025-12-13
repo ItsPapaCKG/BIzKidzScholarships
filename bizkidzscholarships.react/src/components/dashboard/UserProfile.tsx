@@ -26,13 +26,13 @@ function UserProfile() {
         getProfile();
     }, [userHasNotRegisteredProfile]);
 
-    if (userProfile == null && !userHasNotRegisteredProfile) return <p>Loading Profile...</p>
-    else if (userHasNotRegisteredProfile && userProfile == null) return <EditProfile />
+    if (userHasNotRegisteredProfile) return <EditProfile />
+    else if (!userProfile.Loaded) return (<></>)
     else if (userProfile != null)
         return (
             <>
                 
-                    <div className="d-flex gap-3 userProfile card" >
+                    <div className="d-flex gap-3 userProfile card flex-fill" >
                         { editMode ? 
                             <EditProfile />
                                 :

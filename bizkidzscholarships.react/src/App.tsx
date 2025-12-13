@@ -58,7 +58,7 @@ function App({ Mode }: AppProps) {
                 
             </nav>
 
-            <main className="flex-grow-1 d-flex justify-content-center align-items-center container-xl h-100 mt-0">
+            <main className="flex-grow-1 d-flex justify-content-center container-xl h-100 mt-5">
                 {isAuthenticated && Mode == AppMode.Dashboard && (<Dashboard/>)}
 
                 {isAuthenticated && Mode == AppMode.Admin && (<AdminProvider><AdminDashboard /></AdminProvider>)}

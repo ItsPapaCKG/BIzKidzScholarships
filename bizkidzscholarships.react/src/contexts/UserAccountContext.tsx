@@ -32,7 +32,7 @@ const UserAccountContext = createContext<userAccountContextType>({} as userAccou
 function UserAccountProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userHasNoProfile, setUserHasNoProfile] = useState(false);
-    const [userProfile, setUserProfile] = useState({Birthday: new Date()} as IUserProfile);
+    const [userProfile, setUserProfile] = useState({Birthday: new Date(), Loaded: false} as IUserProfile);
     const [editMode, setEditMode] = useState(false);
     const [userCookie, setUserCookie] = useState<UserCookieJSON>({roles: [] as string[]} as UserCookieJSON)
 
@@ -63,7 +63,8 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
             BusinessName: jsonprofile.businessName,
             PhoneNumber: jsonprofile.phoneNumber,
             BusinessLogoKey: jsonprofile.businessLogoKey,
-            Birthday: new Date(jsonprofile.birthday)
+            Birthday: new Date(jsonprofile.birthday),
+            Loaded: true
         }
 
         setUserProfile(profile);

@@ -71,9 +71,9 @@ function EditProfile() {
         <>
         <div className="card-body container p-4">
             <form onSubmit={handleSubmit}>
-                <div className="row justify-content-center m-4">
-                    <div className="col-12 col-md-8">
-                        <img src={userProfile.BusinessLogoKey} className="m-0"/>
+                <div className="row justify-content-center m-2">
+                    <div className="col-12 col-md-8 profile-ctn">
+                        <img src={userProfile.BusinessLogoKey} className="img-fluid w-50 m-0" />
                     </div>
                 </div>
 
@@ -93,7 +93,7 @@ function EditProfile() {
 
                         <div className="input-group mb-3">
                             <span className="input-group-text" id="inputGroup-sizing-default">Email</span>
-                            <input type="text" name="BusinessEmail" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userProfile.BusinessEmail}/>
+                            <input type="text" name="BusinessEmail" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userProfile.Email}/>
                         </div>
 
                         <div className="input-group mb-3">
