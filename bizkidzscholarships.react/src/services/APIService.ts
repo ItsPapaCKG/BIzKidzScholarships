@@ -102,6 +102,13 @@ export async function APICall<Output = unknown, Input = unknown>(urlPath: string
         } as APIResponse<Output>
     }
 
+    if (res.headers.get("Content-Length") === "0") {
+        return {
+            success: true,
+            data: {}
+        } as APIResponse<Output>
+    }
+
     var json = await res.json() as Output;
 
     return {

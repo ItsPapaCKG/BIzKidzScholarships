@@ -1,4 +1,5 @@
-﻿using BizKidzScholarships.Data.Entities;
+﻿using BizKidzScholarships.Data.Base;
+using BizKidzScholarships.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,11 +19,13 @@ namespace BizKidzScholarships.Data.dto
         [MaxLength(40)]
         public required string LastName { get; set; }
 
+        public DateTimeOffset Birthday { get; set; }
+
         [MaxLength(12)]
         public string? PhoneNumber { get; set; }
 
         [MaxLength(40)]
-        public string? BusinessEmail { get; set; }
+        public string? Email { get; set; }
 
         [MaxLength(60)]
         public string? BusinessName { get; set; }
@@ -32,7 +35,7 @@ namespace BizKidzScholarships.Data.dto
     }
 
     // TODO: Include step to upload byte[] image to S3, retrieve the link, and set to profile column LogoKey
-    public class UpdateUserProfileDTO
+    public class UpdateUserProfileDTO : DTOBase
     {
         [MaxLength(30)]
         public string? FirstName { get; set; }
@@ -44,7 +47,9 @@ namespace BizKidzScholarships.Data.dto
         public string? PhoneNumber { get; set; }
 
         [MaxLength(40)]
-        public string? BusinessEmail { get; set; }
+        public string? Email { get; set; }
+
+        public DateTimeOffset Birthday { get; set; }
 
         [MaxLength(60)]
         public string? BusinessName { get; set; }

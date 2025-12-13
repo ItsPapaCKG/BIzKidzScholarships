@@ -32,9 +32,10 @@ export interface IUserProfile {
     BusinessName: string,
     FirstName: string,
     LastName: string,
-    BusinessEmail: string,
+    Email: string,
     PhoneNumber: string,
-    BusinessLogoKey: string
+    BusinessLogoKey: string,
+    Birthday: Date
 }
 
 export interface ITaskJSON {
@@ -149,7 +150,7 @@ export interface LoginJSON {
 export interface RegisterJSON extends LoginJSON {
     FirstName: string,
     LastName: string,
-    Birthday: Date,
+    Birthday: string,
     PhoneNumber: number,
     ConfirmPassword: string
 }

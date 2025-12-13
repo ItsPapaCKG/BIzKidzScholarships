@@ -17,8 +17,10 @@ namespace BizKidzScholarships.Data.Entities
         [MaxLength(12)]
         public string? PhoneNumber { get; set; }
 
+        public DateTimeOffset Birthday { get; set; }
+
         [MaxLength(40)]
-        public string? BusinessEmail { get; set; }
+        public string? Email { get; set; }
 
         [MaxLength(60)]
         public string? BusinessName { get; set; }

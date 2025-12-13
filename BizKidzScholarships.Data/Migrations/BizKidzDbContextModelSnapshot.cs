@@ -56,6 +56,35 @@ namespace BizKidzScholarships.Data.Migrations
                     b.ToTable("ActionRequests");
                 });
 
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.ConfigurationItem", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Configuration");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "DefaultProfilePicture",
+                            Created = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Updated = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Value = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/years-logo.avif"
+                        });
+                });
+
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskItem", b =>
                 {
                     b.Property<int>("Id")
@@ -116,7 +145,7 @@ namespace BizKidzScholarships.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 8, 2, 56, 19, 68, DateTimeKind.Unspecified).AddTicks(9257), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2025, 12, 13, 1, 55, 23, 140, DateTimeKind.Unspecified).AddTicks(5033), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.",
@@ -126,12 +155,12 @@ namespace BizKidzScholarships.Data.Migrations
                             TaskPromptTitle = "Upload a Photo of you and your team operating your Business at a Biz Kidz Market",
                             TaskTitle = "Sell your products at a Biz Kidz Market",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 8, 2, 56, 19, 68, DateTimeKind.Unspecified).AddTicks(9270), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 12, 13, 1, 55, 23, 140, DateTimeKind.Unspecified).AddTicks(5042), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 8, 2, 56, 19, 68, DateTimeKind.Unspecified).AddTicks(9273), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2025, 12, 13, 1, 55, 23, 140, DateTimeKind.Unspecified).AddTicks(5045), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Give your business's elevator pitch in 90 seconds or less.",
@@ -141,12 +170,12 @@ namespace BizKidzScholarships.Data.Migrations
                             TaskPromptTitle = "Upload Pitch Video",
                             TaskTitle = "Submit a 90-second Pitch Video",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 8, 2, 56, 19, 68, DateTimeKind.Unspecified).AddTicks(9274), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 12, 13, 1, 55, 23, 140, DateTimeKind.Unspecified).AddTicks(5045), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 3,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 8, 2, 56, 19, 68, DateTimeKind.Unspecified).AddTicks(9276), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2025, 12, 13, 1, 55, 23, 140, DateTimeKind.Unspecified).AddTicks(5048), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Take the quiz and show what you've learned from the Launch Kit.",
@@ -156,7 +185,7 @@ namespace BizKidzScholarships.Data.Migrations
                             TaskPromptTitle = "Pass the Quiz for the Biz Kidz Launch Kit",
                             TaskTitle = "Complete the Biz Kidz Launch Kit",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 8, 2, 56, 19, 68, DateTimeKind.Unspecified).AddTicks(9277), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 12, 13, 1, 55, 23, 140, DateTimeKind.Unspecified).AddTicks(5048), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
@@ -239,9 +268,8 @@ namespace BizKidzScholarships.Data.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("BusinessEmail")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                    b.Property<DateTimeOffset>("Birthday")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("BusinessLogoKey")
                         .HasMaxLength(150)
@@ -253,6 +281,10 @@ namespace BizKidzScholarships.Data.Migrations
 
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

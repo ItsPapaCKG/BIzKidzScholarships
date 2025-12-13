@@ -29,5 +29,7 @@ namespace BizKidzScholarships.API.Services
         Task<List<ResponseModel>> SetGlobalTasksForUsers(List<Guid> userIds);
 
         Task<List<ResponseModel>> SetGlobalTasksAllUsers();
+
+        Task<ResponseModel> RegisterUserProfile(Guid userId, RegisterDTO registration);
     }
 }

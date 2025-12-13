@@ -85,9 +85,22 @@ namespace BizKidzScholarships.API.Services
         }
 
         // TODO: Include step to upload byte[] image to S3, retrieve the link, and set to profile column LogoKey
+
+        public async Task<ResponseModel> RegisterUserProfile(Guid userId, RegisterDTO registration)
+        {
+            var profile = _mapper.Map<UpdateUserProfileDTO>(registration);
+
+            return await SetUserProfile(userId, profile);
+        }
+
         public async Task<ResponseModel> SetUserProfile(Guid userId,UpdateUserProfileDTO profile, bool isRegister = false)
         {
             ResponseModel response = new();
+
+            if (string.IsNullOrEmpty(profile.BusinessLogoKey))
+            {
+                profile.BusinessLogoKey = _context.Configuration.FirstOrDefault(c => c.Id == "DefaultProfilePicture")?.Value;
+            }
 
             if (isRegister && profile.FirstName is null || profile.LastName is null)
             {
@@ -212,6 +225,7 @@ namespace BizKidzScholarships.API.Services
                                   select new DashboardTaskDTO { TaskTitle = task.TaskTitle, Reward = task.Reward, Status = TaskStatus.Open, TaskId = task.Id, TaskDescription = task.TaskDescription, TaskImageKey = task.TaskImageKey, TaskType = task.TaskType };
 
             var userTasksQueryable = from userTask in _context.UserTasks
+                                     where userTask.UserId == userId
                                      select userTask.TaskId;
 
             var userTasks = await userTasksQueryable.ToListAsync();

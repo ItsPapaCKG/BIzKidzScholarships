@@ -8,17 +8,23 @@ import { useEffect } from "react";
 
 function Dashboard() {
   const context = UseUserAccountContext();
-  const cookie = context.userCookie; 
+  const [cookie] = [context.userCookie]; 
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!cookie.email) {
+      navigate("/login");
+    }
+    
     if (!cookie.roles.includes("Kid")) {
             navigate("/access-denied")
-        }
+            return;
+    }
 
     if (!context.isAuthenticated)
     {
       navigate("/login")
+      return;
     }
 
   }, [cookie])

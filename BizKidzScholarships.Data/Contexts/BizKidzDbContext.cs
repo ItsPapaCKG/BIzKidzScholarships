@@ -20,6 +20,8 @@ namespace BizKidzScholarships.Data.Contexts
 
         public DbSet<TaskSubmission> Submissions { get; set; }
 
+        public DbSet<ConfigurationItem> Configuration { get; set; }
+
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
 
@@ -45,6 +47,17 @@ namespace BizKidzScholarships.Data.Contexts
             //""");
 
             //migrationBuilder.Sql(""" DROP VIEW "UserActivityView"; """);
+
+            modelBuilder.Entity<ConfigurationItem>(ci => {
+                ci.HasKey(x => x.Id);
+            });
+
+            modelBuilder.Entity<ConfigurationItem>().HasData([
+                    new ConfigurationItem() {
+                        Id = "DefaultProfilePicture",
+                        Value="https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/years-logo.avif"
+                    }
+                ]);
 
             modelBuilder.Entity<UserProfile>(s =>
             {

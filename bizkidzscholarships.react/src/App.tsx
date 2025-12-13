@@ -20,33 +20,31 @@ function App({ Mode }: AppProps) {
     const navigate = useNavigate();
     const userAccountContext = UseUserAccountContext();
     const isAuthenticated = userAccountContext.isAuthenticated;
-    const [setUserCookie] = [userAccountContext.setUserCookie];
-
+    const [cookie, setUserCookie] = [userAccountContext.userCookie, userAccountContext.setUserCookie];
+    const populateCookie = userAccountContext.populateCookie;
+    
     const check = async () => {
-        var res = await fetch("https://localhost:7095/auth/me", { credentials: "include" });
+        var ac = new AbortController();
 
-        if (!res.ok) {
-            navigate("/login")
-            return;
-        }
+        ; await populateCookie();
 
-        var cookie = await res.json() as UserCookieJSON;
+        
 
-        setUserCookie(cookie);
-        userAccountContext.setIsAuthenticated(true);
+        return () => ac.abort()
     }
 
     useEffect(() => {
-        if (Mode == AppMode.Login || Mode == AppMode.Register) {
+        check();
+    }, []);
+
+    useEffect(() => {
+        if (!cookie.email) {
+            navigate('/login')
             return;
         }
 
-        var ac = new AbortController();
-        check();
-
-        return () => ac.abort()
-
-    }, []);
+        navigate("/");
+    }, [cookie]);
 
     return (
         <>
@@ -54,7 +52,7 @@ function App({ Mode }: AppProps) {
             <nav className='navbar navbar-expand-lg navbar-light bg-white fixed-top h-10 shadow-lg'>
                 <div className='container-xl'>
                     <a className='navbar-brand ms-5'>
-                        <img className="navbarLogo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png" height="120"/>
+                        <img className="navbarLogo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png" height="100"/>
                     </a>
                 </div>
                 

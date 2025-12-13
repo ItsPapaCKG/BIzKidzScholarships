@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { IUserProfile, UserCookieJSON } from "../models/ViewModels";
-import { GetDashboardPoints } from "../services/UserDataService";
+import { useNavigate } from "react-router-dom";
 
 export type userAccountContextType = {
     isAuthenticated: boolean,
@@ -14,15 +14,17 @@ export type userAccountContextType = {
     setEditMode: React.Dispatch<React.SetStateAction<boolean>>,
     userCookie: UserCookieJSON,
     setUserCookie: React.Dispatch<React.SetStateAction<UserCookieJSON>>
+    populateCookie: () => Promise<void>
 }
 interface UserProfileJSON {
     userId: number,
     firstName: string,
     lastName: string,
     phoneNumber: string,
-    businessEmail: string,
+    email: string,
     businessName: string
-    businessLogoKey: string
+    businessLogoKey: string,
+    birthday: Date
 }
 
 const UserAccountContext = createContext<userAccountContextType>({} as userAccountContextType);
@@ -30,9 +32,9 @@ const UserAccountContext = createContext<userAccountContextType>({} as userAccou
 function UserAccountProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userHasNoProfile, setUserHasNoProfile] = useState(false);
-    const [userProfile, setUserProfile] = useState({} as IUserProfile);
+    const [userProfile, setUserProfile] = useState({Birthday: new Date()} as IUserProfile);
     const [editMode, setEditMode] = useState(false);
-    const [userCookie, setUserCookie] = useState<UserCookieJSON>({} as UserCookieJSON)
+    const [userCookie, setUserCookie] = useState<UserCookieJSON>({roles: [] as string[]} as UserCookieJSON)
 
     const GetUserProfile = async () => {
         var res = await fetch("https://localhost:7095/api/user", {
@@ -57,18 +59,32 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
         var profile: IUserProfile = {
             FirstName: jsonprofile.firstName,
             LastName: jsonprofile.lastName,
-            BusinessEmail: jsonprofile.businessEmail,
+            Email: jsonprofile.email,
             BusinessName: jsonprofile.businessName,
             PhoneNumber: jsonprofile.phoneNumber,
-            BusinessLogoKey: jsonprofile.businessLogoKey
+            BusinessLogoKey: jsonprofile.businessLogoKey,
+            Birthday: new Date(jsonprofile.birthday)
         }
 
         setUserProfile(profile);
         return profile;
     }
 
+    const populateCookie = async () => {
+            var res = await fetch("https://localhost:7095/auth/me", { credentials: "include" });
+    
+            if (!res.ok) {
+                return;
+            }
+    
+            var cookie = await res.json() as UserCookieJSON;
+    
+            setUserCookie(cookie);
+            setIsAuthenticated(true);
+        }
+
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie }}>
           { children }
       </UserAccountContext.Provider>
   );

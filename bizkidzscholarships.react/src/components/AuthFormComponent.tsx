@@ -1,19 +1,34 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { Form, useNavigate } from "react-router";
 import { type LoginJSON, type IUserProfile, type RegisterJSON } from "../models/ViewModels";
 import { APICall, ResponseCode, ResponseError } from "../services/APIService";
 import { AttemptAuth } from "../services/AuthService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { UseUserAccountContext } from "../contexts/UserAccountContext";
 
 export interface LoginProps {
     RegisterMode?: boolean
 }
 
 function AuthFormComponent({ RegisterMode = false }: LoginProps) {
-    const [errorState, setErrorState] = useState('');
+    const userDataContext = UseUserAccountContext();
+    const [setIsAuthenticated] = [userDataContext.setIsAuthenticated];
+    const tryGetCookie = userDataContext.populateCookie;
 
-    const [userForm, setUserForm] = useState<RegisterJSON>({ Birthday: new Date()} as RegisterJSON)
+    const [errorState, setErrorState] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [userForm, setUserForm] = useState<RegisterJSON>({
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Birthday: "",
+        Password: "",
+        ConfirmPassword: ""
+     } as RegisterJSON)
+    const [birthday, setDateBirthday] = useState<Date | null>(null);
+    const [validForm, setIsValid] = useState(false);
 
     const navigate = useNavigate();
 
@@ -23,29 +38,13 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         setUserForm(prev => ({...prev, [name]: value}));
     }
 
-    const formValid = (): boolean => {
-        if (!(userForm.Email.length > 10)) {
-            setErrorState('Invalid email address.')
-            return false;
-        }
-
-        if (!(userForm.Password.length > 8)) {
-            setErrorState('Invalid password.')
-            return false;
-        }
-
-
-        if (RegisterMode && userForm.Password != userForm.ConfirmPassword) {
-            setErrorState('Passwords do not match.')
-            return false;
-        }
-
-        return true;
-    }
-
     const login = async () => {
         let res = await AttemptAuth(userForm);
         if (res.success) {
+            await tryGetCookie();
+
+            setIsAuthenticated(true);
+
             navigate("/");
             return;
         }
@@ -68,14 +67,40 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         if (!res.success)
         {
             setErrorState(res.error.message ?? "An unspecified error has occurred. Please contact us for assistance.");
+            return;
         }
 
-        navigate("/");
+        setIsLoading(true);
+
+        // buffer to allow the server to internally process the registration
+        //await setTimeout(() => {}, 5000);
+
+        await login();
+        setIsLoading(false);
     };
 
     const setBirthday = (date: Date | null) => {
-        setUserForm(prev => ({...prev, ["Birthday"]: date ?? new Date()}));
+        let d = date?.toISOString() ?? "";
+        setDateBirthday(date);
+
+        setUserForm(prev => ({...prev, ["Birthday"]: d ?? ""}));
     };
+
+    useEffect(() => {
+        let valid: boolean = userForm.Email.includes("@");
+        valid = userForm.Birthday != null;
+        valid = userForm.FirstName != "" && userForm.LastName != "";
+        valid = userForm.Password == userForm.ConfirmPassword;
+        valid = userForm.Password.length > 0;
+        
+        if (valid) {
+            setIsValid(true);
+            return;
+        } else {
+            setIsValid(false);
+        }
+
+    },[userForm]);
 
     return (
         <div className="popup-wrapper bg-white d-flex justify-content-center align-items-center shadow-lg rounded-5 p-5">
@@ -120,12 +145,13 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                             <div className="flex-grow-1">
                                                 <DatePicker
                                                     className="form-control rounded-0 rounded-end w-100"
-                                                    selected={userForm.Birthday}
                                                     onChange={(date) => {setBirthday(date);}}
+                                                    selected={birthday}
                                                     dateFormat="yyyy-MM-dd"
                                                     isClearable
                                                     placeholderText="Select your birthday..."
                                                     aria-describedby="inputGroup-sizing-default"
+                                                    showYearDropdown
                                                 />
                                             </div>
                                         </div>
@@ -173,7 +199,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
 
                                 <div className="row">
                                     <div className="col">
-                                        <button onClick={e => { e.preventDefault(); register(); } } className="btn btn-lg btn-success w-100">Register</button>
+                                        <button onClick={e => { e.preventDefault(); register(); } } disabled={!validForm || isLoading} className="btn btn-lg btn-success w-100">{ isLoading ? "Loading..." : "Register"}</button>
                                     </div>
                                 </div>
                             </>
@@ -208,7 +234,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                         }
                         
 
-                        <p className="danger">{errorState}</p>
+                        <p className="text-danger" style={{whiteSpace: "pre-line"}}>{errorState}</p>
 
 
                     </div>

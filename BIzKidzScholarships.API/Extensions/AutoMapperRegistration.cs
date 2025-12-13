@@ -1,4 +1,5 @@
-﻿using BizKidzScholarships.Data.dto;
+﻿using BizKidzScholarships.Data.Base;
+using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
 
 namespace BizKidzScholarships.API.Extensions
@@ -19,6 +20,8 @@ namespace BizKidzScholarships.API.Extensions
                 cfg.CreateMap<UserProfile, UpdateUserProfileDTO>();
                 cfg.CreateMap<UpdateUserProfileDTO, UserProfile>()
                     .ForMember(m => m.UserId, a => a.Ignore());
+
+                cfg.CreateMap<RegisterDTO, UpdateUserProfileDTO>();
             });
         }
     }

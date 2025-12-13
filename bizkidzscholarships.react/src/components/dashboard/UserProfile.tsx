@@ -51,13 +51,17 @@ function UserProfile() {
                                     <p className="p-2">
                                         <strong>Student Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
                                     </p>
+
+                                    <p className="p-2">
+                                        <strong>Birthday</strong>: {userProfile.Birthday.toDateString()}
+                                    </p>
                                     
                                     <p className="p-2">
                                         <strong>Business Name</strong>: {userProfile.BusinessName}
                                     </p>
 
                                     <p className="p-2">
-                                        <strong>Student Email</strong>: {userProfile.BusinessEmail}
+                                        <strong>Student Email</strong>: {userProfile.Email}
                                     </p>
 
                                     <p className="p-2">

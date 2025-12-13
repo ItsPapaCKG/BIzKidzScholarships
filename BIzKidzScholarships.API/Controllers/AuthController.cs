@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text;
 
 namespace BizKidzScholarships.API.Controllers
 {
@@ -34,7 +35,25 @@ namespace BizKidzScholarships.API.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterDTO registration)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                var sb = new StringBuilder();
+                
+                foreach(var entry in ModelState)
+                {
+                    var errors = entry.Value.Errors.Select(e => e.ErrorMessage).ToList();
+                    errors.ForEach(m => { sb.AppendLine(m); sb.AppendLine(); });
+                }
+
+                var errorMsg = sb.ToString();
+
+                return BadRequest(errorMsg);
+            }
+
+            if (registration.Password != registration.ConfirmPassword)
+            {
+                return BadRequest("Passwords do not match.");
+            }
+                
 
             var newUser = new IdentityUser<Guid>
             {
@@ -45,14 +64,31 @@ namespace BizKidzScholarships.API.Controllers
 
             var result = await _userManager.CreateAsync(newUser, registration.Password);
 
-            await _userManager.AddToRoleAsync(newUser, "Kid");
-
             if (!result.Succeeded)
-                return BadRequest(result.Errors);
+            {
+                var errorList = result.Errors.Select(e => e.Description).ToList();
+                var sb = new StringBuilder();
+
+                errorList.ForEach(e => { sb.Append(e); sb.Append("\n"); });
+
+                return BadRequest(sb.ToString());
+            }
+                
+
+            var roleResult = await _userManager.AddToRoleAsync(newUser, "Kid");
+
+            if (!roleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(newUser);
+
+                return BadRequest(roleResult.Errors);
+            }
+
+            await _udService.RegisterUserProfile(newUser.Id, registration);
 
             await _udService.SetGlobalTasksForUser(newUser.Id);
 
-            return Ok(new { Message = "User registered successfully", Redirect = "http://example.com/" });
+            return Ok();
         }
 
         [HttpPost("[action]")]
