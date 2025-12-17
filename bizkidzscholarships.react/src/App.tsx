@@ -59,7 +59,7 @@ function App({ Mode }: AppProps) {
                     <AuthFormComponent />
                 </>)}
 
-                {!isAuthenticated && Mode == AppMode.Register && (<>
+                {Mode == AppMode.Register && (<>
                     <AuthFormComponent RegisterMode={true}/>
                 </>)}
             </main>

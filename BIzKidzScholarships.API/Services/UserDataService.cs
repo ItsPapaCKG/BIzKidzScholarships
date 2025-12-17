@@ -38,7 +38,11 @@ namespace BizKidzScholarships.API.Services
                 .GroupBy(p => p.TaskId)
                 .Select(t => t.OrderByDescending(up => up.AttemptNumber).First().Points)
                 .Sum();
-            int totalEntries = totalPoints / 100; // TODO: Points per entry configuration value
+
+            int entriesCost;
+            var entriesConfigured = int.TryParse(_context.Configuration.FirstOrDefault(c => c.Id == "EntriesCost").Value, out entriesCost);
+            
+            int totalEntries = totalPoints / (entriesConfigured && entriesCost != 0 ? entriesCost : 100); // TODO: Points per entry configuration value
 
             if (noUpdates)
             {
