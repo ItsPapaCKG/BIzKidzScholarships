@@ -47,7 +47,7 @@ function UserProfile() {
                                     <img src={userProfile.BusinessLogoKey} />
                                 </div>
 
-                                <div className="col">
+                                <div className="col d-flex flex-column justify-content-center">
                                     <p className="p-2">
                                         <strong>Student Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
                                     </p>

@@ -21,7 +21,12 @@ namespace BizKidzScholarships.API.Extensions
                 cfg.CreateMap<UpdateUserProfileDTO, UserProfile>()
                     .ForMember(m => m.UserId, a => a.Ignore());
 
+                cfg.CreateMap<UpdateUserProfileDTO, UserProfileDTO>()
+                    .ForMember(d => d.UserId, o => o.Ignore());
+
                 cfg.CreateMap<RegisterDTO, UpdateUserProfileDTO>();
+
+                cfg.CreateMap<RegisterDTO, UserProfileDTO>();
             });
         }
     }

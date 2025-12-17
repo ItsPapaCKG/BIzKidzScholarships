@@ -5,11 +5,14 @@ import { ActionType } from "../../models/ViewModels";
 
 interface ImageUploadProps {
     action: ActionType,
-    setFileUrl?: (url: string) => void
+    setFileUrl?: (url: string) => void,
+    isVideo?: boolean
 }
 
-function FileUpload({ action, setFileUrl }: ImageUploadProps) {
+function FileUpload({ action, setFileUrl, isVideo }: ImageUploadProps) {
     let fileUploadRef = useRef<HTMLInputElement>(null);
+
+    const isVideoSafe = isVideo ?? false;
 
     const [statefulFile, setCurrentFile] = useState<File | undefined>(undefined);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -76,7 +79,8 @@ function FileUpload({ action, setFileUrl }: ImageUploadProps) {
 
                 <label className="upload-label">
                 
-                    <input type="file" ref={ fileUploadRef } style={{ display: "none" } } onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); } }/>
+                    {!isVideoSafe && <input accept="image/*" type="file" ref={ fileUploadRef } style={{ display: "none" } } onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); } }/>}
+                    {isVideoSafe && <input accept="video/*" type="file" ref={ fileUploadRef } style={{ display: "none" } } onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); } }/>}
                     <button type="button" className="btn btn-light btn-lg border-black" onClick={uploadClick }>Upload File</button>
                     
                 </label>

@@ -52,7 +52,7 @@ namespace BizKidzScholarships.API.Controllers
 
         [HttpPut("[action]")]
         // TODO: Include step to upload byte[] image to S3, retrieve the link, and set to profile column LogoKey
-        public async Task<IActionResult> UpdateProfile([FromBody] UserProfileDTO profile)
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserProfileDTO profile)
         {
             var result = await _udService.SetUserProfile(_user.Id, profile);
 

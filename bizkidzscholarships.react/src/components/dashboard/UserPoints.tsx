@@ -34,8 +34,8 @@ function UserPoints() {
   if (!points.Loaded) return (<></>)
   else return (
       <div className="card p-3 userpoints border-info flex-fill">
-        <div className="card-body">
-          <div className="row text-center">
+        <div className="card-body container d-flex flex-column justify-content-center">
+          <div className="row text-center align-items-middle">
             <div className="col">
             <h4>Points:</h4>
               <p>{points.TotalPoints}</p>

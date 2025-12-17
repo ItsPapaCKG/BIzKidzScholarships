@@ -26,7 +26,7 @@ function App({ Mode }: AppProps) {
     const check = async () => {
         var ac = new AbortController();
 
-        ; await populateCookie();
+        await populateCookie();
 
         
 
@@ -38,12 +38,14 @@ function App({ Mode }: AppProps) {
     }, []);
 
     useEffect(() => {
-        if (!cookie.email) {
+        if (!cookie.email && Mode != AppMode.Register) {
             navigate('/login')
             return;
         }
 
-        navigate("/");
+        if (Mode != AppMode.Register) {
+            navigate("/");
+        }
     }, [cookie]);
 
     return (

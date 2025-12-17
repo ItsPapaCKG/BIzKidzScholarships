@@ -3,7 +3,6 @@ import { ActionType, TaskType } from "../../models/ViewModels";
 import FileUpload from "./FileUpload";
 import Quiz from "./Quiz";
 import SocialMedia from "./SocialMedia";
-import VideoUpload from "./VideoUpload";
 
 function TaskWindow() {
 
@@ -25,7 +24,7 @@ function TaskWindow() {
 
                     {task.TaskType == TaskType.SocialMedia && <SocialMedia/> }
                     {task.TaskType == TaskType.ImageUpload && <FileUpload action={ActionType.TaskUpload}/> }
-                    {task.TaskType == TaskType.VideoUpload && <VideoUpload/> }
+                    {task.TaskType == TaskType.VideoUpload && <FileUpload action={ActionType.TaskUpload} isVideo={true}/> }
                     {task.TaskType == TaskType.Quiz && <Quiz/> }
                     {task.TaskType == TaskType.Contest && <p>Contest goes here</p> }
                   

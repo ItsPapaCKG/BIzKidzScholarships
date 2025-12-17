@@ -95,6 +95,14 @@ namespace BizKidzScholarships.API.Services
             return await SetUserProfile(userId, profile);
         }
 
+        public async Task<ResponseModel> SetUserProfile(Guid userId, UpdateUserProfileDTO profile, bool isRegister = false)
+        {
+            var pr = _mapper.Map<UserProfileDTO>(profile);
+            pr.UserId = userId;
+
+            return await SetUserProfile(userId, pr, isRegister);
+        }
+
         public async Task<ResponseModel> SetUserProfile(Guid userId,UserProfileDTO profile, bool isRegister = false)
         {
             ResponseModel response = new();

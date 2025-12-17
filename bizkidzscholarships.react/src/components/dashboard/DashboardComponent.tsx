@@ -47,7 +47,7 @@ function Dashboard() {
           </div>
 
           <div className="row g-4 align-items-stretch">
-            <div className="col-12 col-md-4 order-1 order-md-2 d-flex">
+            <div className="col-12 col-md-4 order-1 order-md-2 d-flex flex-column justify-content-center">
               <UserPoints/>
             </div>
 
