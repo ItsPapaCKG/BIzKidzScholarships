@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { IUserProfile, UserCookieJSON } from "../models/ViewModels";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +14,9 @@ export type userAccountContextType = {
     setEditMode: React.Dispatch<React.SetStateAction<boolean>>,
     userCookie: UserCookieJSON,
     setUserCookie: React.Dispatch<React.SetStateAction<UserCookieJSON>>
-    populateCookie: () => Promise<void>
+    populateCookie: () => Promise<void>,
+    loadingData: boolean,
+    setLoadingData: React.Dispatch<React.SetStateAction<boolean>>
 }
 interface UserProfileJSON {
     userId: number,
@@ -35,6 +37,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     const [userProfile, setUserProfile] = useState({Birthday: new Date(), Loaded: false} as IUserProfile);
     const [editMode, setEditMode] = useState(false);
     const [userCookie, setUserCookie] = useState<UserCookieJSON>({roles: [] as string[]} as UserCookieJSON)
+    const [loadingData, setLoadingData] = useState(true);
 
     const GetUserProfile = async () => {
         var res = await fetch("https://localhost:7095/api/user", {
@@ -75,6 +78,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
             var res = await fetch("https://localhost:7095/auth/me", { credentials: "include" });
     
             if (!res.ok) {
+                setIsAuthenticated(false);
                 return;
             }
     
@@ -82,10 +86,15 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     
             setUserCookie(cookie);
             setIsAuthenticated(true);
+            setLoadingData(false);
         }
 
+    useEffect(()=>{
+        populateCookie();
+    }, []);
+
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie, loadingData, setLoadingData }}>
           { children }
       </UserAccountContext.Provider>
   );

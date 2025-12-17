@@ -35,7 +35,7 @@ function TasksList() {
       <div className="row">
           {
               taskList.Tasks.map((task) => {
-                  return (<div className="col-md-6 col-xs mb-3"><Task key={ task.TaskId } task={ task } /></div>);
+                  return (<div key={ task.TaskId } className="col-md-6 col-xs mb-3"><Task task={ task } /></div>);
               }) 
           }
           <TaskWindow/>

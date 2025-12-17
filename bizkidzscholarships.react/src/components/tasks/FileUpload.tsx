@@ -93,9 +93,9 @@ function FileUpload({ action, setFileUrl, isVideo }: ImageUploadProps) {
 
                 <div className="m-auto" style={{ width: "70%" }}>
                     {previewUrl ? (
-                        <img src={previewUrl} className="object-cover w-100 h-100 taskWindowPreview d-none d-md-block" />
+                        isVideoSafe ? (<video src={previewUrl} preload="metadata" controls className="object-cover w-100 h-100 taskWindowPreview d-none d-md-block" controlsList="nodownload" playsInline/>) : (<img src={previewUrl} className="object-cover w-100 h-100 taskWindowPreview d-none d-md-block" />)
                     ) : (
-                        <span className="text-gray-400 text-sm m-auto text-center w-100">No image</span>
+                        <span className="text-gray-400 text-sm m-auto text-center w-100">No media</span>
                     )}
                 </div>
 

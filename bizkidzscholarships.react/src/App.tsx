@@ -21,29 +21,19 @@ function App({ Mode }: AppProps) {
     const userAccountContext = UseUserAccountContext();
     const isAuthenticated = userAccountContext.isAuthenticated;
     const [cookie, setUserCookie] = [userAccountContext.userCookie, userAccountContext.setUserCookie];
-    const populateCookie = userAccountContext.populateCookie;
+    const [loading] = [userAccountContext.loadingData];
     
-    const check = async () => {
-        var ac = new AbortController();
-
-        await populateCookie();
-
-        
-
-        return () => ac.abort()
-    }
-
     useEffect(() => {
-        check();
-    }, []);
+        if (loading) {
+            return;
+        }
 
-    useEffect(() => {
         if (!cookie.email && Mode != AppMode.Register) {
             navigate('/login')
             return;
         }
 
-        if (Mode != AppMode.Register) {
+        if (isAuthenticated && Mode == AppMode.Login) {
             navigate("/");
         }
     }, [cookie]);

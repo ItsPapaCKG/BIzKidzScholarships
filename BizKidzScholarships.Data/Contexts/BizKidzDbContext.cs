@@ -22,6 +22,8 @@ namespace BizKidzScholarships.Data.Contexts
 
         public DbSet<ConfigurationItem> Configuration { get; set; }
 
+        public DbSet<UserActivity> UserActivities { get; set; }
+
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
 
@@ -47,6 +49,12 @@ namespace BizKidzScholarships.Data.Contexts
             //""");
 
             //migrationBuilder.Sql(""" DROP VIEW "UserActivityView"; """);
+
+            modelBuilder.Entity<UserActivity>(ua => {
+                ua.HasNoKey();
+
+                ua.ToView("UserActivityView");
+            });
 
             modelBuilder.Entity<ConfigurationItem>(ci => {
                 ci.HasKey(x => x.Id);
