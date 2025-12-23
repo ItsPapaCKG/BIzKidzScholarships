@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System.Text.RegularExpressions;
 using TaskItem = BizKidzScholarships.Data.Entities.TaskItem;
 
 namespace BizKidzScholarships.Data.Contexts
@@ -23,6 +24,8 @@ namespace BizKidzScholarships.Data.Contexts
         public DbSet<ConfigurationItem> Configuration { get; set; }
 
         public DbSet<UserActivity> UserActivities { get; set; }
+
+        public DbSet<UserResult> UserResults { get; set; }
 
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
@@ -48,7 +51,29 @@ namespace BizKidzScholarships.Data.Contexts
             //    INNER JOIN "Tasks" T ON T."Id" = S."TaskId";
             //""");
 
+            //migrationBuilder.Sql("""
+            //                            CREATE OR REPLACE VIEW "AdminUserList" AS
+            //SELECT
+
+            //    "FirstName" || ' ' || "LastName" AS "Name", 
+            //    SUM(up."Points") AS "Points", 
+            //    SUM(up."Points") / COALESCE(c."Value"::int, 100) AS "Entries"
+            //FROM "AspNetUsers" u
+            //INNER JOIN "UserPoints" up ON u."Id" = up."UserId"
+            //INNER JOIN "Profiles" p ON p."UserId" = u."Id"
+            //LEFT JOIN "Configuration" c ON c."Id" = 'EntriesCost'
+            //GROUP BY p."FirstName", p."LastName", c."Value"
+            //""");
+
             //migrationBuilder.Sql(""" DROP VIEW "UserActivityView"; """);
+            //migrationBuilder.Sql(""" DROP VIEW "AdminUserList"; """);
+
+            modelBuilder.Entity<UserResult>(ur =>
+            {
+                ur.HasNoKey();
+
+                ur.ToView("AdminUserList");
+            });
 
             modelBuilder.Entity<UserActivity>(ua => {
                 ua.HasNoKey();
@@ -128,7 +153,7 @@ namespace BizKidzScholarships.Data.Contexts
                     IsGlobalTask = true,
                     Created = DateTime.UtcNow,
                     Updated = DateTime.UtcNow,
-                    TaskType = Enums.TaskType.FileUpload
+                    TaskType = Enums.TaskType.VideoUpload
                 },
                 new TaskItem
                 {
@@ -142,7 +167,7 @@ namespace BizKidzScholarships.Data.Contexts
                     Reward = 50,
                     Created = DateTime.UtcNow,
                     Updated = DateTime.UtcNow,
-                    TaskType = Enums.TaskType.FileUpload
+                    TaskType = Enums.TaskType.Quiz
                 },
             ]);
 

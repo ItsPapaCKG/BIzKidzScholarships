@@ -120,6 +120,13 @@ export interface UserActivityLog {
     ActivityDateTime: Date
 }
 
+export interface UserActivityLogJSON {
+    fullName: string,
+    task: string,
+    reward: number,
+    created: Date
+}
+
 export interface UserCookieJSON {
     userId: string,
     email: string,
@@ -160,6 +167,18 @@ export interface RegisterJSON extends LoginJSON {
 export interface TaskList {
     Tasks: ITask[],
     Loaded: boolean
+}
+
+export interface UserResult {
+    Name: string,
+    Points: number,
+    Entries: number
+}
+
+export interface UserResultJSON {
+    name: string,
+    points: number,
+    entries: number
 }
 
 export default '.'

@@ -40,7 +40,7 @@ namespace BizKidzScholarships.API.Services
                 .Sum();
 
             int entriesCost;
-            var entriesConfigured = int.TryParse(_context.Configuration.FirstOrDefault(c => c.Id == "EntriesCost").Value, out entriesCost);
+            var entriesConfigured = int.TryParse(_context.Configuration.FirstOrDefault(c => c.Id == "EntriesCost")?.Value, out entriesCost);
             
             int totalEntries = totalPoints / (entriesConfigured && entriesCost != 0 ? entriesCost : 100); // TODO: Points per entry configuration value
 

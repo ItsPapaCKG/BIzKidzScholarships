@@ -1,15 +1,36 @@
-import type { UserActivityLog } from "../models/ViewModels";
+import { type UserActivityLogJSON, type UserActivityLog, type UserResult, type UserResultJSON } from "../models/ViewModels";
+import { APICall } from "./APIService";
 
 export async function GetUserActivities(): Promise<UserActivityLog[]> {
     // TODO send a request to get the UserActivityView
 
-    let logs = [
-        { FullName: "Grant Putnam", TaskName: "Business Photo Upload", Reward: 10, ActivityDateTime: new Date(2025, 11, 30, 18, 40, 0) } as UserActivityLog,
-        { FullName: "Grant Putnam", TaskName: "Business Photo Upload 2", Reward: 10, ActivityDateTime: new Date(2025, 11, 30, 17, 40, 0) } as UserActivityLog,
-        { FullName: "Grant Putnam", TaskName: "Miscellaneous Task 3", Reward: 10, ActivityDateTime: new Date(2025, 11, 29, 17, 40, 0) } as UserActivityLog
-    ]
+    let res = await APICall<UserActivityLogJSON[]>("admin/activities", "GET");
 
-    await setTimeout(() => {}, 50);
+    if (res.success) {
+        let result: UserActivityLog[] = []
 
-    return logs;
+        res.data.forEach((v) => {
+            result.push({ FullName: v.fullName, TaskName: v.task, Reward: v.reward, ActivityDateTime: v.created } as UserActivityLog)
+        });
+
+        return result;
+    }
+
+    return [];
+}
+
+export async function GetUserResults() {
+    let res = await APICall<UserResultJSON[]>("admin/getusers","GET");
+
+    if (res.success) {
+        let result: UserResult[] = [];
+
+        res.data.forEach((k) => {
+            result.push({ Name: k.name, Points: k.points, Entries: k.entries} as UserResult)
+        });
+
+        return result;
+    }
+
+    return [];
 }

@@ -18,13 +18,11 @@ namespace BizKidzScholarships.API.Controllers
         private ICurrentUser _user;
         private IUserDataService _udService;
         private UserManager<IdentityUser<Guid>> _userManager;
-        private TaskFileUploadService _fileService;
-        public UserDataController(ICurrentUser currentUser, IUserDataService svc, UserManager<IdentityUser<Guid>> UserManager, TaskFileUploadService fus)
+        public UserDataController(ICurrentUser currentUser, IUserDataService svc, UserManager<IdentityUser<Guid>> UserManager)
         {
             _user = currentUser;
             _udService = svc;
             _userManager = UserManager;
-            _fileService = fus;
         }
 
         [HttpGet]

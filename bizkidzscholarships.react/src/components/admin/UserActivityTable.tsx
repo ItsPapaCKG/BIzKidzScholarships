@@ -7,7 +7,7 @@ function UserActivity() {
 
     return (
         <>
-            <table className="table table-light table-striped">
+            <table className="table table-light table-striped border">
                 <thead>
                     <tr>
                         <td>Name</td>
@@ -21,7 +21,7 @@ function UserActivity() {
                         userActivities.map((v)=>{
                             let isGain = v.Reward > 0;
 
-                            return (<tr><td>{v.FullName}</td><td>{v.TaskName}</td><td className="text-nowrap" style={{ "width": "1px"}}><p className={(isGain ? "text-success" : "text-danger") + " m-0"}>{ isGain ? "+" : "-"}{v.Reward}</p></td><td>{v.ActivityDateTime.toString()}</td></tr>)
+                            return (<tr><td>{v.FullName}</td><td>{v.TaskName}</td><td className="text-nowrap" style={{ "width": "1px"}}><p className={(isGain ? "text-success" : "text-danger") + " m-0"}>{ isGain ? "+" : "-"}{v.Reward}</p></td><td>{new Date(v.ActivityDateTime).toLocaleString(undefined, { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone, dateStyle: "medium", timeStyle: "short" })}</td></tr>)
                         })
                     }
                 </tbody>

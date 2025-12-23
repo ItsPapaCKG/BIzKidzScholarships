@@ -1,17 +1,34 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BizKidzScholarships.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BizKidzScholarships.API.Controllers
 {
     [ApiController]
     [Route("api/admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        [HttpGet]
-        public IActionResult Index()
+        private AdminService adminService;
+        public AdminController(AdminService svc)
         {
-            return View();
+            adminService = svc;
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var results = await adminService.AdminUserList();
+
+            return Ok(results);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Activities()
+        {
+            var results = await adminService.GetActivities();
+
+            return Ok(results);
         }
     }
 }

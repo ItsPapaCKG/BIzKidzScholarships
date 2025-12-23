@@ -125,7 +125,7 @@ namespace BizKidzScholarships.API.Extensions
 
             services.AddAuthorization();
 
-            services.AddTransient<TaskFileUploadService>();
+            services.AddScoped<AdminService>();
         }
     }
 }

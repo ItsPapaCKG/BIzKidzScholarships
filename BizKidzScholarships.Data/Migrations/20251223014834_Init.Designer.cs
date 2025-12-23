@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BizKidzScholarships.Data.Migrations
 {
     [DbContext(typeof(BizKidzDbContext))]
-    [Migration("20251213033304_Init")]
+    [Migration("20251223014834_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -148,7 +148,7 @@ namespace BizKidzScholarships.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 13, 3, 33, 3, 824, DateTimeKind.Unspecified).AddTicks(4274), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3672), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.",
@@ -158,12 +158,12 @@ namespace BizKidzScholarships.Data.Migrations
                             TaskPromptTitle = "Upload a Photo of you and your team operating your Business at a Biz Kidz Market",
                             TaskTitle = "Sell your products at a Biz Kidz Market",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 13, 3, 33, 3, 824, DateTimeKind.Unspecified).AddTicks(4285), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3679), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 13, 3, 33, 3, 824, DateTimeKind.Unspecified).AddTicks(4288), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3683), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Give your business's elevator pitch in 90 seconds or less.",
@@ -173,12 +173,12 @@ namespace BizKidzScholarships.Data.Migrations
                             TaskPromptTitle = "Upload Pitch Video",
                             TaskTitle = "Submit a 90-second Pitch Video",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 13, 3, 33, 3, 824, DateTimeKind.Unspecified).AddTicks(4289), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3684), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 3,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 13, 3, 33, 3, 824, DateTimeKind.Unspecified).AddTicks(4292), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3687), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Take the quiz and show what you've learned from the Launch Kit.",
@@ -188,7 +188,7 @@ namespace BizKidzScholarships.Data.Migrations
                             TaskPromptTitle = "Pass the Quiz for the Biz Kidz Launch Kit",
                             TaskTitle = "Complete the Biz Kidz Launch Kit",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 13, 3, 33, 3, 824, DateTimeKind.Unspecified).AddTicks(4292), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3688), new TimeSpan(0, 0, 0, 0, 0))
                         });
                 });
 
@@ -226,6 +226,27 @@ namespace BizKidzScholarships.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Submissions");
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.UserActivity", b =>
+                {
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PointChange")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TaskName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("UserActivityView", (string)null);
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.UserPointsReward", b =>
@@ -312,6 +333,23 @@ namespace BizKidzScholarships.Data.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Profiles", (string)null);
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.UserResult", b =>
+                {
+                    b.Property<int>("Entries")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Points")
+                        .HasColumnType("integer");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("AdminUserList", (string)null);
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.UserTask", b =>

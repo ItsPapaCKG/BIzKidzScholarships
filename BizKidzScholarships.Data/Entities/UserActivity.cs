@@ -10,9 +10,9 @@ namespace BizKidzScholarships.Data.Entities
     {
         public string FullName { get; set; }
 
-        public string TaskName { get; set; }
+        public string Task { get; set; }
 
-        public int PointChange { get; set; }
+        public int Reward { get; set; }
 
         public DateTimeOffset Created { get; set; }
     }
