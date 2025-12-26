@@ -1,6 +1,6 @@
 # BIzKidzScholarships
 
-This project is a work-in-progress Scholarship Raffle program made for the Y.E.A.R.S Foundation, benefitting education of youth on Entrepreneurship.
+This project is a work-in-progress Scholarship Raffle program made for the Y.E.A.R.S Foundation (https://www.bizkidzusa.org/), benefitting education of youth on Entrepreneurship.
 
 The goal is to promote engagement with young entrepreneurs and determine entries to the annual scholarship raffle.
 
