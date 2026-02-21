@@ -33,8 +33,9 @@ namespace BizKidzScholarships.API.Services
         }
         public UserPointsView? GetUserPoints(Guid userId)
         {
-            bool noUpdates = _context.UserPoints.All(up => !up.IsNew);
+            bool noUpdates = _context.UserPoints.All(up => !up.IsNew && up.UserId == userId);
             int totalPoints = _context.UserPoints
+                .Where(u => u.UserId == userId)
                 .GroupBy(p => p.TaskId)
                 .Select(t => t.OrderByDescending(up => up.AttemptNumber).First().Points)
                 .Sum();

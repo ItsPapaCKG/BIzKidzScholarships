@@ -13,7 +13,7 @@ export interface LoginProps {
 
 function AuthFormComponent({ RegisterMode = false }: LoginProps) {
     const userDataContext = UseUserAccountContext();
-    const [setIsAuthenticated] = [userDataContext.setIsAuthenticated];
+    const [setIsAuthenticated, isAuthenticated] = [userDataContext.setIsAuthenticated, userDataContext.isAuthenticated];
     const tryGetCookie = userDataContext.populateCookie;
 
     const [errorState, setErrorState] = useState('');
@@ -87,6 +87,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
     };
 
     useEffect(() => {
+        console.log("IsAuthenticated when Auth component loads: " + isAuthenticated);
         let valid: boolean = userForm.Email.includes("@");
         valid = userForm.Birthday != null;
         valid = userForm.FirstName != "" && userForm.LastName != "";
@@ -236,7 +237,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
 
                         <p className="text-danger" style={{whiteSpace: "pre-line"}}>{errorState}</p>
 
-
+                        <p>Sanity check</p>
                     </div>
                     
                 </form>
