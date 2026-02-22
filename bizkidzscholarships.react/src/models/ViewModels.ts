@@ -1,33 +1,5 @@
 
-export enum UserTaskStatus {
-    Hidden = -3,
-    Disabled = -2,
-    Rejected = -1,
-    Open,
-    Pending,
-    Completed
-}
-
-export enum TaskType {
-    SocialMedia,
-    ImageUpload,
-    VideoUpload,
-    Quiz,
-    Contest
-}
-
-export enum ActionType {
-    TaskUpload,
-    ProfileImageUpload
-}
-
-export enum AppMode {
-    Dashboard,
-    Admin,
-    Login,
-    Register
-}
-
+// #region UserUX
 export interface IUserProfile {
     BusinessName: string,
     FirstName: string,
@@ -37,6 +9,35 @@ export interface IUserProfile {
     BusinessLogoKey: string,
     Birthday: Date,
     Loaded: boolean
+}
+
+export interface IDashboardContext {
+    UserProfile: IUserProfile,
+    UserPoints: IUserPoints
+    Tasks: ITask[]
+}
+// #endregion
+
+// #region Tasks
+export enum ActionType {
+    TaskUpload,
+    ProfileImageUpload
+}
+
+export enum UserTaskStatus {
+    Hidden = -3,
+    Disabled = -2,
+    Rejected = -1,
+    Open,
+    Pending,
+    Completed
+}
+export enum TaskType {
+    SocialMedia,
+    ImageUpload,
+    VideoUpload,
+    Quiz,
+    Contest
 }
 
 export interface ITaskJSON {
@@ -62,20 +63,13 @@ export interface ITask {
     TaskPromptTitle: string,
     TaskPromptSubtitle: string
 }
-
-export interface IUserPoints {
-    TotalPoints: number,
-    Entries: number,
-    IsError: boolean,
+export interface TaskList {
+    Tasks: ITask[],
     Loaded: boolean
 }
+// #endregion
 
-export interface IDashboardContext {
-    UserProfile: IUserProfile,
-    UserPoints: IUserPoints
-    Tasks: ITask[]
-}
-
+// #region Third-party file upload
 export interface PresignedURLData {
     url: string,
     key: string,
@@ -112,7 +106,9 @@ export interface UploadHandshakeConfirmation {
     RequestId: string,
     Status: RequestStatus
 }
+// #endregion
 
+// #region Admin
 export interface UserActivityLog {
     FullName: string,
     TaskName: string,
@@ -126,13 +122,35 @@ export interface UserActivityLogJSON {
     reward: number,
     created: Date
 }
+// #endregion
 
+// #region Auth
+export interface LoginJSON {
+    Email: string,
+    Password: string
+}
+
+export interface RegisterJSON extends LoginJSON {
+    FirstName: string,
+    LastName: string,
+    Birthday: string,
+    PhoneNumber: number,
+    ConfirmPassword: string
+}
 export interface UserCookieJSON {
     userId: string,
     email: string,
     roles: string[]
 }
+// #endregion
 
+// #region UserPoints
+export interface IUserPoints {
+    TotalPoints: number,
+    Entries: number,
+    IsError: boolean,
+    Loaded: boolean
+}
 export interface UserPointsJSON {
     userId: string,
     points: number,
@@ -151,24 +169,6 @@ export interface UserPoints {
     Updated: Date
 }
 
-export interface LoginJSON {
-    Email: string,
-    Password: string
-}
-
-export interface RegisterJSON extends LoginJSON {
-    FirstName: string,
-    LastName: string,
-    Birthday: string,
-    PhoneNumber: number,
-    ConfirmPassword: string
-}
-
-export interface TaskList {
-    Tasks: ITask[],
-    Loaded: boolean
-}
-
 export interface UserResult {
     Name: string,
     Points: number,
@@ -179,6 +179,39 @@ export interface UserResultJSON {
     name: string,
     points: number,
     entries: number
+}
+
+// #endregion
+
+// #region Quizzes
+export interface QuestionOptions {
+    [key: string]: string
+}
+
+export interface TaskQuestion {
+    questionId: number,
+    prompt: string,
+    promptImageKey: string,
+    options: QuestionOptions | undefined,
+    multi: boolean
+}
+
+export interface UserAnswer {
+    questionId: number,
+    answer: string[]
+}
+
+export interface TaskQuizAnswers {
+    answers: UserAnswer[]
+}
+
+// #endregion
+
+export enum AppMode {
+    Dashboard,
+    Admin,
+    Login,
+    Register
 }
 
 export default '.'

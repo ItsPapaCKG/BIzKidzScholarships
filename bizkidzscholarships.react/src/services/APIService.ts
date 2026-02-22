@@ -23,7 +23,7 @@ export enum ResponseCode {
 export type APIResponse<T = unknown> = |
 {
     success: true,
-    data: T
+    data: T | undefined
 }
     |
 {

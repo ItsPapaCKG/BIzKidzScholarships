@@ -1,5 +1,5 @@
-import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type UserPoints } from "../models/ViewModels";
-import { APICall } from "./APIService";
+import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type UserPoints, type TaskQuizAnswers, type TaskQuestion } from "../models/ViewModels";
+import { APICall, type APIResponse } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
     return false;
@@ -117,6 +117,18 @@ async function CompleteUploadHandshake(requestId: string, requestStatus: Request
 
     return response.success;
 }
+
+export async function SubmitQuizToServer(taskId: number, answers: TaskQuizAnswers) {
+    let res = await APICall<undefined, TaskQuizAnswers>("Task", "POST", answers);
+
+    return res;
+}
+
+export async function GetQuizQuestions(taskId: number): Promise<APIResponse<TaskQuestion[]>> {
+    let res = await APICall<TaskQuestion[], TaskQuizAnswers>("Task", "GET");
+
+    return res;
+} 
 
 export async function GetDashboardPoints(): Promise<UserPointsJSON | null> {
     var res = await APICall<UserPointsJSON>("user/userpoints","GET", null);
