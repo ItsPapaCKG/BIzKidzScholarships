@@ -30,9 +30,16 @@ function App({ Mode }: AppProps) {
         //    navigate('/login')
         //    return;
         //}
+        if (loading) {
+            return;
+        }
 
         if (isAuthenticated && Mode == AppMode.Login) {
             navigate("/");
+            return;
+        }
+
+        if (isAuthenticated) {
             return;
         }
 

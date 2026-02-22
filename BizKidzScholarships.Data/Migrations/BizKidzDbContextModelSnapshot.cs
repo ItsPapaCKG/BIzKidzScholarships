@@ -85,6 +85,81 @@ namespace BizKidzScholarships.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.QuestionOption", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OptionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("QuestionId", "OptionId");
+
+                    b.HasIndex("OptionId");
+
+                    b.ToTable("QuestionOptions", (string)null);
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.QuizOption", b =>
+                {
+                    b.Property<int>("OptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OptionId"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OptionKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OptionValue")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("OptionId");
+
+                    b.HasIndex("OptionValue");
+
+                    b.ToTable("QuizOptions", (string)null);
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.QuizQuestion", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("QuestionId"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Multi")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PromptImageKey")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("QuestionId");
+
+                    b.HasIndex("Prompt");
+
+                    b.ToTable("QuizQuestions", (string)null);
+                });
+
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskItem", b =>
                 {
                     b.Property<int>("Id")
@@ -145,48 +220,66 @@ namespace BizKidzScholarships.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3672), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6420), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.",
                             TaskEnabled = true,
+                            TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/bizkidzexpo.jpg",
                             TaskNameInternal = "Business Photo Upload Task",
                             TaskPromptSubtitle = "Download and print the Biz Kidz USA Logo, and pose with it at your vendor table at a Biz Kidz Market event. Submit your photo and earn points!",
                             TaskPromptTitle = "Upload a Photo of you and your team operating your Business at a Biz Kidz Market",
                             TaskTitle = "Sell your products at a Biz Kidz Market",
                             TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3679), new TimeSpan(0, 0, 0, 0, 0))
+                            Updated = new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6428), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 2,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3683), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6431), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Give your business's elevator pitch in 90 seconds or less.",
                             TaskEnabled = true,
+                            TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/pitchcontest.jpg",
                             TaskNameInternal = "Pitch Video Task",
                             TaskPromptSubtitle = "Showcase your business' brilliance by uploading a 90-second video of you pitching your products.",
                             TaskPromptTitle = "Upload Pitch Video",
                             TaskTitle = "Submit a 90-second Pitch Video",
-                            TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3684), new TimeSpan(0, 0, 0, 0, 0))
+                            TaskType = 2,
+                            Updated = new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6431), new TimeSpan(0, 0, 0, 0, 0))
                         },
                         new
                         {
                             Id = 3,
-                            Created = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3687), new TimeSpan(0, 0, 0, 0, 0)),
+                            Created = new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6434), new TimeSpan(0, 0, 0, 0, 0)),
                             IsGlobalTask = true,
                             Reward = 50,
                             TaskDescription = "Take the quiz and show what you've learned from the Launch Kit.",
                             TaskEnabled = true,
-                            TaskNameInternal = "Pitch Video Task",
+                            TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/entrepreneurshipguide.png",
+                            TaskNameInternal = "Quiz Completion Task",
                             TaskPromptSubtitle = "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!",
                             TaskPromptTitle = "Pass the Quiz for the Biz Kidz Launch Kit",
                             TaskTitle = "Complete the Biz Kidz Launch Kit",
-                            TaskType = 1,
-                            Updated = new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3688), new TimeSpan(0, 0, 0, 0, 0))
+                            TaskType = 3,
+                            Updated = new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6434), new TimeSpan(0, 0, 0, 0, 0))
                         });
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskQuestion", b =>
+                {
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("TaskId", "QuestionId");
+
+                    b.HasIndex("QuestionId");
+
+                    b.ToTable("TaskQuestions", (string)null);
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskSubmission", b =>
@@ -234,10 +327,10 @@ namespace BizKidzScholarships.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("PointChange")
+                    b.Property<int>("Reward")
                         .HasColumnType("integer");
 
-                    b.Property<string>("TaskName")
+                    b.Property<string>("Task")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -573,6 +666,36 @@ namespace BizKidzScholarships.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.QuestionOption", b =>
+                {
+                    b.HasOne("BizKidzScholarships.Data.Entities.QuizOption", null)
+                        .WithMany()
+                        .HasForeignKey("OptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BizKidzScholarships.Data.Entities.QuizQuestion", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskQuestion", b =>
+                {
+                    b.HasOne("BizKidzScholarships.Data.Entities.QuizQuestion", null)
+                        .WithMany()
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BizKidzScholarships.Data.Entities.TaskItem", null)
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BizKidzScholarships.Data.Entities.TaskSubmission", b =>

@@ -68,6 +68,39 @@ namespace BizKidzScholarships.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "QuizOptions",
+                columns: table => new
+                {
+                    OptionId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OptionKey = table.Column<string>(type: "text", nullable: false),
+                    OptionValue = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuizOptions", x => x.OptionId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuizQuestions",
+                columns: table => new
+                {
+                    QuestionId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Prompt = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    PromptImageKey = table.Column<string>(type: "text", nullable: true),
+                    Multi = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuizQuestions", x => x.QuestionId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tasks",
                 columns: table => new
                 {
@@ -249,6 +282,30 @@ namespace BizKidzScholarships.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "QuestionOptions",
+                columns: table => new
+                {
+                    QuestionId = table.Column<int>(type: "integer", nullable: false),
+                    OptionId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionOptions", x => new { x.QuestionId, x.OptionId });
+                    table.ForeignKey(
+                        name: "FK_QuestionOptions_QuizOptions_OptionId",
+                        column: x => x.OptionId,
+                        principalTable: "QuizOptions",
+                        principalColumn: "OptionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionOptions_QuizQuestions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "QuizQuestions",
+                        principalColumn: "QuestionId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Submissions",
                 columns: table => new
                 {
@@ -271,6 +328,30 @@ namespace BizKidzScholarships.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Submissions_Tasks_TaskId",
+                        column: x => x.TaskId,
+                        principalTable: "Tasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TaskQuestions",
+                columns: table => new
+                {
+                    QuestionId = table.Column<int>(type: "integer", nullable: false),
+                    TaskId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskQuestions", x => new { x.TaskId, x.QuestionId });
+                    table.ForeignKey(
+                        name: "FK_TaskQuestions_QuizQuestions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "QuizQuestions",
+                        principalColumn: "QuestionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TaskQuestions_Tasks_TaskId",
                         column: x => x.TaskId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
@@ -343,9 +424,9 @@ namespace BizKidzScholarships.Data.Migrations
                 columns: new[] { "Id", "Created", "IsGlobalTask", "Reward", "TaskDescription", "TaskEnabled", "TaskImageKey", "TaskNameInternal", "TaskPromptSubtitle", "TaskPromptTitle", "TaskTitle", "TaskType", "Updated" },
                 values: new object[,]
                 {
-                    { 1, new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3672), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.", true, null, "Business Photo Upload Task", "Download and print the Biz Kidz USA Logo, and pose with it at your vendor table at a Biz Kidz Market event. Submit your photo and earn points!", "Upload a Photo of you and your team operating your Business at a Biz Kidz Market", "Sell your products at a Biz Kidz Market", 1, new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3679), new TimeSpan(0, 0, 0, 0, 0)) },
-                    { 2, new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3683), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Give your business's elevator pitch in 90 seconds or less.", true, null, "Pitch Video Task", "Showcase your business' brilliance by uploading a 90-second video of you pitching your products.", "Upload Pitch Video", "Submit a 90-second Pitch Video", 1, new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3684), new TimeSpan(0, 0, 0, 0, 0)) },
-                    { 3, new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3687), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Take the quiz and show what you've learned from the Launch Kit.", true, null, "Pitch Video Task", "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!", "Pass the Quiz for the Biz Kidz Launch Kit", "Complete the Biz Kidz Launch Kit", 1, new DateTimeOffset(new DateTime(2025, 12, 23, 1, 48, 33, 830, DateTimeKind.Unspecified).AddTicks(3688), new TimeSpan(0, 0, 0, 0, 0)) }
+                    { 1, new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6420), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Sell your products at any Biz Kidz Market and upload a photo to confirm your attendance.", true, "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/bizkidzexpo.jpg", "Business Photo Upload Task", "Download and print the Biz Kidz USA Logo, and pose with it at your vendor table at a Biz Kidz Market event. Submit your photo and earn points!", "Upload a Photo of you and your team operating your Business at a Biz Kidz Market", "Sell your products at a Biz Kidz Market", 1, new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6428), new TimeSpan(0, 0, 0, 0, 0)) },
+                    { 2, new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6431), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Give your business's elevator pitch in 90 seconds or less.", true, "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/pitchcontest.jpg", "Pitch Video Task", "Showcase your business' brilliance by uploading a 90-second video of you pitching your products.", "Upload Pitch Video", "Submit a 90-second Pitch Video", 2, new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6431), new TimeSpan(0, 0, 0, 0, 0)) },
+                    { 3, new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6434), new TimeSpan(0, 0, 0, 0, 0)), true, 50, "Take the quiz and show what you've learned from the Launch Kit.", true, "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/entrepreneurshipguide.png", "Quiz Completion Task", "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!", "Pass the Quiz for the Biz Kidz Launch Kit", "Complete the Biz Kidz Launch Kit", 3, new DateTimeOffset(new DateTime(2026, 2, 22, 21, 5, 10, 357, DateTimeKind.Unspecified).AddTicks(6434), new TimeSpan(0, 0, 0, 0, 0)) }
                 });
 
             migrationBuilder.Sql("""
@@ -369,10 +450,10 @@ namespace BizKidzScholarships.Data.Migrations
             SELECT
 
                 "FirstName" || ' ' || "LastName" AS "Name", 
-                SUM(up."Points") AS "Points", 
-                SUM(up."Points") / COALESCE(c."Value"::int, 100) AS "Entries"
+                COALESCE(SUM(up."Points"),0) AS "Points", 
+                COALESCE(SUM(up."Points"), 0) / COALESCE(c."Value"::int, 100) AS "Entries"
             FROM "AspNetUsers" u
-            INNER JOIN "UserPoints" up ON u."Id" = up."UserId"
+            LEFT JOIN "UserPoints" up ON u."Id" = up."UserId"
             INNER JOIN "Profiles" p ON p."UserId" = u."Id"
             LEFT JOIN "Configuration" c ON c."Id" = 'EntriesCost'
             GROUP BY p."FirstName", p."LastName", c."Value"
@@ -421,6 +502,21 @@ namespace BizKidzScholarships.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_QuestionOptions_OptionId",
+                table: "QuestionOptions",
+                column: "OptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuizOptions_OptionValue",
+                table: "QuizOptions",
+                column: "OptionValue");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuizQuestions_Prompt",
+                table: "QuizQuestions",
+                column: "Prompt");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Submissions_TaskId",
                 table: "Submissions",
                 column: "TaskId");
@@ -430,6 +526,11 @@ namespace BizKidzScholarships.Data.Migrations
                 table: "Submissions",
                 columns: new[] { "UserId", "TaskId", "AttemptNumber" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskQuestions_QuestionId",
+                table: "TaskQuestions",
+                column: "QuestionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_TaskNameInternal",
@@ -488,7 +589,13 @@ namespace BizKidzScholarships.Data.Migrations
                 name: "Profiles");
 
             migrationBuilder.DropTable(
+                name: "QuestionOptions");
+
+            migrationBuilder.DropTable(
                 name: "Submissions");
+
+            migrationBuilder.DropTable(
+                name: "TaskQuestions");
 
             migrationBuilder.DropTable(
                 name: "UserPoints");
@@ -498,6 +605,12 @@ namespace BizKidzScholarships.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "QuizOptions");
+
+            migrationBuilder.DropTable(
+                name: "QuizQuestions");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

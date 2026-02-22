@@ -79,6 +79,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     
             if (!res.ok) {
                 setIsAuthenticated(false);
+                setLoadingData(false);
                 return;
             }
     

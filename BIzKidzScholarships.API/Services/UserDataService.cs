@@ -593,10 +593,10 @@ namespace BizKidzScholarships.API.Services
 
                 // convert the A: AnswerText, B: AnswerText, C: .... etc into a Dictionary<string, string> for use on the frontend
                 var optionsQueryable = from questionOption in _context.QuestionOptions
-                                      join o in _context.QuizOptions on questionOption.OptionId equals o.OptionId
-                                      join q in _context.QuizQuestions on questionOption.QuestionId equals q.QuestionId
-                                      where q.QuestionId == questionId
-                                      select new { o.OptionKey, o.OptionValue };
+                                       join o in _context.QuizOptions on questionOption.OptionId equals o.OptionId
+                                       join q in _context.QuizQuestions on questionOption.QuestionId equals q.QuestionId
+                                       where q.QuestionId == questionId
+                                       select new { o.OptionKey, o.OptionValue };
 
                 var options = await optionsQueryable.ToDictionaryAsync(a => a.OptionKey, b => b.OptionValue);
 

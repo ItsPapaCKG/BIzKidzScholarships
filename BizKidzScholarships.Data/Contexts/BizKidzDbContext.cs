@@ -145,7 +145,8 @@ namespace BizKidzScholarships.Data.Contexts
                     IsGlobalTask = true,
                     Created = DateTime.UtcNow,
                     Updated = DateTime.UtcNow,
-                    TaskType = Enums.TaskType.FileUpload
+                    TaskType = Enums.TaskType.FileUpload,
+                    TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/bizkidzexpo.jpg"
                 },
                 new TaskItem
                 {
@@ -160,7 +161,8 @@ namespace BizKidzScholarships.Data.Contexts
                     IsGlobalTask = true,
                     Created = DateTime.UtcNow,
                     Updated = DateTime.UtcNow,
-                    TaskType = Enums.TaskType.VideoUpload
+                    TaskType = Enums.TaskType.VideoUpload,
+                    TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/pitchcontest.jpg"
                 },
                 new TaskItem
                 {
@@ -170,11 +172,12 @@ namespace BizKidzScholarships.Data.Contexts
                     TaskPromptSubtitle = "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!",
                     TaskDescription = "Take the quiz and show what you've learned from the Launch Kit.",
                     TaskEnabled = true,
-                    TaskNameInternal = "Pitch Video Task",
+                    TaskNameInternal = "Quiz Completion Task",
                     Reward = 50,
                     Created = DateTime.UtcNow,
                     Updated = DateTime.UtcNow,
-                    TaskType = Enums.TaskType.Quiz
+                    TaskType = Enums.TaskType.Quiz,
+                    TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/entrepreneurshipguide.png"
                 },
             ]);
 
@@ -227,13 +230,15 @@ namespace BizKidzScholarships.Data.Contexts
                 qq.HasIndex(q => q.Prompt);
             });
 
-            modelBuilder.Entity<QuizOption>(qo => {
+            modelBuilder.Entity<QuizOption>(qo =>
+            {
                 qo.ToTable("QuizOptions");
                 qo.HasKey(q => q.OptionId);
                 qo.HasIndex(q => q.OptionValue);
             });
 
-            modelBuilder.Entity<QuestionOption>(quo => {
+            modelBuilder.Entity<QuestionOption>(quo =>
+            {
                 quo.ToTable("QuestionOptions");
                 quo.HasKey(q => new { q.QuestionId, q.OptionId });
 
@@ -242,13 +247,14 @@ namespace BizKidzScholarships.Data.Contexts
                 .HasForeignKey(f => f.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-                quo.HasOne<QuestionOption>()
+                quo.HasOne<QuizOption>()
                 .WithMany()
                 .HasForeignKey(f => f.OptionId)
                 .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<TaskQuestion>(tq => {
+            modelBuilder.Entity<TaskQuestion>(tq =>
+            {
                 tq.ToTable("TaskQuestions");
 
                 tq.HasKey(tq => new { tq.TaskId, tq.QuestionId });

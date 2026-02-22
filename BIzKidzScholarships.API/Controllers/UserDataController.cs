@@ -99,7 +99,7 @@ namespace BizKidzScholarships.API.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]        
         public async Task<IActionResult> Quiz(int taskId)
         {
             try
