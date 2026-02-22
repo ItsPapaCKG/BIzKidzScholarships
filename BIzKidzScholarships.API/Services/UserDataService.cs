@@ -573,5 +573,44 @@ namespace BizKidzScholarships.API.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<QuizQuestionViewModel[]> GetQuiz(int taskId)
+        {
+            QuizQuestionViewModel[] quiz = [];
+
+            var taskQuestionIds = await _context.TaskQuestions.Where(tq => tq.TaskId == taskId).Select(tq => tq.QuestionId).ToListAsync();
+
+            foreach (var questionId in taskQuestionIds)
+            {
+                var qvm = new QuizQuestionViewModel();
+
+                var question = await _context.QuizQuestions.FirstOrDefaultAsync(qq => qq.QuestionId == questionId);
+
+                if (question is null)
+                {
+                    throw new Exception($"Question Id {questionId} is invalid.");
+                }
+
+                // convert the A: AnswerText, B: AnswerText, C: .... etc into a Dictionary<string, string> for use on the frontend
+                var optionsQueryable = from questionOption in _context.QuestionOptions
+                                      join o in _context.QuizOptions on questionOption.OptionId equals o.OptionId
+                                      join q in _context.QuizQuestions on questionOption.QuestionId equals q.QuestionId
+                                      where q.QuestionId == questionId
+                                      select new { o.OptionKey, o.OptionValue };
+
+                var options = await optionsQueryable.ToDictionaryAsync(a => a.OptionKey, b => b.OptionValue);
+
+                qvm.Multi = question.Multi;
+                qvm.QuestionId = questionId;
+                qvm.Prompt = question.Prompt;
+                qvm.PromptImageKey = question.PromptImageKey;
+                qvm.Options = options;
+
+                // add the question to the quiz
+                quiz.Append(qvm);
+            }
+
+            return quiz;
+        }
     }
 }

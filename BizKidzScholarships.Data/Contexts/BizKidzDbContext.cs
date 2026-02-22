@@ -27,6 +27,13 @@ namespace BizKidzScholarships.Data.Contexts
 
         public DbSet<UserResult> UserResults { get; set; }
 
+        public DbSet<QuizQuestion> QuizQuestions { get; set; }
+
+        public DbSet<QuestionOption> QuestionOptions { get; set; }
+
+        public DbSet<QuizOption> QuizOptions { get; set; }
+
+        public DbSet<TaskQuestion> TaskQuestions { get; set; }
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
 
@@ -211,6 +218,50 @@ namespace BizKidzScholarships.Data.Contexts
                 ar.HasOne(a => a.User)
                 .WithMany()
                 .HasForeignKey(a => a.UserId);
+            });
+
+            modelBuilder.Entity<QuizQuestion>(qq =>
+            {
+                qq.ToTable("QuizQuestions");
+                qq.HasKey(q => q.QuestionId);
+                qq.HasIndex(q => q.Prompt);
+            });
+
+            modelBuilder.Entity<QuizOption>(qo => {
+                qo.ToTable("QuizOptions");
+                qo.HasKey(q => q.OptionId);
+                qo.HasIndex(q => q.OptionValue);
+            });
+
+            modelBuilder.Entity<QuestionOption>(quo => {
+                quo.ToTable("QuestionOptions");
+                quo.HasKey(q => new { q.QuestionId, q.OptionId });
+
+                quo.HasOne<QuizQuestion>()
+                .WithMany()
+                .HasForeignKey(f => f.QuestionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                quo.HasOne<QuestionOption>()
+                .WithMany()
+                .HasForeignKey(f => f.OptionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<TaskQuestion>(tq => {
+                tq.ToTable("TaskQuestions");
+
+                tq.HasKey(tq => new { tq.TaskId, tq.QuestionId });
+
+                tq.HasOne<TaskItem>()
+                .WithMany()
+                .HasForeignKey(f => f.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                tq.HasOne<QuizQuestion>()
+                .WithMany()
+                .HasForeignKey(f => f.QuestionId)
+                .OnDelete(DeleteBehavior.Cascade);
             });
 
             base.OnModelCreating(modelBuilder);

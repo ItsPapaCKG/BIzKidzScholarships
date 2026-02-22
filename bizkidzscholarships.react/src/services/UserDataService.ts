@@ -125,7 +125,7 @@ export async function SubmitQuizToServer(answers: TaskQuizAnswers) {
 }
 
 export async function GetQuizQuestions(taskId: number): Promise<APIResponse<TaskQuestion[]>> {
-    let res = await APICall<TaskQuestion[], TaskQuizAnswers>("Task", "GET");
+    let res = await APICall<TaskQuestion[], TaskQuizAnswers>("Quiz", "GET");
 
     return res;
 } 

@@ -99,5 +99,19 @@ namespace BizKidzScholarships.API.Controllers
             return BadRequest(response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Quiz(int taskId)
+        {
+            try
+            {
+                var res = await _udService.GetQuiz(taskId);
+
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
