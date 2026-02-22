@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { TaskQuestion, UserAnswer } from "../../models/ViewModels";
-import { GetQuizQuestions } from "../../services/UserDataService";
+import type { TaskQuestion, TaskQuizAnswers, UserAnswer } from "../../models/ViewModels";
+import { GetQuizQuestions, SubmitQuizToServer } from "../../services/UserDataService";
 import { UseTaskContext } from "../../contexts/TaskViewContext";
 
 type Question = TaskQuestion[]
@@ -15,7 +15,6 @@ function Quiz() {
     const [task] = [context.viewedTask];
     const [answers, setAnswers] = useState<UserAnswer[]>([]);
     const [input, setInput] = useState<string[]>([]);
-    /*const [selectedRadio, setSelectedRadio] = useState<string | null>()*/
 
     useEffect(() => {
         let func = async () => {
@@ -34,29 +33,92 @@ function Quiz() {
 
             setError(res.error.message!);
         }
+
+        func();
     }, []);
 
     const saveAnswer = (index: number, input: string[]) => {
-        let answer: UserAnswer = {
+        let a: UserAnswer = {
             questionId: questions[index].questionId,
             answer: input
         };
 
         setAnswers(prev =>
             prev.map((item, idx) =>
-                idx == index ? answer : item
+                idx == index ? a : item
             )
         );
         setInput([]);
     }
 
-    const toggleCheckbox = (index: number, value: string) => { 
+    const toggleCheckbox = (value: string) => {
+        let answerArray = currAnswer.answer;
 
+        if (answerArray.includes(value)) {
+            let i = answerArray.indexOf(value);
 
+            answerArray.splice(i, 1);
+
+            let uA: UserAnswer = {
+                questionId: currQuestion.questionId,
+                answer: answerArray
+            }
+
+            setAnswers(prev =>
+                prev.map((item, idx) =>
+                    idx == currentQuestion ? uA : item
+                )
+            );
+
+            return;
+        }
+
+        answerArray.push(value);
+
+        let uA: UserAnswer = {
+            questionId: currQuestion.questionId,
+            answer: answerArray
+        }
+
+        setAnswers(prev =>
+            prev.map((item, idx) =>
+                idx == currentQuestion ? uA : item
+            )
+        );
+
+        return;
     }
 
-    let question = questions[currentQuestion];
-    let answer = answers[currentQuestion];
+    const incrementQuestion = () => {
+        if (currentQuestion < questions.length) {
+            setCurrentQuestion(currentQuestion + 1);
+            return;
+        }
+
+        let submission: TaskQuizAnswers = {
+            taskId: task!.TaskId,
+            answers: answers
+        }
+
+        let submit = async () => {
+            let res = await SubmitQuizToServer(submission);
+        }
+
+        submit();
+    }
+
+    const previousQuestion = () => {
+        if (currentQuestion > -1) {
+            setCurrentQuestion(currentQuestion - 1);
+            return;
+        }
+    }
+
+    let currQuestion = questions[currentQuestion];
+    let currAnswer = answers[currentQuestion];
+
+    let minimumInputsSelected = currAnswer.answer.length > 0;
+    let lastQuestion = currentQuestion == questions.length - 1;
 
     return (
         <>
@@ -75,38 +137,49 @@ function Quiz() {
                         </div>)
                             :
                         (<>
-                            <img src={question.promptImageKey} className="card-img-top w-100 h-100" style={{ objectFit: "cover", objectPosition: "0% 0%" }}></img>
+                            <img src={currQuestion.promptImageKey} className="card-img-top w-100 h-100" style={{ objectFit: "cover", objectPosition: "0% 0%" }}></img>
 
                             <div className="card-body">
                                 <h1>Question { currentQuestion + 1 }</h1>
-                                <p>{ question.prompt }</p>
+                                <p>{ currQuestion.prompt }</p>
 
                                 {/* Radio */}
-                                {!question.multi && Object.entries(question.options!).map(([key, prompt]) => (
+                                {!currQuestion.multi && Object.entries(currQuestion.options!).map(([key, prompt]) => (
                                     <label key={`question-${key}`} style={{ display: "block" }}>
                                         <input
                                             type="radio"
                                             name="my-radio-group"
                                             value={key}
-                                            checked={answer.answer[0] === key}
+                                            checked={currAnswer.answer[0] === key}
                                             onChange={() => saveAnswer(currentQuestion, [key])}
                                         />
                                         {prompt}
                                     </label>
                                 ))}
 
-                                {question.multi && Object.entries(question.options!).map(([key, prompt]) => (
+                                {currQuestion.multi && Object.entries(currQuestion.options!).map(([key, prompt]) => (
                                     <label key={`question-multi-${key}`} style={{ display: "block" }}>
                                         <input
                                             type="checkbox"
                                             value={key}
-                                            checked={answer.answer.includes(key)}
-                                            onChange={() => toggleCheckbox(option.id)}
+                                            checked={currAnswer.answer.includes(key)}
+                                            onChange={() => toggleCheckbox(key)}
                                         />
-                                        {option.label}
+                                        {prompt}
                                     </label>
                                 )) }
 
+                            </div>
+                            <div className="card-body">
+                                <div className="row">
+                                    <div className="col">
+                                        { currentQuestion != 1 && <button type="button" className="btn btn-light" onClick={previousQuestion}>Previous Question</button>}
+                                    </div>
+
+                                    <div className="col">
+                                        <button type="button" className="btn btn-success" onClick={incrementQuestion} disabled={!minimumInputsSelected}>{lastQuestion ? "Submit Quiz" : "Next Question"}</button>
+                                    </div>
+                                </div>
                             </div>
                         </>)}
                 </div>)}

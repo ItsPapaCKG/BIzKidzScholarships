@@ -33,5 +33,7 @@ namespace BizKidzScholarships.API.Services
         Task<List<ResponseModel>> SetGlobalTasksAllUsers();
 
         Task<ResponseModel> RegisterUserProfile(Guid userId, RegisterDTO registration);
+
+        Task<ResponseModel> SubmitDataTask(Guid userId, string data);
     }
 }

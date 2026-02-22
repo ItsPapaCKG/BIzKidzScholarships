@@ -534,7 +534,7 @@ namespace BizKidzScholarships.API.Services
                 {
                     await t.RollbackAsync();
 
-                    throw new Exception($"Could not submit submission for task {taskid} for user {userid}. " + e.Message);
+                    return new ResponseModel { Success = false, Errors = { $"Could not submit submission for task {taskid} for user {userid}. " + e.Message } };
                 }
             
 
@@ -555,6 +555,23 @@ namespace BizKidzScholarships.API.Services
                 throw new Exception(ex.Message);
             }
             
+        }
+
+        public async Task<ResponseModel> SubmitDataTask(int taskid, Guid userId, string payload)
+        {
+            var res = await NewUserSubmission(taskid, userId, payload);
+
+            if (!res.Success)
+            {
+                return res;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private async Task<ResponseModel> ValidateQuizInput()
+        {
+            throw new NotImplementedException();
         }
     }
 }

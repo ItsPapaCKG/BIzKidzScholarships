@@ -118,7 +118,7 @@ async function CompleteUploadHandshake(requestId: string, requestStatus: Request
     return response.success;
 }
 
-export async function SubmitQuizToServer(taskId: number, answers: TaskQuizAnswers) {
+export async function SubmitQuizToServer(answers: TaskQuizAnswers) {
     let res = await APICall<undefined, TaskQuizAnswers>("Task", "POST", answers);
 
     return res;

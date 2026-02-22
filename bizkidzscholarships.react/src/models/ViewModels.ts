@@ -202,6 +202,7 @@ export interface UserAnswer {
 }
 
 export interface TaskQuizAnswers {
+    taskId: number,
     answers: UserAnswer[]
 }
 
