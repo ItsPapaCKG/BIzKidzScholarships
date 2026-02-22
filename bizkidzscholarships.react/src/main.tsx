@@ -7,6 +7,7 @@ import AuthFormComponent from './components/AuthFormComponent.tsx'
 import UserAccountProvider from './contexts/UserAccountContext.tsx'
 import TaskProvider from './contexts/TaskViewContext.tsx'
 import { AppMode } from './models/ViewModels.ts'
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export const router = createBrowserRouter([
     { path: "/access-denied", element: (<><h1>Access is Denied Loser!</h1></>) },

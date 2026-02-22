@@ -151,5 +151,9 @@ main {
     padding-top: 100px;
   }
 
+}
 
+.auth-card {
+    /*transform: translateY(100px);*/
+    margin-top: 0;
 }

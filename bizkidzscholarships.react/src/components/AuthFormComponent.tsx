@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent } from "react";
-import { Form, useNavigate } from "react-router";
+import { Form, Link, useNavigate } from "react-router";
 import { type LoginJSON, type IUserProfile, type RegisterJSON } from "../models/ViewModels";
 import { APICall, ResponseCode, ResponseError } from "../services/APIService";
 import { AttemptAuth } from "../services/AuthService";
@@ -27,7 +27,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         Password: "",
         ConfirmPassword: ""
      } as RegisterJSON)
-    const [birthday, setDateBirthday] = useState<Date | null>(null);
+    const [birthday, setDateBirthday] = useState<Date | undefined>(undefined);
     const [validForm, setIsValid] = useState(false);
 
     const navigate = useNavigate();
@@ -79,7 +79,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         setIsLoading(false);
     };
 
-    const setBirthday = (date: Date | null) => {
+    const setBirthday = (date: Date | undefined) => {
         let d = date?.toISOString() ?? "";
         setDateBirthday(date);
 
@@ -104,20 +104,20 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
     },[userForm]);
 
     return (
-        <div className="popup-wrapper bg-white d-flex justify-content-center align-items-center shadow-lg rounded-5 p-5">
+        <div className="popup-wrapper bg-white d-flex justify-content-center align-items-center shadow-lg rounded-5 h-100 auth-card">
                 <form>
                     <div className="container">
                         {RegisterMode ? (
                             <>
                                 <div className="row">
-                                    <div className="col d-flex justify-content-center mt-3 mb-0">
+                                    <div className="col d-flex justify-content-center mt-3 mb-0 text-center">
                                         <h1>Register your Account</h1>
                                     </div>
                                 </div>
 
                                 <div className="row">
                                     <div className="col d-flex justify-content-center m-3 mb-5 text-underline">
-                                        <a href="/login">Already have an account?</a>
+                                        <Link to="/login">Already have an account?</Link>
                                     </div>
                                 </div>
 
@@ -140,21 +140,28 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 <div className="row">
                                     <div className="col m-0">
 
-                                        <div className="input-group mb-3">
+                                        <div className="input-group input-group-lg mb-3">
                                             <span className="input-group-text" id="inputGroup-sizing-default">Birthday</span>
                                             
-                                            <div className="flex-grow-1">
-                                                <DatePicker
-                                                    className="form-control rounded-0 rounded-end w-100"
-                                                    onChange={(date) => {setBirthday(date);}}
-                                                    selected={birthday}
-                                                    dateFormat="yyyy-MM-dd"
-                                                    isClearable
-                                                    placeholderText="Select your birthday..."
-                                                    aria-describedby="inputGroup-sizing-default"
-                                                    showYearDropdown
-                                                />
-                                            </div>
+                                            {/*<div className="flex-grow-1">*/}
+                                            {/*    <DatePicker*/}
+                                            {/*        className="form-control rounded-0 rounded-end w-100"*/}
+                                            {/*        onChange={(date) => {setBirthday(date);}}*/}
+                                            {/*        selected={birthday}*/}
+                                            {/*        dateFormat="yyyy-MM-dd"*/}
+                                            {/*        isClearable*/}
+                                            {/*        placeholderText="Select your birthday..."*/}
+                                            {/*        aria-describedby="inputGroup-sizing-default"*/}
+                                            {/*        showYearDropdown*/}
+                                            {/*    />*/}
+                                        {/*</div>*/}
+
+                                            <input
+                                                className="form-control"
+                                                type="date"
+                                                value={birthday ? birthday.toISOString().slice(0, 10) : ""}
+                                                onChange={(e) => setBirthday(e.target.valueAsDate ?? undefined)}
+                                            />
                                         </div>
 
                                         
@@ -207,8 +214,14 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                         ) : 
                         (<>
                             <div className="row">
+                                <div className="col d-flex justify-content-center mt-3 mb-0">
+                                    <h1>Existing User</h1>
+                                </div>
+                            </div>
+
+                            <div className="row">
                                 <div className="col">
-                                    <div className="input-group input-group-lg mb-3">
+                                    <div className="input-group input-group-lg mb-3 mt-3">
                                         <span className="input-group-text" id="inputGroup-sizing-default">Email</span>
                                         <input type="email" name="Email" className="form-control" aria-label="Registrant Email Address" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.Email}/>
                                     </div>
@@ -230,14 +243,17 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 </div>
                             </div>
 
+                            <div className="row">
+                                <div className="col d-flex justify-content-center m-3 text-underline">
+                                    <Link to="/register">Create a New Account</Link>
+                                </div>
+                            </div>
                             
                         </>)
                         }
                         
 
                         <p className="text-danger" style={{whiteSpace: "pre-line"}}>{errorState}</p>
-
-                        <p>Sanity check</p>
                     </div>
                     
                 </form>
