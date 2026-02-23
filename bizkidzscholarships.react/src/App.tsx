@@ -1,7 +1,7 @@
-import { useEffect, createContext } from 'react'
+﻿import { useEffect, createContext } from 'react'
 import './App.css'
 import Dashboard from './components/dashboard/DashboardComponent';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { UseUserAccountContext } from './contexts/UserAccountContext';
 import { AppMode, type UserCookieJSON } from './models/ViewModels';
 import AdminDashboard from './components/admin/AdminDashboard';
@@ -23,6 +23,7 @@ function App({ Mode }: AppProps) {
     const [cookie, setUserCookie] = [userAccountContext.userCookie, userAccountContext.setUserCookie];
     const [checkCookie] = [userAccountContext.populateCookie]
     const [loading] = [userAccountContext.loadingData];
+    const [logout] = [userAccountContext.logout];
     
     useEffect(() => {
 
@@ -49,6 +50,8 @@ function App({ Mode }: AppProps) {
         
     }, [loading]);
 
+    let isAdmin = cookie.roles.includes("Admin");
+
     return (
         <>
         <div className="d-flex flex-column min-vh-100 bg-light">
@@ -56,7 +59,13 @@ function App({ Mode }: AppProps) {
                 <div className='container-xl'>
                     <a className='navbar-brand ms-5'>
                         <img className="navbarLogo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png" height="100"/>
-                    </a>
+                        </a>
+
+                        {isAdmin && Mode == AppMode.Dashboard && <NavLink to="/admin">Go to Admin Page</NavLink>}
+
+                        {isAdmin && Mode == AppMode.Admin && <NavLink to="/">Go to Dashboard</NavLink>}
+
+                        <button type="button" className="btn btn-transparent fs-2" onClick={logout}>➜]</button>
                 </div>
                 
             </nav>

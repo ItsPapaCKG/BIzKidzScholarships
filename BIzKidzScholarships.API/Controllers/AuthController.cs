@@ -116,6 +116,13 @@ namespace BizKidzScholarships.API.Controllers
 
         }
 
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
+        }
+
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { IUserProfile, UserCookieJSON } from "../models/ViewModels";
 import { useNavigate } from "react-router-dom";
+import { APICall } from "../services/APIService";
 
 export type userAccountContextType = {
     isAuthenticated: boolean,
@@ -16,7 +17,8 @@ export type userAccountContextType = {
     setUserCookie: React.Dispatch<React.SetStateAction<UserCookieJSON>>
     populateCookie: () => Promise<void>,
     loadingData: boolean,
-    setLoadingData: React.Dispatch<React.SetStateAction<boolean>>
+    setLoadingData: React.Dispatch<React.SetStateAction<boolean>>,
+    logout: () => void
 }
 interface UserProfileJSON {
     userId: number,
@@ -90,12 +92,22 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
             setLoadingData(false);
         }
 
+    const logout = async () => {
+        let res = await APICall("logout", "POST", null, true);
+
+        if (res.success) {
+            window.location.reload();
+            return;
+        }
+    }
+
+
     useEffect(()=>{
         populateCookie();
     }, []);
 
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie, loadingData, setLoadingData }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie, loadingData, setLoadingData, logout }}>
           { children }
       </UserAccountContext.Provider>
   );

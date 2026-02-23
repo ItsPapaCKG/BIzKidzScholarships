@@ -22,9 +22,9 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
     const [userForm, setUserForm] = useState<RegisterJSON>({
         FirstName: "",
         LastName: "",
-        Email: "",
+        email: "",
         Birthday: "",
-        Password: "",
+        password: "",
         ConfirmPassword: ""
      } as RegisterJSON)
     const [birthday, setDateBirthday] = useState<Date | undefined>(undefined);
@@ -88,11 +88,11 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
 
     useEffect(() => {
         console.log("IsAuthenticated when Auth component loads: " + isAuthenticated);
-        let valid: boolean = userForm.Email.includes("@");
+        let valid: boolean = userForm.email.includes("@");
         valid = userForm.Birthday != null;
         valid = userForm.FirstName != "" && userForm.LastName != "";
-        valid = userForm.Password == userForm.ConfirmPassword;
-        valid = userForm.Password.length > 0;
+        valid = userForm.password == userForm.ConfirmPassword;
+        valid = userForm.password.length > 0;
         
         if (valid) {
             setIsValid(true);
@@ -173,7 +173,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                     <div className="col">
                                         <div className="input-group input-group-lg mb-3">
                                             <span className="input-group-text" id="inputGroup-sizing-default">Email</span>
-                                            <input type="email" name="Email" className="form-control" aria-label="Registrant Email Address" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.Email}/>
+                                            <input type="email" name="Email" className="form-control" aria-label="Registrant Email Address" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.email}/>
                                         </div>
                                     </div>
                                 </div>
@@ -191,7 +191,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                     <div className="col">
                                         <div className="input-group input-group-lg mb-3">
                                             <span className="input-group-text" id="inputGroup-sizing-default">Password</span>
-                                            <input type="password" name="Password" className="form-control" aria-label="Registrant Password" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.Password}/>
+                                            <input type="password" name="Password" className="form-control" aria-label="Registrant Password" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.password}/>
                                         </div>
                                     </div>
                                 </div>
@@ -223,7 +223,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 <div className="col">
                                     <div className="input-group input-group-lg mb-3 mt-3">
                                         <span className="input-group-text" id="inputGroup-sizing-default">Email</span>
-                                        <input type="email" name="Email" className="form-control" aria-label="Registrant Email Address" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.Email}/>
+                                        <input type="email" name="email" className="form-control" aria-label="Registrant Email Address" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.email}/>
                                     </div>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 <div className="col">
                                     <div className="input-group input-group-lg mb-3">
                                         <span className="input-group-text" id="inputGroup-sizing-default">Password</span>
-                                        <input type="password" name="Password" className="form-control" aria-label="Registrant Password" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.Password}/>
+                                        <input type="password" name="password" className="form-control" aria-label="Registrant Password" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.password}/>
                                     </div>
                                 </div>
                             </div>
