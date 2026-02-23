@@ -12,5 +12,7 @@ namespace BizKidzScholarships.Data.Models
         public required ActionType ActionType { get; set; }
         public int? TaskId { get; set; }
         public required string extension { get; set; }
+
+        public bool IsPrivate { get; set; } = false;
     }
 }

@@ -99,7 +99,8 @@ export enum RequestStatus
 export interface StartUploadRequest {
     ActionType: ActionType,
     TaskId?: Number,
-    Extension: string
+    Extension: string,
+    IsPrivate: boolean
 }
 
 export interface UploadHandshakeConfirmation {

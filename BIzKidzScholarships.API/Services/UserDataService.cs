@@ -338,12 +338,15 @@ namespace BizKidzScholarships.API.Services
         {
             PresignedHandshakeModel handshake = new PresignedHandshakeModel();
 
+            // TODO: Configurable S3 locations
+            string folder = req.IsPrivate ? "uploads-private/" : "uploads/";
+
             // first, get a Presigned URL from Amazon
             try
             {
                 using (AmazonS3Client client = new AmazonS3Client(RegionEndpoint.USEast2))
                 {
-                    string key = "uploads/" + Guid.NewGuid() + "." + req.extension;
+                    string key = folder + Guid.NewGuid() + "." + req.extension;
 
                     CreatePresignedPostRequest presignedPostRequest = new CreatePresignedPostRequest();
                     presignedPostRequest.BucketName = "bizkidz-task-bucket";
@@ -442,11 +445,22 @@ namespace BizKidzScholarships.API.Services
                 // try and access the s3 file
                 if (payload is not null)
                 {
-                    var client = _httpClientFactory.CreateClient();
-                    var uri = new Uri(payload.S3Link);
+                    var bucket = "bizkidz-task-bucket";
 
-                    var response = await client.GetAsync(uri);
-                    fileUploaded = response.IsSuccessStatusCode;
+                    using (var client = new AmazonS3Client(RegionEndpoint.USEast2))
+                    {
+                        try
+                        {
+                            var uri = new Uri(payload.S3Link);
+                            var path = uri.AbsolutePath.TrimStart('/');
+
+                            await client.GetObjectMetadataAsync(bucket, path);
+                            fileUploaded = true;
+                        } catch
+                        {
+                            fileUploaded = false;
+                        }
+                    }
                 }
 
                 // if not successful, set status of request and return ResponseModel

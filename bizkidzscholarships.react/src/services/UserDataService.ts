@@ -37,7 +37,8 @@ export async function TaskUpload(taskid: Number, file: File): Promise<boolean> {
     let request = {
         ActionType: ActionType.TaskUpload,
         Extension: file.name.split(".").pop()!.toLowerCase(),
-        TaskId: taskid
+        TaskId: taskid,
+        IsPrivate: true
     } as StartUploadRequest
 
     return (await UploadToServer(request, file)).Success;
@@ -46,7 +47,8 @@ export async function TaskUpload(taskid: Number, file: File): Promise<boolean> {
 export async function ProfileUpload(file: File) {
     let request = {
         ActionType: ActionType.ProfileImageUpload,
-        Extension: file.name.split(".").pop()!.toLowerCase()
+        Extension: file.name.split(".").pop()!.toLowerCase(),
+        IsPrivate: false
     } as StartUploadRequest
 
     return await UploadToServer(request, file);
@@ -57,7 +59,7 @@ async function GetPresignedS3Url(request: StartUploadRequest)  {
     var res = await APICall<StartUploadHandshakeResponseJSON>("user/NewUploadRequest", "POST", request);
 
     if (res.success) {
-        return res.data;
+        return res.data!;
     }
 
     return null;

@@ -5,6 +5,7 @@ using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Runtime.CompilerServices;
+using Amazon;
 using System.Security.Claims;
 
 namespace BizKidzScholarships.API.Extensions
@@ -80,11 +81,11 @@ namespace BizKidzScholarships.API.Extensions
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = true;
             })
-    .AddRoles<IdentityRole<Guid>>()                                    // Add role subsystem
-    .AddEntityFrameworkStores<BizKidzDbContext>()                      // Register UserStore + RoleStore + UserRoleStore
-    .AddRoleManager<RoleManager<IdentityRole<Guid>>>()                 // RoleManager requires RoleStore
-    .AddSignInManager<SignInManager<IdentityUser<Guid>>>()             // Cookie login requires SignInManager
-    .AddDefaultTokenProviders();
+            .AddRoles<IdentityRole<Guid>>()                                    // Add role subsystem
+            .AddEntityFrameworkStores<BizKidzDbContext>()                      // Register UserStore + RoleStore + UserRoleStore
+            .AddRoleManager<RoleManager<IdentityRole<Guid>>>()                 // RoleManager requires RoleStore
+            .AddSignInManager<SignInManager<IdentityUser<Guid>>>()             // Cookie login requires SignInManager
+            .AddDefaultTokenProviders();
 
             // Claims mapping
             services.Configure<IdentityOptions>(options =>
