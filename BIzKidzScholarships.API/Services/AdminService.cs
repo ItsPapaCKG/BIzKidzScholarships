@@ -2,6 +2,7 @@
 using BizKidzScholarships.API.Services.Base;
 using BizKidzScholarships.API.Services.Utilities;
 using BizKidzScholarships.Data.Contexts;
+using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
 using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,11 @@ namespace BizKidzScholarships.API.Services
         public async Task<List<TaskItem>> GetTasks()
         {
             return await GetAsListAsync<TaskItem>();
+        }
+
+        public async Task<ResponseModel> SaveTask()
+        {
+            throw new NotImplementedException();
         }
 
     }

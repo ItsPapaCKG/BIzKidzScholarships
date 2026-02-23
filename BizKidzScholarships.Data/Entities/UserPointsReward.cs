@@ -13,7 +13,7 @@ namespace BizKidzScholarships.Data.Entities
         [ForeignKey("Users")]
         public Guid UserId { get; set; }
 
-        public int TaskId { get; set; }
+        public int? TaskId { get; set; }
 
         public required int AttemptNumber { get; set; }
 
