@@ -230,12 +230,109 @@ namespace BizKidzScholarships.Data.Contexts
                 qq.HasIndex(q => q.Prompt);
             });
 
+            modelBuilder.Entity<QuizQuestion>().HasData([
+                    new QuizQuestion() {
+                        QuestionId = 1,
+                        Prompt = "What is the name of the non-profit organization that makes Biz Kidz possible?",
+                        PromptImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/biz-kidz-usa-logo.avif",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizQuestion() {
+                        QuestionId = 2,
+                        Prompt = "What is profit?",
+                        PromptImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/entrepreneurshipguide.png",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizQuestion() {
+                        QuestionId = 3,
+                        Prompt = "Select Answer D.",
+                        PromptImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/years-logo.avif",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    }
+                ]);
+
             modelBuilder.Entity<QuizOption>(qo =>
             {
                 qo.ToTable("QuizOptions");
                 qo.HasKey(q => q.OptionId);
                 qo.HasIndex(q => q.OptionValue);
             });
+
+            modelBuilder.Entity<QuizOption>().HasData([
+                    new QuizOption() {
+                        OptionId = 1,
+                        OptionKey = "A",
+                        OptionValue = "Kidz Bidz",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 2,
+                        OptionKey = "B",
+                        OptionValue = "Microsoft",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 3,
+                        OptionKey = "C",
+                        OptionValue = "Y.E.A.R.S Foundation",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 4,
+                        OptionKey = "D",
+                        OptionValue = "Google",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 5,
+                        OptionKey = "A",
+                        OptionValue = "The name of a band",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 6,
+                        OptionKey = "B",
+                        OptionValue = "The cost of performing services in your business",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 7,
+                        OptionKey = "C",
+                        OptionValue = "Scholarships won by Biz Kidz",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 8,
+                        OptionKey = "D",
+                        OptionValue = "The net income gained after expenses are deducted",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 9,
+                        OptionKey = "A",
+                        OptionValue = "Answer A",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 10,
+                        OptionKey = "B",
+                        OptionValue = "Answer B",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 11,
+                        OptionKey = "C",
+                        OptionValue = "Answer C",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+                    new QuizOption() {
+                        OptionId = 12,
+                        OptionKey = "D",
+                        OptionValue = "Answer D",
+                        Created = new DateTimeOffset(2026,2,20,8,0,0,TimeSpan.Zero)
+                    },
+
+                ]);
 
             modelBuilder.Entity<QuestionOption>(quo =>
             {
@@ -252,6 +349,57 @@ namespace BizKidzScholarships.Data.Contexts
                 .HasForeignKey(f => f.OptionId)
                 .OnDelete(DeleteBehavior.Cascade);
             });
+
+            modelBuilder.Entity<QuestionOption>().HasData([
+                    new QuestionOption() {
+                        OptionId = 1,
+                        QuestionId = 1
+                    },
+                    new QuestionOption() {
+                        OptionId = 2,
+                        QuestionId = 1
+                    },
+                    new QuestionOption() {
+                        OptionId = 3,
+                        QuestionId = 1
+                    },
+                    new QuestionOption() {
+                        OptionId = 4,
+                        QuestionId = 1
+                    },
+                    new QuestionOption() {
+                        OptionId = 5,
+                        QuestionId = 2
+                    },
+                    new QuestionOption() {
+                        OptionId = 6,
+                        QuestionId = 2
+                    },
+                    new QuestionOption() {
+                        OptionId = 7,
+                        QuestionId = 2
+                    },
+                    new QuestionOption() {
+                        OptionId = 8,
+                        QuestionId = 2
+                    },
+                    new QuestionOption() {
+                        OptionId = 9,
+                        QuestionId = 3
+                    },
+                    new QuestionOption() {
+                        OptionId = 10,
+                        QuestionId = 3
+                    },
+                    new QuestionOption() {
+                        OptionId = 11,
+                        QuestionId = 3
+                    },
+                    new QuestionOption() {
+                        OptionId = 12,
+                        QuestionId = 3
+                    },
+                ]);
 
             modelBuilder.Entity<TaskQuestion>(tq =>
             {
