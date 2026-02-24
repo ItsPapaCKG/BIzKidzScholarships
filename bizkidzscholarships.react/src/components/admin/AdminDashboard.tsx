@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { UseUserAccountContext } from "../../contexts/UserAccountContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UseAdminContext } from "../../contexts/AdminContext";
 import { GetUserActivities, GetUserResults } from "../../services/AdminDataService";
 import UserActivity from "./UserActivityTable";
@@ -35,51 +35,55 @@ function AdminDashboard() {
       navigation("/access-denied");
     }
 
-    getLogs();
-    getUsers();
+    //getLogs();
+    //getUsers();
     
   }, []);
   
   return (
       <>
-          <div className="dashboard container">
-            <div className="row justify-content-center">
-              <div className="col-12">
-                <h1 className="text-center">BizKidz Admin Dashboard</h1>
-              </div>
-            </div>
+          <div className="container">
+              <div className="row">
+                  <div className="col">
+                      <Link to="users">
+                          <div className="card bg-primary rounded-3">
+                              <img className="card-img-top admin-card-img" src={"https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/biz-kidz-usa-logo.avif"}></img>
+                              <div className="card-body">
+                                <h3>Users</h3>
+                              </div>
+                          </div>
+                      </Link>
+                  </div>
 
-            <div className="row justify-content-center" style={{ "height": "100px" }}>
-              <div className="col d-flex justify-content-center">
-                <button type="button" className="btn btn-warning border-dark btn-lg w-100">Configuration ⚙</button>
-              </div>
+                  <div className="col">
+                      <Link to="submissions">
+                          <div className="card bg-secondary rounded-3">
+                              <img className="card-img-top admin-card-img" src={"https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/biz-kidz-usa-logo.avif"}></img>
+                              <div className="card-body">
+                                  <h3>Submissions</h3>
+                              </div>
+                          </div>
+                      </Link>
+                  </div>
 
-              <div className="col d-flex justify-content-center">
-                <button type="button" className="btn btn-primary border-black border-2 btn-lg w-100">Users 🧍</button>
+                  <div className="col">
+                      <Link to="tasks">
+                          <div className="card bg-success h-100 rounded-3">
+                              <div className="card-img-top image-slot d-flex text-white align-items-center justify-content-center admin-card-img">
+                                  <i className="bi bi-card-checklist" style={{ fontSize: "12rem" }}></i>
+                              </div>
+                              <div className="card-body">
+                                  <h3>Tasks</h3>
+                              </div>
+                          </div>
+                      </Link>
+                  </div>
               </div>
-
-              <div className="col d-flex justify-content-center">
-                <button type="button" className="btn btn-danger border-black border-2 btn-lg w-100">Tasks ✅</button>
+              <div className="row">
+                  <div className="col">
+                    
+                  </div>
               </div>
-            </div>
-
-            <div className="row justify-content-center align-items-center mt-5 mb-1">
-              <div className="col-12 col-md-8">
-                <h2 className="text-center">Recent Activity</h2>
-                <UserActivity />
-              </div>
-            
-            </div>
-            
-            
-            <div className="row mt-4">
-              <div className="col col-lg-6 col-xs-12">
-                <h2>Users</h2>
-                <UserList />
-              </div>
-              
-            </div>
-            
           </div>
         </>
   );

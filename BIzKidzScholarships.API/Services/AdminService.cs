@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using BizKidzScholarships.API.Services.Base;
 using BizKidzScholarships.API.Services.Utilities;
 using BizKidzScholarships.Data.Contexts;
@@ -6,6 +7,11 @@ using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
 using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.EntityFrameworkCore;
+using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+using BizKidzScholarships.Data.Models;
+using Newtonsoft.Json;
 
 namespace BizKidzScholarships.API.Services
 {
@@ -59,6 +65,72 @@ namespace BizKidzScholarships.API.Services
         public async Task<ResponseModel> SaveTask()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<AdminTaskSubmissionsSearchResults> GetSubmissions(int taskId)
+        {
+            var search = new AdminTaskSubmissionsSearchResults();
+
+            try
+            {
+                List<AdminTaskSubmissionView> submissions = await _context.Submissions
+                    .Where(s => s.TaskId == taskId)
+                    .ProjectTo<AdminTaskSubmissionView>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+                search.Results.AddRange(submissions);
+
+                return search;
+            } catch (Exception ex)
+            {
+                search.Success = false;
+                search.Errors.Add(ex.Message);
+                return search;
+            }
+            
+        }
+
+        public async Task<ResponseModel> GetSubmissionLink(Guid submissionId)
+        {
+            var response = new GetSubmissionResult();
+
+            var submission = await _context.Submissions.FirstOrDefaultAsync(s => s.SubmissionId == submissionId);
+
+            if (submission is null)
+            {
+                response.Success = false;
+                response.Errors.Add("No submission found.");
+                return response;
+            }
+
+            var submissionData = JsonConvert.DeserializeObject<UploadTaskPayloadData>(submission.SubmissionData);
+
+            if (string.IsNullOrEmpty(submissionData.S3Link))
+            {
+                response.Success = false;
+                response.Errors.Add("Error fetching S3 Link for Submission: Invalid S3 link.");
+            }
+
+            var key = GetS3Key(submissionData.S3Link);
+
+            var presignedUrlRequest = new GetPreSignedUrlRequest()
+            {
+                BucketName = Configuration.BucketName,
+                Key = key
+            };
+
+            var client = new AmazonS3Client(RegionEndpoint.USEast2);
+            var awsResponse = await client.GetPreSignedURLAsync(presignedUrlRequest);
+
+            response.S3Link = awsResponse;
+
+            if (string.IsNullOrEmpty(awsResponse))
+            {
+                response.Success = false;
+                response.Errors.Add("AWS Could not retrieve a link to access this data");
+            }
+
+            return response;
         }
 
     }

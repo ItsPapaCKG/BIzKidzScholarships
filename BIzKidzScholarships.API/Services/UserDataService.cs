@@ -77,9 +77,9 @@ namespace BizKidzScholarships.API.Services
             return newView;
         }
 
-        public UserProfileDTO? GetUserProfile(Guid userId)
+        public async Task<UserProfileDTO?> GetUserProfile(Guid userId)
         {
-            var ent = _context.Profiles.FirstOrDefault(p => p.UserId == userId);
+            var ent = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == userId);
 
             if (ent == null)
                 return null;

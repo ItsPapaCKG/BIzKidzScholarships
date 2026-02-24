@@ -8,13 +8,35 @@ import UserAccountProvider from './contexts/UserAccountContext.tsx'
 import TaskProvider from './contexts/TaskViewContext.tsx'
 import { AppMode } from './models/ViewModels.ts'
 import "bootstrap/dist/css/bootstrap.min.css";
+import AdminDashboard from './components/admin/AdminDashboard.tsx'
 
 export const router = createBrowserRouter([
     { path: "/access-denied", element: (<><h1>Access is Denied Loser!</h1></>) },
     { path: "/", element: <App Mode={AppMode.Dashboard}/> },
     { path: "/login", element: <App Mode={AppMode.Login}/> },
     { path: "/register", element: <App Mode={AppMode.Register}/> },
-    { path: "/admin", element: <App Mode={AppMode.Admin}/>}
+    {
+        path: "/admin",
+        element: <App Mode={AppMode.Admin} />,
+        children: [
+            {
+                index: true,
+                element: <AdminDashboard />
+            },
+            {
+                path: "users",
+                element: <p>Users go here</p>
+            },
+            {
+                path: "submissions",
+                element: <p>Submissions go here</p>
+            },
+            {
+                path: "tasks",
+                element: <p>Tasks go here</p>
+            }
+        ]
+    }
 ]);
 
 createRoot(document.getElementById('root')!).render(

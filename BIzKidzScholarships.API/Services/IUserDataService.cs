@@ -8,7 +8,7 @@ namespace BizKidzScholarships.API.Services
     {
 
         // Public Get User Profile
-        UserProfileDTO? GetUserProfile(Guid userId);
+        Task<UserProfileDTO?> GetUserProfile(Guid userId);
 
         // Public Get User Assigned Tasks w/ Title/Description/Points bound
         Task<List<DashboardTaskDTO>> GetUserTasks(Guid userId);

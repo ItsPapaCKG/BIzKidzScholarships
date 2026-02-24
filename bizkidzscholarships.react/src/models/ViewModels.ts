@@ -123,6 +123,13 @@ export interface UserActivityLogJSON {
     reward: number,
     created: Date
 }
+
+export interface AdminTaskSubmission {
+    SubmissionId: number,
+    TaskId: number,
+    UserId: string,
+    UserFullName: string
+}
 // #endregion
 
 // #region Auth

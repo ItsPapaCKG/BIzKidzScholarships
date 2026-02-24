@@ -1,4 +1,5 @@
-﻿using BizKidzScholarships.API.Services;
+﻿using BizKidzScholarships.API.Controllers.Base;
+using BizKidzScholarships.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,12 +8,14 @@ namespace BizKidzScholarships.API.Controllers
     [ApiController]
     [Route("api/admin")]
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class AdminController : BaseBKController
     {
         private AdminService adminService;
-        public AdminController(AdminService svc)
+        private IUserDataService userDataService;
+        public AdminController(AdminService svc, IUserDataService ud)
         {
             adminService = svc;
+            userDataService = ud;
         }
 
         [HttpGet("[action]")]
@@ -29,6 +32,30 @@ namespace BizKidzScholarships.API.Controllers
             var results = await adminService.GetActivities();
 
             return Ok(results);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Submissions(int taskId)
+        {
+            var results = await adminService.GetSubmissions(taskId);
+
+            return RouteResponse(results);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetSubmission(Guid submissionId) 
+        { 
+            var res = await adminService.GetSubmissionLink(submissionId);
+
+            return RouteResponse(res);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> User(Guid userId)
+        {
+            var res = await userDataService.GetUserProfile(userId);
+
+            return Ok(res);
         }
     }
 }

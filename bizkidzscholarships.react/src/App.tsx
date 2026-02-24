@@ -7,6 +7,7 @@ import { AppMode, type UserCookieJSON } from './models/ViewModels';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminProvider from './contexts/AdminContext';
 import AuthFormComponent from './components/AuthFormComponent';
+import AdminGuard from './components/admin/AdminGuard';
 
 export const IsNewAccount = createContext(false);
 
@@ -73,7 +74,7 @@ function App({ Mode }: AppProps) {
             <main className="flex-grow-1 d-flex justify-content-center container-xl h-100 mt-5">
                 {isAuthenticated && Mode == AppMode.Dashboard && (<Dashboard/>)}
 
-                {isAuthenticated && Mode == AppMode.Admin && (<AdminProvider><AdminDashboard /></AdminProvider>)}
+                {isAuthenticated && Mode == AppMode.Admin && (<AdminProvider><AdminGuard /></AdminProvider>)}
 
                 {!isAuthenticated && Mode == AppMode.Login && (<>
                     <AuthFormComponent />

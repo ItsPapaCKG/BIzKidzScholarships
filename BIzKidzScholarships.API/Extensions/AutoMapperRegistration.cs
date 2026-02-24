@@ -27,6 +27,11 @@ namespace BizKidzScholarships.API.Extensions
                 cfg.CreateMap<RegisterDTO, UpdateUserProfileDTO>();
 
                 cfg.CreateMap<RegisterDTO, UserProfileDTO>();
+
+                #region Admin
+                cfg.CreateMap<TaskSubmission, AdminTaskSubmissionView>()
+                    .ForMember(t => t.TaskType, o => o.MapFrom(s => s.Task.TaskType));
+                #endregion
             });
         }
     }

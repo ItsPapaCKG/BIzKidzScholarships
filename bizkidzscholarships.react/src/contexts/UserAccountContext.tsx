@@ -18,7 +18,9 @@ export type userAccountContextType = {
     populateCookie: () => Promise<void>,
     loadingData: boolean,
     setLoadingData: React.Dispatch<React.SetStateAction<boolean>>,
-    logout: () => void
+    logout: () => void,
+    isAdmin: boolean,
+    setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>
 }
 interface UserProfileJSON {
     userId: number,
@@ -40,6 +42,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     const [editMode, setEditMode] = useState(false);
     const [userCookie, setUserCookie] = useState<UserCookieJSON>({roles: [] as string[]} as UserCookieJSON)
     const [loadingData, setLoadingData] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const GetUserProfile = async () => {
         var res = await fetch("https://localhost:7095/api/user", {
@@ -106,8 +109,21 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
         populateCookie();
     }, []);
 
+    useEffect(() => {
+        if (userCookie.roles.length == 0) {
+            return;
+        }
+
+        if (userCookie.roles.includes("Admin")) {
+            setIsAdmin(true);
+            return;
+        }
+
+        setIsAdmin(false);
+    }, [userCookie]);
+
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie, loadingData, setLoadingData, logout }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie, loadingData, setLoadingData, logout, isAdmin, setIsAdmin }}>
           { children }
       </UserAccountContext.Provider>
   );

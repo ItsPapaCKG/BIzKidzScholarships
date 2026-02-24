@@ -44,6 +44,14 @@ namespace BizKidzScholarships.API.Services.Base
             
         }
 
+        protected string GetS3Key(string url)
+        {
+            var uri = new Uri(url);
+            var path = uri.AbsolutePath.TrimStart('/');
+
+            return path;
+        }
+
         
     }
 }

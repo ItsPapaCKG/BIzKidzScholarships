@@ -26,9 +26,9 @@ namespace BizKidzScholarships.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult UserProfile()
+        public async Task<IActionResult> UserProfile()
         {
-            var response = _udService.GetUserProfile(_user.Id);
+            var response = await _udService.GetUserProfile(_user.Id);
 
             if (response is null)
                 return BadRequest("No profile found.");
