@@ -213,7 +213,7 @@ namespace BizKidzScholarships.Data.Contexts
                 s.HasOne(ts => ts.Task)
                 .WithMany(t => t.TaskSubmissions)
                 .HasForeignKey(ts => ts.TaskId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
                 s.Property(s => s.SubmissionData).HasColumnType("jsonb");
             });

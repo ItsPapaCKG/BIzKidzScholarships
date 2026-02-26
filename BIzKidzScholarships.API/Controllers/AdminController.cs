@@ -57,5 +57,21 @@ namespace BizKidzScholarships.API.Controllers
 
             return Ok(res);
         }
+
+        //[HttpGet("[action]")]
+        //public async Task<IActionResult> Tasks(Guid userId)
+        //{
+        //    var res = await userDataService.GetTasks(userId);
+
+        //    return Ok(res);
+        //}
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Tasks()
+        {
+            var res = await adminService.GetTasksSearch();
+
+            return Ok(res);
+        }
     }
 }

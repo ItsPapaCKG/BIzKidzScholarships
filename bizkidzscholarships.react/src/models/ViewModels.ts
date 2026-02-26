@@ -18,6 +18,10 @@ export interface IDashboardContext {
 }
 // #endregion
 
+export interface ResponseBase {
+    error: string
+}
+
 // #region Tasks
 export enum ActionType {
     TaskUpload,
@@ -67,7 +71,29 @@ export interface TaskList {
     Tasks: ITask[],
     Loaded: boolean
 }
+export interface GetTasksResponse extends ResponseBase {
+    results: ITaskJSON[]
+}
 // #endregion
+
+// #region Submissions
+
+export interface SubmissionsSearchResults {
+    results: SubmissionItemJSON[],
+    error: string
+}
+
+export interface SubmissionItemJSON {
+    taskId: number,
+    submissionId: string,
+    userId: string,
+    userFullName: string,
+    attemptNumber: number,
+    taskType: TaskType,
+    created: Date
+}
+
+//#endregion
 
 // #region Third-party file upload
 export interface PresignedURLData {

@@ -62,6 +62,22 @@ namespace BizKidzScholarships.API.Services
             return await GetAsListAsync<TaskItem>();
         }
 
+        public async Task<TaskSearchResponse> GetTasksSearch()
+        {
+            try
+            {
+                var list = await GetAsListAsync<TaskItem>();
+
+                var results = new TaskSearchResponse() { Results = list };
+
+                return results;
+            }
+            catch (Exception ex)
+            {
+                return new TaskSearchResponse() { Error = ex.Message };
+            }
+        }
+
         public async Task<ResponseModel> SaveTask()
         {
             throw new NotImplementedException();
@@ -75,7 +91,7 @@ namespace BizKidzScholarships.API.Services
             {
                 List<AdminTaskSubmissionView> submissions = await _context.Submissions
                     .Where(s => s.TaskId == taskId)
-                    .ProjectTo<AdminTaskSubmissionView>(_mapper.ConfigurationProvider)
+                    .Join(_context.Profiles, s => s.UserId, p => p.UserId, (s, p) => new AdminTaskSubmissionView() { TaskId = s.TaskId, AttemptNumber = s.AttemptNumber, UserFullName = p.FirstName + " " + p.LastName, SubmissionId = s.SubmissionId, TaskType = s.Task.TaskType, UserId = s.UserId, Created = s.Created })
                     .ToListAsync();
 
                 search.Results.AddRange(submissions);

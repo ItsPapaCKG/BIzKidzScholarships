@@ -17,7 +17,7 @@ namespace BizKidzScholarships.Data.Entities
 
         public IdentityUser<Guid> User { get; set; }
 
-        public required int TaskId { get; set; }
+        public int? TaskId { get; set; } = 0;
 
         public TaskItem Task { get; set; }
 
@@ -33,7 +33,9 @@ namespace BizKidzScholarships.Data.Entities
 
         public required Guid UserId { get; set; }
 
-        public required int TaskId { get; set; }
+        public string UserFullName { get; set; }
+
+        public int? TaskId { get; set; }
 
         public required TaskType TaskType { get; set; }
 

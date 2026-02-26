@@ -1,4 +1,4 @@
-import { type UserActivityLogJSON, type UserActivityLog, type UserResult, type UserResultJSON, type TaskList, type ITask } from "../models/ViewModels";
+import { type UserActivityLogJSON, type UserActivityLog, type UserResult, type UserResultJSON, type TaskList, type ITask, type SubmissionsSearchResults, type GetTasksResponse } from "../models/ViewModels";
 import { APICall, type APIResponse } from "./APIService";
 
 export async function GetUserActivities(): Promise<UserActivityLog[]> {
@@ -35,8 +35,19 @@ export async function GetUserResults() {
     return [];
 }
 
-export async function GetAllTasks(): Promise<TaskList> {
-    return {} as TaskList;
+export async function GetAllTasks(): Promise<GetTasksResponse> {
+    let res = await APICall<GetTasksResponse>(`admin/Tasks/`, "GET");
+
+    if (!res.success) {
+        let r: GetTasksResponse = {
+            Results: [],
+            Error: res.error.message!
+        }
+
+        return r;
+    }
+
+    return res.data!;
 }
 
 export async function GetTaskDetails(taskId: number): Promise<ITask> {
@@ -49,4 +60,19 @@ export async function SaveTask(task: ITask): Promise<APIResponse<undefined>> {
 
 export async function GetSubmission(submissionId: string): Promise<APIResponse<string>> {
     return {} as APIResponse<string>;
+}
+
+export async function GetSubmissions(taskId: number): Promise<SubmissionsSearchResults> {
+    let res = await APICall<SubmissionsSearchResults>(`admin/submissions/${taskId}`, "GET");
+
+    if (!res.success) {
+        let response: SubmissionsSearchResults = {
+            Results: [],
+            Error: res.error.message!
+        };
+
+        return response;
+    }
+
+    return res.data!;
 }

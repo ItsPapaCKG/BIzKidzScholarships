@@ -340,7 +340,7 @@ namespace BizKidzScholarships.API.Services
 
             // TODO: Configurable S3 locations
             string folder = req.IsPrivate ? "uploads-private/" : "uploads/";
-
+            string bucketName = (await _context.Configuration.FirstOrDefaultAsync(c => c.Id == GlobalConstants.S3Bucket))?.Value ?? string.Empty;
             // first, get a Presigned URL from Amazon
             try
             {
@@ -349,7 +349,7 @@ namespace BizKidzScholarships.API.Services
                     string key = folder + Guid.NewGuid() + "." + req.extension;
 
                     CreatePresignedPostRequest presignedPostRequest = new CreatePresignedPostRequest();
-                    presignedPostRequest.BucketName = "bizkidz-task-bucket";
+                    presignedPostRequest.BucketName = bucketName;
                     presignedPostRequest.Key = key;
                     presignedPostRequest.Expires = DateTime.UtcNow.AddMinutes(10);
 

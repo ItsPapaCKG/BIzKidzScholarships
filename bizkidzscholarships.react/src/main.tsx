@@ -9,6 +9,7 @@ import TaskProvider from './contexts/TaskViewContext.tsx'
 import { AppMode } from './models/ViewModels.ts'
 import "bootstrap/dist/css/bootstrap.min.css";
 import AdminDashboard from './components/admin/AdminDashboard.tsx'
+import TaskSubmissionsShell from './components/admin/TaskSubmissionsShell.tsx'
 
 export const router = createBrowserRouter([
     { path: "/access-denied", element: (<><h1>Access is Denied Loser!</h1></>) },
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "tasks",
-                element: <p>Tasks go here</p>
+                element: <TaskSubmissionsShell />
             }
         ]
     }
