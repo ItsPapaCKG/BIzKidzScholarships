@@ -96,6 +96,10 @@ namespace BizKidzScholarships.Data.Contexts
                     new ConfigurationItem() {
                         Id = "DefaultProfilePicture",
                         Value="https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/years-logo.avif"
+                    },
+                    new ConfigurationItem() {
+                        Id = "S3BucketName",
+                        Value = "bizkidz-task-bucket"
                     }
                 ]);
 

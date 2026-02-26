@@ -1,5 +1,5 @@
-import { type UserActivityLogJSON, type UserActivityLog, type UserResult, type UserResultJSON } from "../models/ViewModels";
-import { APICall } from "./APIService";
+import { type UserActivityLogJSON, type UserActivityLog, type UserResult, type UserResultJSON, type TaskList, type ITask } from "../models/ViewModels";
+import { APICall, type APIResponse } from "./APIService";
 
 export async function GetUserActivities(): Promise<UserActivityLog[]> {
     // TODO send a request to get the UserActivityView
@@ -33,4 +33,20 @@ export async function GetUserResults() {
     }
 
     return [];
+}
+
+export async function GetAllTasks(): Promise<TaskList> {
+    return {} as TaskList;
+}
+
+export async function GetTaskDetails(taskId: number): Promise<ITask> {
+    return {} as ITask;
+}
+
+export async function SaveTask(task: ITask): Promise<APIResponse<undefined>> {
+    return {} as APIResponse<undefined>;
+}
+
+export async function GetSubmission(submissionId: string): Promise<APIResponse<string>> {
+    return {} as APIResponse<string>;
 }
