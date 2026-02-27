@@ -53,7 +53,12 @@ namespace BizKidzScholarships.API.Controllers
             {
                 return BadRequest("Passwords do not match.");
             }
-                
+
+            if (_udService.GetUserAge(registration.Birthday) < 13)
+            {
+                return BadRequest("You must be 13 years or older to use this application.");
+            }
+
 
             var newUser = new IdentityUser<Guid>
             {

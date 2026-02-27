@@ -6,6 +6,7 @@ namespace BizKidzScholarships.API.Services
 {
     public interface IUserDataService
     {
+        int GetUserAge(DateTimeOffset birthday);
 
         // Public Get User Profile
         Task<UserProfileDTO?> GetUserProfile(Guid userId);

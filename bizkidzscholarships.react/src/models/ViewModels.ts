@@ -93,6 +93,11 @@ export interface SubmissionItemJSON {
     created: Date
 }
 
+export interface GetSubmissionResponse {
+    s3Link: string,
+    taskId: number
+}
+
 //#endregion
 
 // #region Third-party file upload

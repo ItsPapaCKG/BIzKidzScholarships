@@ -6,10 +6,14 @@ type Props = {
 };
 
 function AdminBreadcrumb({ children }: Props) {
-    return (<>
-        <Link to=".." className="d-block">← Back to Admin Dashboard</Link>
-      {children}
-    </>);
+    return (<div className="container">
+        <div className="row">
+            <Link to=".." className="d-block">← Back to Admin Dashboard</Link>
+        </div>
+        <div className="row">
+            {children}
+        </div>
+    </div>);
 }
 
 export default AdminBreadcrumb;

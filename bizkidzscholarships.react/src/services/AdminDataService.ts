@@ -1,4 +1,4 @@
-import { type UserActivityLogJSON, type UserActivityLog, type UserResult, type UserResultJSON, type TaskList, type ITask, type SubmissionsSearchResults, type GetTasksResponse } from "../models/ViewModels";
+import { type UserActivityLogJSON, type UserActivityLog, type UserResult, type UserResultJSON, type TaskList, type ITask, type SubmissionsSearchResults, type GetTasksResponse, type GetSubmissionResponse } from "../models/ViewModels";
 import { APICall, type APIResponse } from "./APIService";
 
 export async function GetUserActivities(): Promise<UserActivityLog[]> {
@@ -58,8 +58,10 @@ export async function SaveTask(task: ITask): Promise<APIResponse<undefined>> {
     return {} as APIResponse<undefined>;
 }
 
-export async function GetSubmission(submissionId: string): Promise<APIResponse<string>> {
-    return {} as APIResponse<string>;
+export async function GetSubmission(submissionId: string): Promise<APIResponse<GetSubmissionResponse>> {
+    let res = await APICall<GetSubmissionResponse>(`admin/getsubmission/${submissionId}`, "GET");
+
+    return res;
 }
 
 export async function GetSubmissions(taskId: number): Promise<SubmissionsSearchResults> {

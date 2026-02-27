@@ -122,47 +122,70 @@ namespace BizKidzScholarships.API.Services
             
         }
 
-        public async Task<ResponseModel> GetSubmissionLink(Guid submissionId)
+        public async Task<GetSubmissionResult> GetSubmissionLink(Guid submissionId)
         {
             var response = new GetSubmissionResult();
 
-            var submission = await _context.Submissions.FirstOrDefaultAsync(s => s.SubmissionId == submissionId);
+            try { 
 
-            if (submission is null)
+                var submission = await _context.Submissions.FirstOrDefaultAsync(s => s.SubmissionId == submissionId);
+
+                var submissionType = await _context.Tasks.Where(t => t.Id == submission.TaskId).Select(t => t.TaskType).FirstOrDefaultAsync();
+    
+                if (submission is null)
+                {
+                    response.Success = false;
+                    response.Errors.Add("No submission found.");
+                    return response;
+                }
+
+                var submissionData = JsonConvert.DeserializeObject<UploadTaskPayloadData>(submission.SubmissionData);
+
+                if (string.IsNullOrEmpty(submissionData.S3Link))
+                {
+                    response.Success = false;
+                    response.Errors.Add("Error fetching S3 Link for Submission: Invalid S3 link.");
+                }
+
+                var key = GetS3Key(submissionData.S3Link);
+
+                DateTime expires;
+
+                switch (submissionType)
+                {
+                    case Data.Enums.TaskType.VideoUpload:
+                        expires = DateTime.UtcNow.AddMinutes(10);
+                        break;
+                    default:
+                        expires = DateTime.UtcNow.AddMinutes(5);
+                        break;
+                }
+
+                var presignedUrlRequest = new GetPreSignedUrlRequest()
+                {
+                    BucketName = Configuration.BucketName,
+                    Key = key,
+                    Expires = expires
+                };
+
+                var client = new AmazonS3Client(RegionEndpoint.USEast2);
+                var awsResponse = await client.GetPreSignedURLAsync(presignedUrlRequest);
+
+                response.S3Link = awsResponse;
+
+                if (string.IsNullOrEmpty(awsResponse))
+                {
+                    response.Success = false;
+                    response.Errors.Add("AWS Could not retrieve a link to access this data");
+                }
+
+                return response;
+            } catch (Exception ex)
             {
                 response.Success = false;
-                response.Errors.Add("No submission found.");
+                response.Errors.Add(ex.Message);
                 return response;
             }
-
-            var submissionData = JsonConvert.DeserializeObject<UploadTaskPayloadData>(submission.SubmissionData);
-
-            if (string.IsNullOrEmpty(submissionData.S3Link))
-            {
-                response.Success = false;
-                response.Errors.Add("Error fetching S3 Link for Submission: Invalid S3 link.");
-            }
-
-            var key = GetS3Key(submissionData.S3Link);
-
-            var presignedUrlRequest = new GetPreSignedUrlRequest()
-            {
-                BucketName = Configuration.BucketName,
-                Key = key
-            };
-
-            var client = new AmazonS3Client(RegionEndpoint.USEast2);
-            var awsResponse = await client.GetPreSignedURLAsync(presignedUrlRequest);
-
-            response.S3Link = awsResponse;
-
-            if (string.IsNullOrEmpty(awsResponse))
-            {
-                response.Success = false;
-                response.Errors.Add("AWS Could not retrieve a link to access this data");
-            }
-
-            return response;
         }
 
     }

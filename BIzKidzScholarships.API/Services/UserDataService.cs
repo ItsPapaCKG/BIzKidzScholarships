@@ -31,6 +31,22 @@ namespace BizKidzScholarships.API.Services
         {
             rewardFactory = new UserRewardFactory(userId, context);
         }
+
+        public int GetUserAge(DateTimeOffset birthday)
+        {
+            var today = DateTimeOffset.UtcNow.Date;
+            var dob = birthday.Date;
+
+            var age = today.Year - dob.Year;
+
+            if (dob > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            return age;
+        }
+
         public UserPointsView? GetUserPoints(Guid userId)
         {
             bool noUpdates = _context.UserPoints.All(up => !up.IsNew && up.UserId == userId);

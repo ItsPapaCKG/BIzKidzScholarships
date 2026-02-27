@@ -50,7 +50,7 @@ namespace BizKidzScholarships.API.Controllers
             return RouteResponse(results);
         }
 
-        [HttpGet("[action]")]
+        [HttpGet("[action]/{submissionId}")]
         public async Task<IActionResult> GetSubmission(Guid submissionId) 
         { 
             var res = await adminService.GetSubmissionLink(submissionId);
