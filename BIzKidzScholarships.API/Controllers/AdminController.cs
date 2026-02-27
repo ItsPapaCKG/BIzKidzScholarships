@@ -35,6 +35,14 @@ namespace BizKidzScholarships.API.Controllers
         }
 
         [HttpGet("[action]")]
+        public async Task<IActionResult> Submissions()
+        {
+            var results = await adminService.GetAllSubmissions();
+
+            return RouteResponse(results);
+        }
+
+        [HttpGet("[action]/{taskId}")]
         public async Task<IActionResult> Submissions(int taskId)
         {
             var results = await adminService.GetSubmissions(taskId);

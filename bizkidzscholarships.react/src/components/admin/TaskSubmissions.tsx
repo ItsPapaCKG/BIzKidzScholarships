@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UseAdminContext } from "../../contexts/AdminContext";
-import { TaskType, type SubmissionsSearchResults } from "../../models/ViewModels";
+import { TaskType, type SubmissionItemJSON, type SubmissionsSearchResults } from "../../models/ViewModels";
 
 export interface TaskSubmissionProps {
     taskId: number
@@ -8,13 +8,20 @@ export interface TaskSubmissionProps {
 
 function TaskSubmissions({ taskId }: TaskSubmissionProps) {
     const adminContext = UseAdminContext();
-    const [submissions, setSubmissions] = useState<SubmissionsSearchResults | undefined>();
+    const [submissions] = [adminContext.taskSubmissions]
+    const [viewedSubmissions, setViewedSubmissions] = useState <SubmissionItemJSON[] | undefined>()
     const [GetSubmissions] = [adminContext.getTaskSubmissions];
     const [GetTasks] = [adminContext.getTasks];
 
+    const filterSubmissions = (taskId: number) => {
+        let filtered = submissions?.results.filter(item => item.taskId == taskId);
+
+        setViewedSubmissions(filtered);
+    }
+
     useEffect(() => {
-        GetSubmissions(taskId);
-    }, []);
+        filterSubmissions(taskId);
+    }, [taskId]);
 
     //SocialMedia,
     //    ImageUpload,
@@ -23,14 +30,13 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
     //    Contest
 
     return (<>
-        {!submissions ?
+        {!viewedSubmissions ?
 
             (<p>Loading...</p>) :
 
             (<div>
-                {submissions.error ? (<p>An error occurred: {submissions.error}</p>) :
-                    (
-                        <table>
+                    
+                        <table className="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Submitted By</th>
@@ -40,7 +46,7 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {submissions.results.map((sub) => {
+                                {viewedSubmissions!.map((sub, idx) => {
                                     {
                                         var taskTypeString: string;
                                         var isFileType = false;
@@ -68,7 +74,7 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
                                         }
                                     } 
 
-                                    return (<tr>
+                                    return (<tr key={ sub.submissionId }>
                                         <td>{ sub.userFullName }</td>
                                         <td>{ taskTypeString }</td>
                                         <td>{isFileType ? (<button type="button" className="btn btn-link">View File</button>) : <></>}</td>
@@ -77,8 +83,8 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
                                 }) }
                             </tbody>
                         </table>
-                    )
-                }
+                    
+                
             </div>)}
             </>
     );

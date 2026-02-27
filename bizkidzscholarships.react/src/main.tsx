@@ -10,6 +10,7 @@ import { AppMode } from './models/ViewModels.ts'
 import "bootstrap/dist/css/bootstrap.min.css";
 import AdminDashboard from './components/admin/AdminDashboard.tsx'
 import TaskSubmissionsShell from './components/admin/TaskSubmissionsShell.tsx'
+import AdminBreadcrumb from './components/admin/AdminBreadcrumb.tsx'
 
 export const router = createBrowserRouter([
     { path: "/access-denied", element: (<><h1>Access is Denied Loser!</h1></>) },
@@ -30,11 +31,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: "submissions",
-                element: <p>Submissions go here</p>
+                element: <AdminBreadcrumb><TaskSubmissionsShell /></AdminBreadcrumb>
             },
             {
                 path: "tasks",
-                element: <TaskSubmissionsShell />
+                element: <p>Tasks go here</p>
             }
         ]
     }

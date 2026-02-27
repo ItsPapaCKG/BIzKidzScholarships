@@ -1,17 +1,19 @@
-﻿using AutoMapper;
+﻿using Amazon;
+using Amazon.S3;
+using Amazon.S3.Model;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BizKidzScholarships.API.Services.Base;
 using BizKidzScholarships.API.Services.Utilities;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Entities;
+using BizKidzScholarships.Data.Models;
 using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.EntityFrameworkCore;
-using Amazon;
-using Amazon.S3;
-using Amazon.S3.Model;
-using BizKidzScholarships.Data.Models;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BizKidzScholarships.API.Services
 {
@@ -60,6 +62,20 @@ namespace BizKidzScholarships.API.Services
         public async Task<List<TaskItem>> GetTasks()
         {
             return await GetAsListAsync<TaskItem>();
+        }
+
+        public async Task<AdminTaskSubmissionsSearchResults> GetAllSubmissions()
+        {
+            List <AdminTaskSubmissionView> submissions = await _context.Submissions
+                    .Join(_context.Profiles, s => s.UserId, p => p.UserId, (s, p) => new AdminTaskSubmissionView() { TaskId = s.TaskId, AttemptNumber = s.AttemptNumber, UserFullName = p.FirstName + " " + p.LastName, SubmissionId = s.SubmissionId, TaskType = s.Task.TaskType, UserId = s.UserId, Created = s.Created })
+                    .ToListAsync();
+
+            var result = new AdminTaskSubmissionsSearchResults()
+            {
+                Results = submissions
+            };
+
+            return result;
         }
 
         public async Task<TaskSearchResponse> GetTasksSearch()

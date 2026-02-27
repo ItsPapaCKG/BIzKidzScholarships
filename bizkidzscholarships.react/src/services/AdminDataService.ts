@@ -74,5 +74,34 @@ export async function GetSubmissions(taskId: number): Promise<SubmissionsSearchR
         return response;
     }
 
+    for (const item of res.data!.results) {
+
+        if (!(item.created instanceof Date)) {
+            item.created = new Date(item.created);
+        }
+    }
+
+    return res.data!;
+}
+
+export async function GetAllSubmissions() {
+    let res = await APICall<SubmissionsSearchResults>(`admin/submissions/`, "GET");
+
+    if (!res.success) {
+        let response: SubmissionsSearchResults = {
+            Results: [],
+            Error: res.error.message!
+        };
+
+        return response;
+    }
+
+    for (const item of res.data!.results) {
+
+        if (!(item.created instanceof Date)) {
+            item.created = new Date(item.created);
+        }
+    }
+
     return res.data!;
 }
