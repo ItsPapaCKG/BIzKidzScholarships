@@ -67,8 +67,13 @@ namespace BizKidzScholarships.Data.Contexts
             //SELECT
 
             //    "FirstName" || ' ' || "LastName" AS "Name", 
+            //    p."ChildFullName",
+            //    p."Email",
+            //    p."UserType",
             //    SUM(up."Points") AS "Points", 
-            //    SUM(up."Points") / COALESCE(c."Value"::int, 100) AS "Entries"
+            //    SUM(up."Points") / COALESCE(c."Value"::int, 100) AS "Entries",
+            //    p."Created",
+            //    p."Updated"
             //FROM "AspNetUsers" u
             //INNER JOIN "UserPoints" up ON u."Id" = up."UserId"
             //INNER JOIN "Profiles" p ON p."UserId" = u."Id"
@@ -151,8 +156,8 @@ namespace BizKidzScholarships.Data.Contexts
                     TaskNameInternal = "Business Photo Upload Task",
                     Reward = 50,
                     IsGlobalTask = true,
-                    Created = DateTime.UtcNow,
-                    Updated = DateTime.UtcNow,
+                    Created = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
+                    Updated = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
                     TaskType = Enums.TaskType.FileUpload,
                     TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/bizkidzexpo.jpg"
                 },
@@ -167,8 +172,8 @@ namespace BizKidzScholarships.Data.Contexts
                     TaskNameInternal = "Pitch Video Task",
                     Reward = 50,
                     IsGlobalTask = true,
-                    Created = DateTime.UtcNow,
-                    Updated = DateTime.UtcNow,
+                    Created = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
+                    Updated = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
                     TaskType = Enums.TaskType.VideoUpload,
                     TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/pitchcontest.jpg"
                 },
@@ -182,23 +187,23 @@ namespace BizKidzScholarships.Data.Contexts
                     TaskEnabled = true,
                     TaskNameInternal = "Quiz Completion Task",
                     Reward = 50,
-                    Created = DateTime.UtcNow,
-                    Updated = DateTime.UtcNow,
+                    Created = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
+                    Updated = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
                     TaskType = Enums.TaskType.Quiz,
                     TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/entrepreneurshipguide.png"
                 },
                 new TaskItem
                 {
                     Id = 4,
-                    TaskTitle = "Register an account with Biz Kidz Scholarships",
+                    TaskTitle = "Register an Account",
                     TaskPromptTitle = "If you're 13 years old or older, create an account with the Biz Kidz Scholarships app.",
                     TaskPromptSubtitle = "Register a Biz Kidz Scholarships account.",
                     TaskDescription = "Once registered, you will be prompted in the future to upload photos and complete certain task for a chance to win scholarships.",
                     TaskEnabled = false,
                     TaskNameInternal = "Quiz Completion Task",
                     Reward = 0,
-                    Created = DateTime.UtcNow,
-                    Updated = DateTime.UtcNow,
+                    Created = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
+                    Updated = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
                     TaskType = Enums.TaskType.Quiz,
                     TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/bizkidzexpo.jpg"
                 },

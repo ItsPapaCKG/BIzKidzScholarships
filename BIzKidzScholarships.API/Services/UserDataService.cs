@@ -50,17 +50,18 @@ namespace BizKidzScholarships.API.Services
             return age;
         }
 
-        public UserPointsView? GetUserPoints(Guid userId)
+        public async Task<UserPointsView?> GetUserPoints(Guid userId)
         {
-            bool noUpdates = _context.UserPoints.All(up => !up.IsNew && up.UserId == userId);
+
+            bool noUpdates = await _context.UserPoints.AllAsync(up => !up.IsNew && up.UserId == userId);
             int totalPoints = _context.UserPoints
                 .Where(u => u.UserId == userId)
                 .GroupBy(p => p.TaskId)
                 .Select(t => t.OrderByDescending(up => up.AttemptNumber).First().Points)
                 .Sum();
 
-            int entriesCost;
-            var entriesConfigured = int.TryParse(_context.Configuration.FirstOrDefault(c => c.Id == "EntriesCost")?.Value, out entriesCost);
+            int entriesCost = 100;
+            var entriesConfigured = int.TryParse((await _context.Configuration.FirstOrDefaultAsync(c => c.Id == "EntriesCost"))?.Value, out entriesCost);
             
             int totalEntries = totalPoints / (entriesConfigured && entriesCost != 0 ? entriesCost : 100); // TODO: Points per entry configuration value
 
@@ -77,17 +78,44 @@ namespace BizKidzScholarships.API.Services
                 return view;
             }
 
-            int oldPoints = _context.UserPoints
+            int oldPointsTotal = _context.UserPoints
+                .Where(p => p.UserId == userId)
                 .GroupBy(p => p.TaskId)
                 .Select(t => t.Where(up => !up.IsNew).OrderByDescending(up => up.AttemptNumber).First().Points)
                 .Sum();
-            int oldEntries = oldPoints / 100;
+
+            var allNewPoints = await _context.UserPoints
+                .Where(p => p.UserId == userId && p.IsNew)
+                .ToArrayAsync();
+
+            if (allNewPoints.Any())
+            {
+                var t = await _context.Database.BeginTransactionAsync();
+
+                try
+                {
+
+                    _context.UserPoints.UpdateRange(allNewPoints);
+
+                    await _context.SaveChangesAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    await t.RollbackAsync();
+                    // FUTURE: Logging
+                }
+
+                await t.CommitAsync();
+            }
+
+            int oldEntries = oldPointsTotal / (entriesConfigured && entriesCost != 0 ? entriesCost : 100);
 
             var newView = new UserPointsView()
             {
                 UserId = userId,
                 Points = totalPoints,
-                PreviousPoints = oldPoints,
+                PreviousPoints = oldPointsTotal,
                 Entries = totalEntries,
                 PreviousEntries = oldEntries,
                 Updated = DateTimeOffset.UtcNow

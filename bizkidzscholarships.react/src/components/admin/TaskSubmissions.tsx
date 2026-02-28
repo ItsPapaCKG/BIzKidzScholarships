@@ -118,7 +118,7 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
                                     return (<tr key={ sub.submissionId }>
                                         <td>{ sub.userFullName }</td>
                                         <td>{ taskTypeString }</td>
-                                        <td>{isFileType ? (<button type="button" className="btn btn-link" onClick={ e => viewSubmission(sub.submissionId) }>View File</button>) : <></>}</td>
+                                        <td>{isFileType ? (<button type="button" className="btn btn-link" onClick={e => viewSubmission(sub.submissionId)} data-bs-toggle="modal" data-bs-target="#viewSubmissionModal">View File</button>) : <></>}</td>
                                         <td>{ sub.created.toISOString() }</td>
                                     </tr>)
                                 }) }
@@ -128,27 +128,27 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
                 
             </div>)}
 
-        {showModal && <div className="modal modal-xl fade show d-block" id="viewSubmissionModal" tabIndex={-1} aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal modal-xl fade" id="viewSubmissionModal" tabIndex={-1} aria-labelledby="exampleModalLabel">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">{ viewedSubmission ? viewedSubmission.userFullName + "'s Submission" : "View Submission"}</h5>
-                                <button type="button" className="btn-close" aria-label="Close" onClick={closeModal}></button>
+                                <button type="button" className="btn-close" aria-label="Close" onClick={closeModal} data-bs-dismiss="modal"></button>
                             </div>
                             <div className="modal-body d-flex justify-content-center align-items-center" style={{ height: "75vh" }}>
                                 {modalLoading && <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "75vh" }}><LoadingSVG /></div>}
 
                                 {modalError && <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "75vh" }}>{modalError}</div>}
 
-                                {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.VideoUpload && <video src={submissionAccess?.s3Link}></video>}
-                                {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.ImageUpload && <img src={submissionAccess?.s3Link} className="img-fluid"></img>}
+                                {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.VideoUpload && <video controls src={submissionAccess?.s3Link} className="w-100"></video>}
+                                {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.ImageUpload && <img src={submissionAccess?.s3Link} className="img-fluid" style={{ maxWidth: "75vw" } }></img>}
                             </div>
                             { submissionAccess?.s3Link && <div className="modal-footer">
                                 <button type="button" className="btn btn-primary" onClick={async () => window.open(submissionAccess?.s3Link, "_blank")}>Download File</button>
                             </div>}
                         </div>
                     </div>
-                </div>}
+                </div>
             </>
     );
 }

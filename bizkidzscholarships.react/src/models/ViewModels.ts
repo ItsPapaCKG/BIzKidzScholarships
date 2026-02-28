@@ -222,6 +222,7 @@ export interface UserResult {
 
 export interface UserResultJSON {
     name: string,
+    childName: string | undefined,
     points: number,
     email: string,
     userType: UserType,

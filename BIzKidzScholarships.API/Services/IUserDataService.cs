@@ -15,7 +15,7 @@ namespace BizKidzScholarships.API.Services
         Task<List<DashboardTaskDTO>> GetUserTasks(Guid userId);
 
         // Get User Points and Entries Total
-        UserPointsView? GetUserPoints(Guid userId);
+        Task<UserPointsView?> GetUserPoints(Guid userId);
 
         Task<ResponseModel> SetUserProfile(Guid userId, UserProfileDTO profile, bool isRegister = false);
 

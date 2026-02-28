@@ -69,10 +69,10 @@ namespace BizKidzScholarships.API.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult UserPoints()
+        public async Task<IActionResult> UserPoints()
         {
             var userId = _user.Id;
-            var pointsView = _udService.GetUserPoints(userId);
+            var pointsView = await _udService.GetUserPoints(userId);
 
             if (pointsView is null)
                 return BadRequest("No points information found");
