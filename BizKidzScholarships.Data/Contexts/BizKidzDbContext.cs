@@ -458,28 +458,168 @@ namespace BizKidzScholarships.Data.Contexts
                         Id = 1,
                         Type = ConsentType.PrivacyPolicy,
                         ContentsHTML = """
-                        <div>
+                        <div style="max-width: 1800px; margin: 40px auto; font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
 
-                            This is a test privacy policy. You agree to it, whatever it is.
+                          <h1 style="font-size: 28px; margin-bottom: 10px;">Privacy Policy</h1>
+                          <p style="font-size: 14px; color: #666;">Last Updated: 2/28/2026</p>
+
+                          <p>
+                            We respect your privacy and are committed to protecting your information.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">1. Information We Collect</h2>
+
+                          <h3 style="margin-top: 20px; font-size: 16px;">Personal Information</h3>
+                          <ul style="padding-left: 20px;">
+                            <li>First Name</li>
+                            <li>Last Name</li>
+                            <li>Email Address</li>
+                            <li>Date of Birth</li>
+                            <li>Child’s Name (if provided)</li>
+                            <li>Profile Picture</li>
+                            <li>Business Name</li>
+                            <li>Phone Number</li>
+                          </ul>
+
+                          <h3 style="margin-top: 20px; font-size: 16px;">Technical & Legal Information</h3>
+                          <ul style="padding-left: 20px;">
+                            <li>IP Address</li>
+                            <li>User Agent (browser/device information)</li>
+                          </ul>
+
+                          <h3 style="margin-top: 20px; font-size: 16px;">Contest & App Submissions</h3>
+                          <ul style="padding-left: 20px;">
+                            <li>Files uploaded within the app</li>
+                            <li>Answers submitted to questions or prompts</li>
+                          </ul>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">2. How We Use Your Information</h2>
+                          <p>We use your information to:</p>
+                          <ul style="padding-left: 20px;">
+                            <li>Create and manage user accounts</li>
+                            <li>Verify eligibility for contests or prizes</li>
+                            <li>Communicate important account updates</li>
+                            <li>Operate and improve the platform</li>
+                            <li>Maintain security and prevent abuse</li>
+                          </ul>
+
+                          <p><strong>We do not sell your personal information.</strong></p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">3. Data Storage & Security</h2>
+                          <p>
+                            Your information is stored securely on a private server. We implement reasonable administrative and technical safeguards to protect your data from unauthorized access or misuse.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">4. Children’s Information</h2>
+                          <p>
+                            If information about a child is provided, it is used only for account functionality, contest participation, or prize eligibility. Parents or guardians may request deletion of child-related data at any time.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">5. Data Retention</h2>
+                          <p>
+                            We retain information only as long as necessary to maintain your account, fulfill contest or prize obligations, and comply with legal requirements. You may request deletion of your account at any time.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">6. Your Rights</h2>
+                          <p>You may:</p>
+                          <ul style="padding-left: 20px;">
+                            <li>Request access to your information</li>
+                            <li>Request correction of inaccurate information</li>
+                            <li>Request deletion of your account and associated data</li>
+                          </ul>
+
+                          <p>
+                            To make a request, contact us at:<br>
+                            <strong>[Insert Contact Email]</strong>
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">7. Updates to This Policy</h2>
+                          <p>
+                            We may update this Privacy Policy from time to time. Updates will be posted within the application.
+                          </p>
 
                         </div>
                         """,
                         Created = new DateTimeOffset(2026, 3, 1, 0, 0, 0, new TimeSpan()),
-                        Version = "0.1",
+                        Version = "1.0",
                         Name = "Privacy Policy TEST"
                     },
                     new SiteDocument() {
                         Id = 2,
                         Type = ConsentType.TermsOfService,
                         ContentsHTML = """
-                        <div>
+                        <div style="max-width: 800px; margin: 40px auto; font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
 
-                            This is a terms of service. You agree to it, whatever it is.
+                          <h1 style="font-size: 28px; margin-bottom: 10px;">Terms of Service</h1>
+                          <p style="font-size: 14px; color: #666;">Last Updated: 2/28/2026</p>
+
+                          <p>
+                            By accessing or using this application, you agree to the following Terms of Service.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">1. Age Requirements</h2>
+                          <p>
+                            This application may only be used by individuals age 13 or older. 
+                            Individuals under the age of 13 may not create or own an account.
+                          </p>
+                          <p>
+                            Parents or legal guardians may create and manage accounts on behalf of minors.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">2. Registration & Prizes</h2>
+                          <p>
+                            Registration or participation in the app does not guarantee any prizes, awards, or winnings.
+                          </p>
+                          <p>
+                            The application is used solely for recording entries, submissions, and points. 
+                            All official drawings, selections, and contests are conducted outside of the application and in real life.
+                          </p>
+                          <p>
+                            The application itself does not distribute, ship, or deliver prizes.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">3. Acceptable Use</h2>
+                          <p>You agree not to:</p>
+                          <ul style="padding-left: 20px;">
+                            <li>Use the application for unlawful purposes</li>
+                            <li>Attempt to gain unauthorized access to accounts or systems</li>
+                            <li>Abuse, exploit, or manipulate the point or contest system</li>
+                            <li>Upload harmful, malicious, or inappropriate content</li>
+                          </ul>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">4. API & Technical Access</h2>
+                          <p>
+                            Unauthorized access, use, or copying of the application's API, backend systems, or technical infrastructure is strictly prohibited.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">5. Intellectual Property</h2>
+                          <p>
+                            This application, including its design, features, content, and underlying systems, is the property of the <strong>Y.E.A.R.S Foundation</strong>.
+                          </p>
+                          <p>
+                            You may not copy, reproduce, distribute, reverse engineer, or create derivative works of this application without written permission.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">6. Account Termination</h2>
+                          <p>
+                            We reserve the right to suspend or terminate accounts that violate these Terms or misuse the application.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">7. Limitation of Liability</h2>
+                          <p>
+                            The application is provided "as is" without warranties of any kind. 
+                            We are not responsible for technical errors, interruptions, data loss, or disputes related to contest outcomes.
+                          </p>
+
+                          <h2 style="margin-top: 30px; font-size: 20px;">8. Changes to These Terms</h2>
+                          <p>
+                            We may update these Terms from time to time. Continued use of the application constitutes acceptance of any changes.
+                          </p>
 
                         </div>
                         """,
                         Created = new DateTimeOffset(2026, 3, 1, 0, 0, 0, new TimeSpan()),
-                        Version = "0.1",
+                        Version = "1.0",
                         Name = "Terms of Service TEST"
                     },
                     new SiteDocument() {
