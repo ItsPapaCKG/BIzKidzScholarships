@@ -49,7 +49,7 @@ function Task({ task }: { task: ITask }) {
             </div>
 
             <div className="card-body">
-                {taskStatus == UserTaskStatus.Open && <button type="submit" className="btn btn-success" onClick={() => { setViewedTask(task) }}>View Task</button>}
+                {taskStatus == UserTaskStatus.Open && <button type="submit" className="btn btn-success" onClick={() => { setViewedTask(task) }} data-bs-toggle="modal" data-bs-target="#taskModal">View Task</button>}
                 {taskStatus == UserTaskStatus.Disabled && <button type="submit" className="btn btn-warning" disabled>Unavailable</button>}
                 {taskStatus == UserTaskStatus.Completed && <button type="submit" className="btn btn-success" disabled>Task Submitted</button>}
                 {taskStatus == UserTaskStatus.Pending && <button type="submit" className="btn btn-dark">Under Review</button>}

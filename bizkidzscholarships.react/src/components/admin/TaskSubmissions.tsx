@@ -140,8 +140,8 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
 
                                 {modalError && <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "75vh" }}>{modalError}</div>}
 
-                                {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.VideoUpload && <video controls src={submissionAccess?.s3Link} className="w-100"></video>}
-                                {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.ImageUpload && <img src={submissionAccess?.s3Link} className="img-fluid" style={{ maxWidth: "75vw" } }></img>}
+                        {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.VideoUpload && <video controls src={submissionAccess?.s3Link} className="w-100 img-fluid" style={{ maxHeight: "75vh" }}></video>}
+                                {submissionAccess?.s3Link && viewedSubmission?.taskType == TaskType.ImageUpload && <img src={submissionAccess?.s3Link} className="img-fluid w-100"></img>}
                             </div>
                             { submissionAccess?.s3Link && <div className="modal-footer">
                                 <button type="button" className="btn btn-primary" onClick={async () => window.open(submissionAccess?.s3Link, "_blank")}>Download File</button>

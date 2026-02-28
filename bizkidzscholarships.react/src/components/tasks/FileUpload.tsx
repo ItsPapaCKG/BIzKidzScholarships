@@ -73,43 +73,53 @@ function FileUpload({ action, setFileUrl, isVideo }: ImageUploadProps) {
     const [setPointsRefresh] = [viewedTask.setPointsRefresh];
 
     return (
-      <>
-        {action == ActionType.TaskUpload && (
-            <>
+        <>
+            
 
-                <label className="upload-label">
-                
-                    {!isVideoSafe && <input accept="image/*" type="file" ref={ fileUploadRef } style={{ display: "none" } } onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); } }/>}
-                    {isVideoSafe && <input accept="video/*" type="file" ref={ fileUploadRef } style={{ display: "none" } } onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); } }/>}
-                    <button type="button" className="btn btn-light btn-lg border-black" onClick={uploadClick }>Upload File</button>
+                {action == ActionType.TaskUpload && (
+                    <>
                     
-                </label>
+                    <div className="row" >
+                        <div className="col">
+                            {statefulFile && ( 
+                                    <>
+                                        <p className="fs-5 mx-auto text-center">{ statefulFile.name }</p> 
+                                    </>
+                                )}
 
-                {statefulFile && ( 
-                        <>
-                            <p className="fs-5">{ statefulFile.name }</p> 
-                        </>
-                    )}
+                            <div className="m-auto" style={{ width: "70%", height: "40vh" }}>
+                                {previewUrl ? (
+                                isVideoSafe ? (<video src={previewUrl} preload="metadata" controls className="object-cover w-100 h-100 taskWindowPreview d-none d-md-block" controlsList="nodownload" playsInline />) : (<img src={previewUrl} className="img-fluid w-100" style={{ maxHeight: "40vh", objectFit: "contain"  }} />)
+                                ) : (
+                                    <p className="text-gray-400 text-sm mx-auto text-center w-100">No media</p>
+                                )}
+                            </div>
 
-                <div className="m-auto" style={{ width: "70%" }}>
-                    {previewUrl ? (
-                        isVideoSafe ? (<video src={previewUrl} preload="metadata" controls className="object-cover w-100 h-100 taskWindowPreview d-none d-md-block" controlsList="nodownload" playsInline/>) : (<img src={previewUrl} className="object-cover w-100 h-100 taskWindowPreview d-none d-md-block" />)
-                    ) : (
-                        <span className="text-gray-400 text-sm m-auto text-center w-100">No media</span>
-                    )}
-                </div>
+                            {statefulFile && (<button type="submit" className="btn btn-lg btn-success w-100" onClick={() => UploadFile() }>Submit</button>)}
 
-                {statefulFile && (<button type="submit" className="btn btn-lg btn-success" onClick={() => UploadFile() }>Submit</button>)}
+                            <p>{error}</p>
+                        </div>
+                    </div>
 
-            <p>{ error }</p>
-        </>
-        )}
+                    <div className="row">
+                        <div className="d-grid gap-2 col-8 mx-auto">
+                            <label className="upload-label">
 
-        {action == ActionType.ProfileImageUpload && (
-            <>
-                    <input type="file" name="BusinessLogoKey" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); UploadFile(e.target.files?.[0]); } }/>
-            </>
-        )}
+                                {!isVideoSafe && <input accept="image/*" type="file" ref={fileUploadRef} style={{ display: "none" }} onChange={(e) => { let file = e.target.files?.[0]; if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); }} />}
+                                {isVideoSafe && <input accept="video/*" type="file" ref={fileUploadRef} style={{ display: "none" }} onChange={(e) => { let file = e.target.files?.[0]; if (!file) return; setPreviewUrl(URL.createObjectURL(file)); setCurrentFile(file); }} />}
+                                <button type="button" className="btn btn-primary btn-lg w-100" onClick={uploadClick}>Upload { previewUrl ? "Different" : "" } File</button>
+
+                            </label>
+                        </div>
+                    </div>
+                </>
+                )}
+
+                {action == ActionType.ProfileImageUpload && (
+                    <>
+                            <input type="file" name="BusinessLogoKey" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); UploadFile(e.target.files?.[0]); } }/>
+                    </>
+                )}
       </>
   );
 }
