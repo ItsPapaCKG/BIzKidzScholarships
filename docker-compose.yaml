@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: bizkidzuser
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: bizkidzdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - appnet
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__PGHostd: Host=postgres;Port=5432;Database=bizkidzdb;Username=bizkidzuser;Password=1234
+    ports:
+      - "8080:8080"
+    networks:
+      - appnet
+
+volumes:
+  pgdata:
+
+networks:
+  appnet:

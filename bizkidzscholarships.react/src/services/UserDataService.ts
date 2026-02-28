@@ -1,12 +1,14 @@
 import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type UserPoints, type TaskQuizAnswers, type TaskQuestion } from "../models/ViewModels";
 import { APICall, type APIResponse } from "./APIService";
 
+import { config as appConfig } from "./ConfigService";
+
 export async function CheckUserProfile(): Promise<boolean> {
     return false;
 }
 
 export async function GetUserTasks(): Promise<ITask[]> {
-    var res = await fetch("https://localhost:7095/api/user/tasks", {
+    var res = await fetch(`${appConfig.baseAPIURL}:${appConfig.apiPort}/api/user/tasks`, {
         credentials: "include"
     });
 

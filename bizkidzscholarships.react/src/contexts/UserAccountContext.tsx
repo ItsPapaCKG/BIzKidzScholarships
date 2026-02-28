@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { IUserProfile, UserCookieJSON, UserType } from "../models/ViewModels";
 import { APICall } from "../services/APIService";
+import { config as appConfig } from "../services/ConfigService";
 
 export type userAccountContextType = {
     isAuthenticated: boolean,
@@ -50,7 +51,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     const [passwordResetConfirmed, setPasswordResetConfirmed] = useState<boolean | undefined>();
 
     const GetUserProfile = async () => {
-        var res = await fetch("https://localhost:7095/api/user", {
+        var res = await fetch(`${appConfig.baseAPIURL}:${appConfig.apiPort}/api/user`, {
             credentials: "include",
         });
 
@@ -87,7 +88,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     }
 
     const populateCookie = async () => {
-            var res = await fetch("https://localhost:7095/auth/me", { credentials: "include" });
+        var res = await fetch(`/auth/me`, { credentials: "include" });
     
             if (!res.ok) {
                 setIsAuthenticated(false);

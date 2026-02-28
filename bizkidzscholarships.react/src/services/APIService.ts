@@ -90,7 +90,7 @@ export async function APICall<Output = unknown, Input = unknown>(urlPath: string
 
     let prefix = auth ? "/auth/" : "/api/"
 
-    var res = await fetch(`${appConfig.baseAPIURL}:${appConfig.apiPort}${prefix}${urlPath}`, config);
+    var res = await fetch(`${prefix}${urlPath}`, config);
 
     if (!res.ok) {
         var code = res.status;

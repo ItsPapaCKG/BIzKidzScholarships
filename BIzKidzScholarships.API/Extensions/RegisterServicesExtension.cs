@@ -92,8 +92,7 @@ namespace BizKidzScholarships.API.Extensions
                 options.AddPolicy(name: "frontend",
                     policy =>
                     {
-                        policy.WithOrigins("http://localhost:8080",
-                                            "https://localhost:50666")
+                        policy.WithOrigins(config["FrontEndUrl"]!)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();

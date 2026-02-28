@@ -1,0 +1,5 @@
+bin/
+obj/
+BizKidzScholarships.React/
+node_modules/
+.git/

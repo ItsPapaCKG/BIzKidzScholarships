@@ -39,7 +39,7 @@ namespace BizKidzScholarships.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            
+            migrationBuilder.Sql(""" DROP VIEW "AdminUserList"; """);
         }
     }
 }
