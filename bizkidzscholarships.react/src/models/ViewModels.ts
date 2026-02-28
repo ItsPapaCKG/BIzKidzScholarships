@@ -171,6 +171,16 @@ export interface LoginJSON {
     password: string
 }
 
+export enum BizDocumentType {
+    MediaConsent,
+    PrivacyPolicy,
+    TermsOfService
+}
+
+export interface HTMLContentResponse {
+    html: string
+}
+
 export interface RegisterJSON extends LoginJSON {
     FirstName: string,
     LastName: string,
@@ -229,6 +239,12 @@ export interface UserResultJSON {
     entries: number
 }
 
+export interface PasswordResetModel {
+    Password: string,
+    Token: string,
+    Email: string,
+    ConfirmPassword: string
+}
 // #endregion
 
 // #region Quizzes
@@ -260,7 +276,12 @@ export enum AppMode {
     Dashboard,
     Admin,
     Login,
-    Register
+    Logout,
+    Register,
+    ForgotPassword,
+    ResetPassword,
+    Privacy,
+    Terms
 }
 
 export enum UserType {

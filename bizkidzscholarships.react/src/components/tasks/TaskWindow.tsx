@@ -1,17 +1,48 @@
+import { useRef, useState } from "react";
 import { UseTaskContext } from "../../contexts/TaskViewContext";
 import { ActionType, TaskType } from "../../models/ViewModels";
 import FileUpload from "./FileUpload";
 import Quiz from "./Quiz";
 import SocialMedia from "./SocialMedia";
+import { Modal } from "bootstrap";
 
 function TaskWindow() {
 
     const viewedTask = UseTaskContext();
     const [task, setTask] = [viewedTask.viewedTask, viewedTask.setViewedTask];
 
+    const [showModal, setShowModal] = useState<boolean>(false);
+
+    const modalRef = useRef<HTMLDivElement>(null);
+
+    const closeModal = async () => {
+        if (modalRef.current) {
+            //const modal =
+            //    Modal.getInstance(modalRef.current);
+
+            //var element = document.getElementById("taskModal");
+
+            //element!.addEventListener(
+            //    "hidden.bs.modal",
+            //    () => {
+            //        // do follow-up work
+            //    },
+            //    { once: true }
+            //);
+
+            //modal?.hide();
+
+            const closeBtn = document.querySelector(
+                '#taskModal .btn-close'
+            ) as HTMLButtonElement | null;
+
+            closeBtn?.click();
+        }
+    };
+
     return (
-      <>
-                <div className="modal modal-xl fade" id="taskModal" tabIndex={-1} aria-labelledby="TaskModal">
+        <>
+            <div className="modal modal-xl fade" id="taskModal" tabIndex={-1} aria-labelledby="TaskModal" ref={ modalRef } data-bs->
                     <div className="modal-dialog">
                         <div className="modal-content">
                         <div className="modal-header">
@@ -31,8 +62,8 @@ function TaskWindow() {
                                     </div>
 
                                         {task.TaskType == TaskType.SocialMedia && <SocialMedia />}
-                                        {task.TaskType == TaskType.ImageUpload && <FileUpload action={ActionType.TaskUpload} />}
-                                        {task.TaskType == TaskType.VideoUpload && <FileUpload action={ActionType.TaskUpload} isVideo={true} />}
+                                    {task.TaskType == TaskType.ImageUpload && <FileUpload action={ActionType.TaskUpload} onClose={ closeModal } />}
+                                    {task.TaskType == TaskType.VideoUpload && <FileUpload action={ActionType.TaskUpload} isVideo={true} onClose={ closeModal } />}
                                         {task.TaskType == TaskType.Quiz && <Quiz />}
                                         {task.TaskType == TaskType.Contest && <p>Contest goes here</p>}
                                 </>}

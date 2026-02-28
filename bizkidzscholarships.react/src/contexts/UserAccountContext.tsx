@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { IUserProfile, UserCookieJSON, UserType } from "../models/ViewModels";
-import { useNavigate } from "react-router-dom";
 import { APICall } from "../services/APIService";
 
 export type userAccountContextType = {
@@ -20,7 +19,10 @@ export type userAccountContextType = {
     setLoadingData: React.Dispatch<React.SetStateAction<boolean>>,
     logout: () => void,
     isAdmin: boolean,
-    setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>
+    setIsAdmin: React.Dispatch<React.SetStateAction<boolean>>,
+    passwordResetConfirmed: boolean | undefined,
+    setPasswordResetConfirmed: React.Dispatch<React.SetStateAction<boolean | undefined>>,
+    sendPasswordReset: (email: string) => void
 }
 interface UserProfileJSON {
     userId: number,
@@ -45,6 +47,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     const [userCookie, setUserCookie] = useState<UserCookieJSON>({roles: [] as string[]} as UserCookieJSON)
     const [loadingData, setLoadingData] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [passwordResetConfirmed, setPasswordResetConfirmed] = useState<boolean | undefined>();
 
     const GetUserProfile = async () => {
         var res = await fetch("https://localhost:7095/api/user", {
@@ -108,6 +111,21 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    const sendPasswordReset = async (email: string) => {
+        let data = {
+            "email": email
+        }
+
+        let res = await APICall(`forgotpassword/${email}`, "POST", data, true);
+
+        if (res.success) {
+            setPasswordResetConfirmed(true);
+            return;
+        }
+
+        setPasswordResetConfirmed(false);
+        return;
+    }
 
     useEffect(()=>{
         populateCookie();
@@ -127,7 +145,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
     }, [userCookie]);
 
   return (
-      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie, loadingData, setLoadingData, logout, isAdmin, setIsAdmin }}>
+      <UserAccountContext.Provider value={{ isAuthenticated, setIsAuthenticated, userHasNoProfile, setUserHasNoProfile, GetUserProfile, userProfile, setUserProfile, editMode, setEditMode, userCookie, setUserCookie, populateCookie, loadingData, setLoadingData, logout, isAdmin, setIsAdmin, passwordResetConfirmed, setPasswordResetConfirmed, sendPasswordReset }}>
           { children }
       </UserAccountContext.Provider>
   );

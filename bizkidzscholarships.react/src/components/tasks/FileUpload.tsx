@@ -2,14 +2,16 @@ import { useRef, useState } from "react";
 import { ProfileUpload, TaskUpload } from "../../services/UserDataService"
 import { UseTaskContext } from "../../contexts/TaskViewContext";
 import { ActionType } from "../../models/ViewModels";
+import { Modal } from "bootstrap";
 
 interface ImageUploadProps {
     action: ActionType,
     setFileUrl?: (url: string) => void,
-    isVideo?: boolean
+    isVideo?: boolean,
+    onClose: () => void
 }
 
-function FileUpload({ action, setFileUrl, isVideo }: ImageUploadProps) {
+function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) {
     let fileUploadRef = useRef<HTMLInputElement>(null);
 
     const isVideoSafe = isVideo ?? false;
@@ -49,6 +51,8 @@ function FileUpload({ action, setFileUrl, isVideo }: ImageUploadProps) {
                     break;
                 }
 
+                onClose();
+
                 if (setFileUrl != null)
                     setFileUrl(response.Url);
                 
@@ -57,6 +61,8 @@ function FileUpload({ action, setFileUrl, isVideo }: ImageUploadProps) {
                 successful = await TaskUpload(task!.TaskId, focusedFile);
 
                 if (successful) {
+                    onClose();
+
                     setTask(null);
                     setPointsRefresh(true);
                     setTaskRefresh(true);

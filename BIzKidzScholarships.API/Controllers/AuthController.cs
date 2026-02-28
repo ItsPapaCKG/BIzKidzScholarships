@@ -1,18 +1,22 @@
-﻿using BizKidzScholarships.API.Services;
+﻿using BizKidzScholarships.API.Controllers.Base;
+using BizKidzScholarships.API.Services;
 using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Claims;
 using System.Text;
 
 namespace BizKidzScholarships.API.Controllers
 {
+    [EnableRateLimiting("login")]
     [ApiController]
     [Route("auth")]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseBKController
     {
         private UserManager<IdentityUser<Guid>> _userManager;
         private RoleManager<IdentityRole<Guid>> _roleManager;
@@ -20,8 +24,9 @@ namespace BizKidzScholarships.API.Controllers
         private IHttpContextAccessor _httpContextAccessor;
         private IUserDataService _udService;
         private ICurrentUser _user;
+        private IConfiguration _config;
 
-        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM, IHttpContextAccessor acc, IUserDataService svc, ICurrentUser usr)
+        public AuthController(UserManager<IdentityUser<Guid>> uM, RoleManager<IdentityRole<Guid>> rM, SignInManager<IdentityUser<Guid>> siM, IHttpContextAccessor acc, IUserDataService svc, ICurrentUser usr, IConfiguration config)
         {
             _userManager = uM;
             _roleManager = rM;
@@ -29,6 +34,7 @@ namespace BizKidzScholarships.API.Controllers
             _httpContextAccessor = acc;
             _udService = svc;
             _user = usr;
+            _config = config;
         }
 
         [HttpPost("[action]")]
@@ -128,6 +134,7 @@ namespace BizKidzScholarships.API.Controllers
             return Ok();
         }
 
+        [EnableRateLimiting("fixed")]
         [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()
@@ -143,6 +150,7 @@ namespace BizKidzScholarships.API.Controllers
             });
         }
 
+    #if DEBUG
         [Authorize]
         [HttpGet("GetAdminRole")]
         public async Task<IActionResult> AdminRole()
@@ -170,6 +178,65 @@ namespace BizKidzScholarships.API.Controllers
             }
 
             return Ok("User added to role 'Admin' successfully.");
+        }
+        #endif
+
+        [HttpPost("[action]/{email}")]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return Ok(); // Don't reveal existence
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var encodedToken = WebEncoders.Base64UrlEncode(
+                Encoding.UTF8.GetBytes(token));
+
+            var resetLink = $"{_config["FrontEndUrl"]}/passwordresetconfirm?email={email}&token={encodedToken}";
+
+            await _udService.NewPasswordReset(email, resetLink);
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("[action]")]
+        public async Task<IActionResult> ResetPassword(PasswordResetDTO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return BadRequest();
+
+            var decodedToken = Encoding.UTF8.GetString(
+                WebEncoders.Base64UrlDecode(model.Token));
+
+            var result = await _userManager.ResetPasswordAsync(
+                user,
+                decodedToken,
+                model.Password
+            );
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok();
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Privacy()
+        {
+            var res = await _udService.GetPrivacy();
+
+            return RouteResponse(res);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Terms()
+        {
+            var res = await _udService.GetDocument(Data.Entities.ConsentType.TermsOfService);
+
+            return RouteResponse(res);
         }
     }
 }

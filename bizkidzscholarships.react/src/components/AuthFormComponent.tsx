@@ -25,7 +25,8 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         email: "",
         Birthday: "",
         password: "",
-        ConfirmPassword: ""
+        ConfirmPassword: "",
+        UserType: 0
      } as RegisterJSON)
     const [birthday, setDateBirthday] = useState<Date | undefined>(undefined);
     const [validForm, setIsValid] = useState(false);
@@ -379,6 +380,12 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                             <div className="row">
                                 <div className="col d-flex justify-content-center m-3 text-underline">
                                     <Link to="/register">Create a New Account</Link>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div className="col d-flex justify-content-center m-3 text-underline">
+                                    <Link to="/passwordreset">Forgot Password</Link>
                                 </div>
                             </div>
                             

@@ -1,12 +1,16 @@
 ﻿import { useEffect, createContext } from 'react'
 import './App.css'
 import Dashboard from './components/dashboard/DashboardComponent';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UseUserAccountContext } from './contexts/UserAccountContext';
-import { AppMode, type UserCookieJSON } from './models/ViewModels';
+import { AppMode, BizDocumentType, type UserCookieJSON } from './models/ViewModels';
 import AdminProvider from './contexts/AdminContext';
 import AuthFormComponent from './components/AuthFormComponent';
 import AdminGuard from './components/admin/AdminGuard';
+import PasswordReset from './components/auth/PasswordReset';
+import PasswordResetConfirm from './components/auth/PasswordResetConfirm';
+import Logout from './components/auth/Logout';
+import HtmlContent from './components/shared/HtmlContent';
 
 export const IsNewAccount = createContext(false);
 
@@ -35,6 +39,10 @@ function App({ Mode }: AppProps) {
             return;
         }
 
+        if (!isAuthenticated && Mode == AppMode.Dashboard) {
+            navigate('/login');
+        }
+
         if (isAuthenticated && Mode == AppMode.Login) {
             navigate("/");
             return;
@@ -44,9 +52,9 @@ function App({ Mode }: AppProps) {
             return;
         }
 
-        if (Mode != AppMode.Register) {
-            navigate('/login')
-        }
+        //if (Mode != AppMode.Register) {
+        //    navigate('/login')
+        //}
         
     }, [loading]);
 
@@ -83,9 +91,22 @@ function App({ Mode }: AppProps) {
 
                 {Mode == AppMode.Register && (<>
                     <AuthFormComponent RegisterMode={true}/>
-                </>)}
-            </main>
-        </div>
+                    </>)}
+
+                    {Mode == AppMode.ForgotPassword && <PasswordReset /> }
+                    {Mode == AppMode.ResetPassword && <PasswordResetConfirm />}
+
+                    {Mode == AppMode.Logout && <Logout />}
+                    {Mode == AppMode.Privacy && <HtmlContent docType={BizDocumentType.PrivacyPolicy } />}
+                    {Mode == AppMode.Terms && <HtmlContent docType={ BizDocumentType.TermsOfService } />}
+                </main>
+
+                <footer>
+                    <Link to="/Privacy">Privacy Policy</Link>
+
+                    <Link to="/Terms">Terms and Conditions</Link>
+                </footer>
+            </div>
         </>
     );
 }

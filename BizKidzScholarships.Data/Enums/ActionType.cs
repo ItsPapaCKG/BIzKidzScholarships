@@ -9,6 +9,7 @@ namespace BizKidzScholarships.Data.Enums
     public enum ActionType
     {
         TaskUpload,
-        ProfileImageUpload
+        ProfileImageUpload,
+        PasswordReset
     }
 }

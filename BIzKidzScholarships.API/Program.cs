@@ -31,7 +31,7 @@ namespace BizKidzScholarships.API
             });
 
             builder.Services.RegisterMappings();
-            builder.Services.RegisterServices();
+            builder.Services.RegisterServices(builder.Configuration);
 
             var app = builder.Build();
 

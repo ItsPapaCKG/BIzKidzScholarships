@@ -1,20 +1,23 @@
 ﻿using Amazon;
+using Amazon.SimpleEmail;
 using AutoMapper;
 using BizKidzScholarships.API.Services;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using System;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
+using System.Threading.RateLimiting;
 
 namespace BizKidzScholarships.API.Extensions
 {
     public static class RegisterServicesExtension
     {
 
-        public static void RegisterServices(this IServiceCollection services)
+        public static void RegisterServices(this IServiceCollection services, IConfigurationManager config)
         {
 #if DEBUG
             var aws_access = Environment.GetEnvironmentVariable("AWS_Access");
@@ -112,6 +115,28 @@ namespace BizKidzScholarships.API.Extensions
                     options.LoginPath = "/auth/login";
                     options.AccessDeniedPath = "/auth/accessdenied";
                 });
+
+            services.AddDefaultAWSOptions(config.GetAWSOptions());
+            services.AddAWSService<IAmazonSimpleEmailService>();
+
+            services.AddRateLimiter(options =>
+            {
+                options.AddFixedWindowLimiter("fixed", config =>
+                {
+                    config.PermitLimit = 20;              // 10 requests
+                    config.Window = TimeSpan.FromMinutes(1); // per minute
+                    config.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    config.QueueLimit = 2;
+                });
+
+                options.AddFixedWindowLimiter("login", config =>
+                {
+                    config.PermitLimit = 4;              // 10 requests
+                    config.Window = TimeSpan.FromMinutes(1); // per minute
+                    config.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    config.QueueLimit = 2;
+                });
+            });
 
             services.AddAuthorization();
 

@@ -19,7 +19,7 @@ export default function RequireAdmin({ children }: Props) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    if (!context.isAdmin) {
+    if (!context.userCookie.roles.includes("Admin")) {
         // Logged in but not admin > send somewhere safe
         return <Navigate to="/" replace />;
     }

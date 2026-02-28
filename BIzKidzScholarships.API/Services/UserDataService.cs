@@ -12,9 +12,12 @@ using BizKidzScholarships.Data.Models;
 using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Amazon.SimpleEmail;
 
 using Newtonsoft.Json;
 using TaskStatus = BizKidzScholarships.Data.Enums.TaskStatus;
+using Amazon.SimpleEmail.Model;
+using System.Runtime.InteropServices;
 
 namespace BizKidzScholarships.API.Services
 {
@@ -29,10 +32,15 @@ namespace BizKidzScholarships.API.Services
 
         private IHttpContextAccessor _httpContext { get; set; }
 
-        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac, IHttpContextAccessor httpContext) : base(user, mapper, context, _fac)
+        private IAmazonSimpleEmailService _email { get; set; }
+
+        private IConfiguration _config { get; set; }
+
+        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac, IHttpContextAccessor httpContext, IAmazonSimpleEmailService eml, IConfiguration config) : base(user, mapper, context, _fac)
         {
             rewardFactory = new UserRewardFactory(userId, context);
             _httpContext = httpContext;
+            _email = eml;
         }
 
         public int GetUserAge(DateTimeOffset birthday)
@@ -508,6 +516,87 @@ namespace BizKidzScholarships.API.Services
             return handshake;
         }
 
+        public async Task<NewHandshakeResponse> CreateNewHandshake(Guid userId, ActionType type)
+        {
+            var response = new NewHandshakeResponse();
+
+            var request = new ActionRequest()
+            {
+                UserId = userId,
+                ActionType = type,
+                Status = RequestStatus.Pending,
+                Expiration = DateTimeOffset.UtcNow.AddMinutes(5)
+            };
+
+            var t = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await _context.ActionRequests.AddAsync(request);
+                await _context.SaveChangesAsync();
+
+                await t.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+                response.Success = false;
+                response.Errors.Add(ex.Message);
+            }
+
+            response.RequestId = request.RequestId;
+
+            return response;
+        }
+
+        public async Task<ResponseModel> NewPasswordReset(string email, string resetLink)
+        {
+            var response = new ResponseModel() { Success = false };
+
+            try
+            {
+                var confirmation = await _email.SendEmailAsync(new Amazon.SimpleEmail.Model.SendEmailRequest()
+                {
+                    Source = "noreply@scholarships.bizkidzusa.org",
+                    Destination = new Amazon.SimpleEmail.Model.Destination()
+                    {
+                        ToAddresses = new List<string>() { email }
+                    },
+                    Message = new Amazon.SimpleEmail.Model.Message()
+                    {
+                        Subject = new Content() { Charset="UTF-8", Data="Password Reset | Biz Kidz Scholarships" },
+                        Body = new Body()
+                        {
+                            Html = new Content() { Charset = "UTF-8", Data = $"<p>Reset your email here: <a href='{resetLink}'>Password Reset Link</a></p>" },
+                            Text = new Content() { Charset = "UTF-8", Data = $"Reset your email here: {resetLink}" }
+                        }
+                    }
+                });
+
+                response.Success = !string.IsNullOrEmpty(confirmation.MessageId);
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return response;
+        }
+
+        public async Task<ResponseModel> StartPasswordReset(string email)
+        {
+            //var userId = await _context.Profiles.Where(p => p.Email == email).Select(p => p.UserId).FirstOrDefaultAsync();
+
+            //if (userId == Guid.Empty)
+            //{
+            //    return new ResponseModel() { Success = false, Errors = { "Invalid users" } };
+            //}
+
+            //return await NewPasswordReset(userId, email);
+
+            throw new NotImplementedException();
+        }
+
         public async Task<ResponseModel> UploadConfirmation(UploadHandshakeConfirmationModel confirmation)
         {
             try
@@ -777,6 +866,27 @@ namespace BizKidzScholarships.API.Services
 
 
             return r;
+        }
+
+        public Task<ResponseModel> ResetPasswordRequest(Guid request, string newPassword)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<HTMLContentResponse> GetPrivacy()
+        {
+            return await GetDocument(ConsentType.PrivacyPolicy);
+        }
+
+        public async Task<HTMLContentResponse> GetDocument(ConsentType type)
+        {
+            var response = new HTMLContentResponse();
+
+            var doc = await _context.SiteDocuments.Where(d => d.Type == type).OrderByDescending(d => d.Created).Select(d => d.ContentsHTML).FirstOrDefaultAsync();
+
+            response.HTML = doc;
+
+            return response;
         }
     }
 }

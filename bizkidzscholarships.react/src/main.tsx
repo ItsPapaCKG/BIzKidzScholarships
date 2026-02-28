@@ -11,12 +11,19 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AdminDashboard from './components/admin/AdminDashboard.tsx'
 import TaskSubmissionsShell from './components/admin/TaskSubmissionsShell.tsx'
 import AdminBreadcrumb from './components/admin/AdminBreadcrumb.tsx'
+import PasswordReset from './components/auth/PasswordReset.tsx'
+import PasswordResetConfirm from './components/auth/PasswordResetConfirm.tsx'
 
 export const router = createBrowserRouter([
     { path: "/access-denied", element: (<><h1>Access is Denied Loser!</h1></>) },
     { path: "/", element: <App Mode={AppMode.Dashboard}/> },
     { path: "/login", element: <App Mode={AppMode.Login}/> },
-    { path: "/register", element: <App Mode={AppMode.Register}/> },
+    { path: "/register", element: <App Mode={AppMode.Register} /> },
+    { path: "/passwordreset", element: <App Mode={AppMode.ForgotPassword} /> },
+    { path: "/passwordresetconfirm", element: <App Mode={AppMode.ResetPassword} /> },
+    { path: "/logout", element: <App Mode={ AppMode.Logout } /> },
+    { path: "/privacy", element: <App Mode={ AppMode.Privacy } /> },
+    { path: "/terms", element: <App Mode={ AppMode.Terms } /> },
     {
         path: "/admin",
         element: <App Mode={AppMode.Admin} />,
@@ -27,7 +34,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "users",
-                element: <p>Users go here</p>
+                element: <p>Users config is a WIP</p>
             },
             {
                 path: "submissions",
@@ -35,7 +42,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "tasks",
-                element: <p>Tasks go here</p>
+                element: <p>Tasks configurations are a WIP</p>
             }
         ]
     }

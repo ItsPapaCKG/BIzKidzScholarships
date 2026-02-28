@@ -38,5 +38,11 @@ namespace BizKidzScholarships.API.Services
         Task<QuizQuestionViewModel[]> GetQuiz(int taskId);
 
         Task<ResponseModel> AddUserConsent(Guid userId, UserConsentDTO consent);
+
+        Task<ResponseModel> NewPasswordReset(string email, string? token);
+
+        Task<HTMLContentResponse> GetPrivacy();
+
+        Task<HTMLContentResponse> GetDocument(ConsentType type);
     }
 }

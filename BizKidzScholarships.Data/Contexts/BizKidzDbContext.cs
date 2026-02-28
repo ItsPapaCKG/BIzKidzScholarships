@@ -184,7 +184,7 @@ namespace BizKidzScholarships.Data.Contexts
                     TaskPromptTitle = "Pass the Quiz for the Biz Kidz Launch Kit",
                     TaskPromptSubtitle = "Once you have filled out your Biz Kidz Launch Kit, take this quiz to test your knowledge on all you have learned about starting and running a business!",
                     TaskDescription = "Take the quiz and show what you've learned from the Launch Kit.",
-                    TaskEnabled = true,
+                    TaskEnabled = false,
                     TaskNameInternal = "Quiz Completion Task",
                     Reward = 50,
                     Created = new DateTimeOffset(2026, 2, 28, 0, 0, 0, TimeSpan.Zero),
