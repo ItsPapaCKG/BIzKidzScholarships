@@ -240,6 +240,13 @@ namespace BizKidzScholarships.API.Services
 
             ent.UserId = userId;
 
+            if (isRegister)
+            {
+                ent.Created = DateTimeOffset.UtcNow;
+            }
+
+            ent.Updated = DateTimeOffset.UtcNow;
+
             var t = await _context.Database.BeginTransactionAsync();
 
             try

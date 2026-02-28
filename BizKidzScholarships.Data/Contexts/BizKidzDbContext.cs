@@ -63,22 +63,21 @@ namespace BizKidzScholarships.Data.Contexts
             //""");
 
             //migrationBuilder.Sql("""
-            //                            CREATE OR REPLACE VIEW "AdminUserList" AS
-            //SELECT
-
-            //    "FirstName" || ' ' || "LastName" AS "Name", 
-            //    p."ChildFullName",
-            //    p."Email",
-            //    p."UserType",
-            //    SUM(up."Points") AS "Points", 
-            //    SUM(up."Points") / COALESCE(c."Value"::int, 100) AS "Entries",
-            //    p."Created",
-            //    p."Updated"
-            //FROM "AspNetUsers" u
-            //INNER JOIN "UserPoints" up ON u."Id" = up."UserId"
-            //INNER JOIN "Profiles" p ON p."UserId" = u."Id"
-            //LEFT JOIN "Configuration" c ON c."Id" = 'EntriesCost'
-            //GROUP BY p."FirstName", p."LastName", c."Value"
+            //    CREATE OR REPLACE VIEW "AdminUserList" AS
+            //    SELECT
+            //        u."UserId",
+            //        "FirstName" || ' ' || "LastName" AS "Name", 
+            //        p."ChildFullName" AS "ChildFullName",
+            //        p."Email" AS "Email",
+            //        p."UserType" AS "UserType",
+            //        COALESCE(SUM(up."Points"),0) AS "Points", 
+            //        COALESCE(SUM(up."Points"), 0) / COALESCE(SELECT "Value"::int FROM "Configuration" WHERE "Id" = 'EntriesCost', 100) AS "Entries",
+            //        p."Created",
+            //        p."Updated"
+            //    FROM "AspNetUsers" u
+            //    LEFT JOIN "UserPoints" up ON u."Id" = up."UserId"
+            //    INNER JOIN "Profiles" p ON p."UserId" = u."Id"
+            //    GROUP BY u."UserId"
             //""");
 
             //migrationBuilder.Sql(""" DROP VIEW "UserActivityView"; """);
