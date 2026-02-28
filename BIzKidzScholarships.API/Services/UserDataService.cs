@@ -192,17 +192,19 @@ namespace BizKidzScholarships.API.Services
         }
 
         private async Task CreditForRegistering(Guid userId)
-        {
-            var t = await _context.Database.BeginTransactionAsync();
+        { 
+            if (userId == Guid.Empty)
+            {
+                return;
+            }
 
             try
             {
-                await NewUserSubmission(4, userId, "");
-                await _context.SaveChangesAsync();
+                await NewUserSubmission(4, userId, "{}");
             }
             catch (Exception ex)
             {
-                await t.RollbackAsync();
+
             }
         }
         public async Task<ResponseModel> SetUserProfile(Guid userId, UpdateUserProfileDTO profile, bool isRegister = false)
@@ -349,7 +351,7 @@ namespace BizKidzScholarships.API.Services
         public async Task<ResponseModel> SetGlobalTasksForUser(Guid userId)
         {
             var globalQueryable = from task in _context.Tasks
-                                  where task.TaskEnabled == true && task.IsGlobalTask == true
+                                  where task.IsGlobalTask == true
                                   select new DashboardTaskDTO { TaskTitle = task.TaskTitle, Reward = task.Reward, Status = TaskStatus.Open, TaskId = task.Id, TaskDescription = task.TaskDescription, TaskImageKey = task.TaskImageKey, TaskType = task.TaskType };
 
             var userTasksQueryable = from userTask in _context.UserTasks
@@ -448,6 +450,14 @@ namespace BizKidzScholarships.API.Services
 
         public async Task<ResponseModel> StartUploadHandshake(PresignedRequestModel req)
         {
+            bool taskIsOpen = await _context.UserTasks.AnyAsync(t => t.TaskId == req.TaskId && t.UserId == _user.Id && t.Status == TaskStatus.Open);
+
+            if (!taskIsOpen)
+            {
+                return new ResponseModel() { Success = false, Errors = { "No valid task found for upload." } };
+            }
+
+
             PresignedHandshakeModel handshake = new PresignedHandshakeModel();
 
             // TODO: Configurable S3 locations
@@ -723,7 +733,7 @@ namespace BizKidzScholarships.API.Services
                 try
                 {
                     var userTask = _context.UserTasks.FirstOrDefault(ut => ut.TaskId == taskid && ut.UserId == userid);
-                    UserPointsReward reward = rewardFactory.New(taskid);
+                    UserPointsReward reward = rewardFactory.New(taskid, userid);
 
                     if (userTask is null)
                     {

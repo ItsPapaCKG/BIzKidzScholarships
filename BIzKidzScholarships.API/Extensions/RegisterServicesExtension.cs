@@ -123,7 +123,7 @@ namespace BizKidzScholarships.API.Extensions
             {
                 options.AddFixedWindowLimiter("fixed", config =>
                 {
-                    config.PermitLimit = 20;              // 10 requests
+                    config.PermitLimit = 20;              // 20 requests
                     config.Window = TimeSpan.FromMinutes(1); // per minute
                     config.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
                     config.QueueLimit = 2;

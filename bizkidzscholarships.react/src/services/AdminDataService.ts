@@ -19,14 +19,14 @@ export async function GetUserActivities(): Promise<UserActivityLog[]> {
     return [];
 }
 
-export async function GetUserResults() {
+export async function GetUserResults(): Promise<UserResult[]> {
     let res = await APICall<UserResultJSON[]>("admin/getusers","GET");
 
     if (res.success) {
         let result: UserResult[] = [];
 
         res.data!.forEach((k) => {
-            result.push({ Name: k.name, Points: k.points, Entries: k.entries} as UserResult)
+            result.push({ ChildFullName: k.childFullName, Email: k.email, UserId: k.userId, Name: k.name, Points: k.points, Entries: k.entries, Created: new Date(k.created), Updated: new Date(k.updated), UserType: k.userType } as UserResult)
         });
 
         return result;

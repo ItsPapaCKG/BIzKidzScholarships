@@ -95,9 +95,10 @@ namespace BizKidzScholarships.API.Controllers
                 return BadRequest(roleResult.Errors);
             }
 
-            await _udService.RegisterUserProfile(newUser.Id, registration);
-
             await _udService.SetGlobalTasksForUser(newUser.Id);
+
+            await _udService.RegisterUserProfile(newUser.Id, registration);
+            
 
             return Ok();
         }

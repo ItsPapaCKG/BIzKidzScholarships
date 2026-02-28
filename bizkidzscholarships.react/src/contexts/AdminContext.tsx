@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { type UserResult, type UserActivityLog, type AdminTaskSubmission, type ITask, type SubmissionsSearchResults, type GetTasksResponse } from "../models/ViewModels";
-import { GetAllSubmissions, GetAllTasks, GetSubmissions } from "../services/AdminDataService";
+import { GetAllSubmissions, GetAllTasks, GetSubmissions, GetUserResults } from "../services/AdminDataService";
 
 export type adminContextType = {
     userActivities: UserActivityLog[],
@@ -40,11 +40,14 @@ function AdminProvider({ children }: { children: ReactNode }) {
 
     // TODO getUsers
     const getUsers = async () => {
+        let res = await GetUserResults();
 
+        setUserResults(res);
     }
 
     useEffect(() => {
         getTaskSubmissions();
+        getUsers();
     }, []);
 
   return (

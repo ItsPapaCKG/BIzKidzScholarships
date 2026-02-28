@@ -6,10 +6,12 @@ using BizKidzScholarships.Data.NetworkedModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.Tasks;
 
 namespace BizKidzScholarships.API.Controllers
 {
+    [EnableRateLimiting("fixed")]
     [ApiController]
     [Route("api/user")]
     [Authorize]
@@ -100,20 +102,20 @@ namespace BizKidzScholarships.API.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet("[action]")]        
-        public async Task<IActionResult> Quiz(int taskId)
-        {
-            try
-            {
-                var res = await _udService.GetQuiz(taskId);
+        //[HttpGet("[action]")]        
+        //public async Task<IActionResult> Quiz(int taskId)
+        //{
+        //    try
+        //    {
+        //        var res = await _udService.GetQuiz(taskId);
 
-                return Ok(res);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        return Ok(res);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost("[action]")]
         public async Task<IActionResult> Consent([FromBody] UserConsentDTO consent)

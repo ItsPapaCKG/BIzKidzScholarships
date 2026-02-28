@@ -225,18 +225,27 @@ export interface UserPoints {
 }
 
 export interface UserResult {
+    UserId: string,
     Name: string,
+    ChildFullName: string | undefined,
     Points: number,
-    Entries: number
+    Email: string,
+    UserType: UserType,
+    Entries: number,
+    Created: Date,
+    Updated: Date
 }
 
 export interface UserResultJSON {
+    userId: string,
     name: string,
-    childName: string | undefined,
+    childFullName: string | undefined,
     points: number,
     email: string,
     userType: UserType,
-    entries: number
+    entries: number,
+    created: string,
+    updated: string
 }
 
 export interface PasswordResetModel {

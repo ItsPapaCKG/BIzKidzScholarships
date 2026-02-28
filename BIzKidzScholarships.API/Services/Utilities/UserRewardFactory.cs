@@ -13,7 +13,7 @@ namespace BizKidzScholarships.API.Services.Utilities
             UserId = userId;
         }
 
-        public UserPointsReward New(int taskId)
+        public UserPointsReward New(int taskId, Guid userId)
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == taskId);
             var attemptNumber = db.Submissions.Select(t => t.AttemptNumber).OrderByDescending(t => t).FirstOrDefault() + 1;
@@ -27,7 +27,7 @@ namespace BizKidzScholarships.API.Services.Utilities
             {
                 AttemptNumber = attemptNumber,
                 TaskId = taskId,
-                UserId = UserId,
+                UserId = userId,
                 Points = task.Reward,
                 IsNew = true,
                 Created = DateTimeOffset.UtcNow,

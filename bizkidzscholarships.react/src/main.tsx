@@ -13,6 +13,7 @@ import TaskSubmissionsShell from './components/admin/TaskSubmissionsShell.tsx'
 import AdminBreadcrumb from './components/admin/AdminBreadcrumb.tsx'
 import PasswordReset from './components/auth/PasswordReset.tsx'
 import PasswordResetConfirm from './components/auth/PasswordResetConfirm.tsx'
+import UserList from './components/admin/UserList.tsx'
 
 export const router = createBrowserRouter([
     { path: "/access-denied", element: (<><h1>Access is Denied Loser!</h1></>) },
@@ -34,7 +35,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "users",
-                element: <p>Users config is a WIP</p>
+                element: <AdminBreadcrumb><UserList /></AdminBreadcrumb>
             },
             {
                 path: "submissions",
@@ -42,7 +43,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "tasks",
-                element: <p>Tasks configurations are a WIP</p>
+                element: <AdminBreadcrumb><p>Tasks configurations are a WIP</p></AdminBreadcrumb>
             }
         ]
     }
