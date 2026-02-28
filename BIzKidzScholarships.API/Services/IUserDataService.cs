@@ -36,5 +36,7 @@ namespace BizKidzScholarships.API.Services
         Task<ResponseModel> RegisterUserProfile(Guid userId, RegisterDTO registration);
 
         Task<QuizQuestionViewModel[]> GetQuiz(int taskId);
+
+        Task<ResponseModel> AddUserConsent(Guid userId, UserConsentDTO consent);
     }
 }

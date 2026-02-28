@@ -10,6 +10,7 @@ function Dashboard() {
   const context = UseUserAccountContext();
   const [cookie] = [context.userCookie]; 
   const navigate = useNavigate();
+  const [userProfile] = [context.userProfile];
 
   useEffect(() => {
     if (!cookie.email) {
@@ -41,7 +42,7 @@ function Dashboard() {
         <div className="container">
           <div className="row">
             <div className="col">
-              <h1>Welcome, Grant!</h1>
+                <h1>Welcome, { userProfile.FirstName }!</h1>
             </div>
             
           </div>

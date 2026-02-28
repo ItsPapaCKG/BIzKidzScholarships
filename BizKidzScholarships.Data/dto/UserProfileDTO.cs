@@ -1,5 +1,6 @@
 ﻿using BizKidzScholarships.Data.Base;
 using BizKidzScholarships.Data.Entities;
+using BizKidzScholarships.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,6 +35,8 @@ namespace BizKidzScholarships.Data.dto
         public string? BusinessLogoKey { get; set; }
 
         public bool ProfileComplete { get; set; }
+
+        public required UserType UserType { get; set; }
     }
 
     // TODO: Include step to upload byte[] image to S3, retrieve the link, and set to profile column LogoKey

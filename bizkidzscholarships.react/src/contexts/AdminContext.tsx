@@ -39,6 +39,9 @@ function AdminProvider({ children }: { children: ReactNode }) {
     // TODO getActivities
 
     // TODO getUsers
+    const getUsers = async () => {
+
+    }
 
     useEffect(() => {
         getTaskSubmissions();

@@ -174,7 +174,11 @@ export interface RegisterJSON extends LoginJSON {
     LastName: string,
     Birthday: string,
     PhoneNumber: number,
-    ConfirmPassword: string
+    ConfirmPassword: string,
+    PrivacyConsent: boolean,
+    IAmOver13: boolean,
+    MediaConsent: boolean
+    UserType: UserType
 }
 export interface UserCookieJSON {
     userId: string,
@@ -217,6 +221,8 @@ export interface UserResult {
 export interface UserResultJSON {
     name: string,
     points: number,
+    email: string,
+    userType: UserType,
     entries: number
 }
 
@@ -252,6 +258,11 @@ export enum AppMode {
     Admin,
     Login,
     Register
+}
+
+export enum UserType {
+    Parent,
+    KidOverThirteen
 }
 
 export default '.'

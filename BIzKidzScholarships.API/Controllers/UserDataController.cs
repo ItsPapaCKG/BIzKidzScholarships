@@ -1,4 +1,5 @@
-﻿using BizKidzScholarships.API.Services;
+﻿using BizKidzScholarships.API.Controllers.Base;
+using BizKidzScholarships.API.Services;
 using BizKidzScholarships.Data.dto;
 using BizKidzScholarships.Data.Models;
 using BizKidzScholarships.Data.NetworkedModels;
@@ -12,7 +13,7 @@ namespace BizKidzScholarships.API.Controllers
     [ApiController]
     [Route("api/user")]
     [Authorize]
-    public class UserDataController : ControllerBase
+    public class UserDataController : BaseBKController
     {
 
         private ICurrentUser _user;
@@ -112,6 +113,14 @@ namespace BizKidzScholarships.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Consent([FromBody] UserConsentDTO consent)
+        {
+            var res = await _udService.AddUserConsent(_user.Id, consent);
+
+            return RouteResponse(res);
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using AutoMapper;
+﻿using Amazon;
+using AutoMapper;
 using BizKidzScholarships.API.Services;
 using BizKidzScholarships.Data.Contexts;
 using BizKidzScholarships.Data.NetworkedModels;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Runtime.CompilerServices;
-using Amazon;
 using System.Security.Claims;
 
 namespace BizKidzScholarships.API.Extensions
@@ -20,6 +21,16 @@ namespace BizKidzScholarships.API.Extensions
             var aws_secret = Environment.GetEnvironmentVariable("AWS_Secret");
 #endif
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor |
+                    ForwardedHeaders.XForwardedProto;
+
+                options.KnownNetworks.Clear(); // Only if you trust the proxy
+                options.KnownProxies.Clear();
+            });
+
             services.AddHttpContextAccessor();
             services.AddHttpClient();
 
@@ -28,28 +39,6 @@ namespace BizKidzScholarships.API.Extensions
             services.AddScoped<IUserDataService, UserDataService>();
 
             services.AddTransient<IMapper, Mapper>();
-
-            //services.AddIdentityCore<IdentityUser<Guid>>(options =>
-            //{
-            //    options.User.RequireUniqueEmail = true;
-
-            //    options.Password.RequiredLength = 9;
-            //    options.Password.RequiredUniqueChars = 2;
-            //    options.Password.RequireUppercase = true;
-            //    options.Password.RequireNonAlphanumeric = true;
-
-            //    //options.Stores.ProtectPersonalData = true;
-            //})
-
-            //    .AddRoles<IdentityRole<Guid>>()
-            //    .AddEntityFrameworkStores<BizKidzDbContext>()
-            //    .AddRoleManager<RoleManager<IdentityRole<Guid>>>()
-            //    .AddSignInManager<SignInManager<IdentityUser<Guid>>>()
-            //    .AddDefaultTokenProviders();
-
-            //services.AddAuthorization();
-            //services.AddIdentityApiEndpoints<IdentityUser<Guid>>()
-            //    .AddEntityFrameworkStores<BizKidzDbContext>();
 
             services.Configure<IdentityOptions>(options =>
             {

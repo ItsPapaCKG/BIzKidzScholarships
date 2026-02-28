@@ -34,6 +34,10 @@ namespace BizKidzScholarships.Data.Contexts
         public DbSet<QuizOption> QuizOptions { get; set; }
 
         public DbSet<TaskQuestion> TaskQuestions { get; set; }
+
+        public DbSet<SiteDocument> SiteDocuments { get; set; }
+
+        public DbSet<UserConsent> UserConsents { get; set; }
         public BizKidzDbContext(DbContextOptions<BizKidzDbContext> options) : base(options)
         {
 
@@ -182,6 +186,21 @@ namespace BizKidzScholarships.Data.Contexts
                     Updated = DateTime.UtcNow,
                     TaskType = Enums.TaskType.Quiz,
                     TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/entrepreneurshipguide.png"
+                },
+                new TaskItem
+                {
+                    Id = 4,
+                    TaskTitle = "Register an account with Biz Kidz Scholarships",
+                    TaskPromptTitle = "If you're 13 years old or older, create an account with the Biz Kidz Scholarships app.",
+                    TaskPromptSubtitle = "Register a Biz Kidz Scholarships account.",
+                    TaskDescription = "Once registered, you will be prompted in the future to upload photos and complete certain task for a chance to win scholarships.",
+                    TaskEnabled = false,
+                    TaskNameInternal = "Quiz Completion Task",
+                    Reward = 0,
+                    Created = DateTime.UtcNow,
+                    Updated = DateTime.UtcNow,
+                    TaskType = Enums.TaskType.Quiz,
+                    TaskImageKey = "https://bizkidz-task-bucket.s3.us-east-2.amazonaws.com/static/bizkidzexpo.jpg"
                 },
             ]);
 
@@ -420,6 +439,73 @@ namespace BizKidzScholarships.Data.Contexts
                 .WithMany()
                 .HasForeignKey(f => f.QuestionId)
                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<SiteDocument>(sd =>
+            {
+                sd.HasKey(s => s.Id);
+
+                sd.HasIndex(s => s.Name);
+            });
+
+            modelBuilder.Entity<SiteDocument>().HasData([
+                    new SiteDocument() {
+                        Id = 1,
+                        Type = ConsentType.PrivacyPolicy,
+                        ContentsHTML = """
+                        <div>
+
+                            This is a test privacy policy. You agree to it, whatever it is.
+
+                        </div>
+                        """,
+                        Created = new DateTimeOffset(2026, 3, 1, 0, 0, 0, new TimeSpan()),
+                        Version = "0.1",
+                        Name = "Privacy Policy TEST"
+                    },
+                    new SiteDocument() {
+                        Id = 2,
+                        Type = ConsentType.TermsOfService,
+                        ContentsHTML = """
+                        <div>
+
+                            This is a terms of service. You agree to it, whatever it is.
+
+                        </div>
+                        """,
+                        Created = new DateTimeOffset(2026, 3, 1, 0, 0, 0, new TimeSpan()),
+                        Version = "0.1",
+                        Name = "Terms of Service TEST"
+                    },
+                    new SiteDocument() {
+                        Id = 3,
+                        Type = ConsentType.MediaConsent,
+                        ContentsHTML = """
+                        <div>
+
+                            This is a test media consent form. You agree to it, whatever it is.
+
+                        </div>
+                        """,
+                        Created = new DateTimeOffset(2026, 3, 1, 0, 0, 0, new TimeSpan()),
+                        Version = "0.1",
+                        Name = "Media Consent TEST"
+                    },
+                ]);
+
+            modelBuilder.Entity<UserConsent>(uc =>
+            {
+                uc.HasKey(uc => uc.Id);
+
+                uc.HasOne<IdentityUser<Guid>>()
+                .WithMany()
+                .HasForeignKey(uc => uc.UserId);
+
+                uc.HasOne(uc => uc.Document)
+                .WithMany()
+                .HasForeignKey(uc => uc.DocumentId);
+
+                uc.Property(uc => uc.IsGranted).HasDefaultValue(false);
             });
 
             base.OnModelCreating(modelBuilder);

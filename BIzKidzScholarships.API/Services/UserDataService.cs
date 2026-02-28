@@ -27,9 +27,12 @@ namespace BizKidzScholarships.API.Services
         protected Guid userId => _user.Id;
         protected UserRewardFactory rewardFactory { get; set; }
 
-        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac) : base(user, mapper, context, _fac)
+        private IHttpContextAccessor _httpContext { get; set; }
+
+        public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac, IHttpContextAccessor httpContext) : base(user, mapper, context, _fac)
         {
             rewardFactory = new UserRewardFactory(userId, context);
+            _httpContext = httpContext;
         }
 
         public int GetUserAge(DateTimeOffset birthday)
@@ -113,9 +116,59 @@ namespace BizKidzScholarships.API.Services
 
             profile.ProfileComplete = false;
 
+            var privacyId = await _context.SiteDocuments.Where(d => d.Type == ConsentType.PrivacyPolicy).OrderByDescending(d => d.Created).Select(d => d.Id).FirstOrDefaultAsync();
+            var termsId = await _context.SiteDocuments.Where(d => d.Type == ConsentType.TermsOfService).OrderByDescending(d => d.Created).Select(d => d.Id).FirstOrDefaultAsync();
+            var mediaId = await _context.SiteDocuments.Where(d => d.Type == ConsentType.MediaConsent).OrderByDescending(d => d.Created).Select(d => d.Id).FirstOrDefaultAsync();
+
+            var consentList = new List<UserConsentDTO>() {
+                new UserConsentDTO()
+                {
+                    DocumentId = privacyId,
+                    ConsentType = ConsentType.PrivacyPolicy,
+                    IsGranted = registration.PrivacyConsent
+                },
+                new UserConsentDTO()
+                {
+                    DocumentId = termsId,
+                    ConsentType = ConsentType.TermsOfService,
+                    IsGranted = registration.PrivacyConsent
+                },
+                new UserConsentDTO()
+                {
+                    DocumentId = mediaId,
+                    ConsentType = ConsentType.TermsOfService,
+                    IsGranted = registration.PrivacyConsent
+                }
+            };
+
+            try
+            {
+                await AddUserConsent(userId, consentList);
+            }
+            catch (Exception ex)
+            {
+                // future: Logging
+            }
+
+            await CreditForRegistering(userId);
+
             return await SetUserProfile(userId, profile);
         }
 
+        private async Task CreditForRegistering(Guid userId)
+        {
+            var t = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await NewUserSubmission(4, userId, "");
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+            }
+        }
         public async Task<ResponseModel> SetUserProfile(Guid userId, UpdateUserProfileDTO profile, bool isRegister = false)
         {
             var pr = _mapper.Map<UserProfileDTO>(profile);
@@ -529,13 +582,16 @@ namespace BizKidzScholarships.API.Services
 
             int attemptNumber = 0;
 
-            var previous = _context.Submissions.Where(s => s.TaskId == taskid && s.UserId == userid).OrderByDescending(x => x.AttemptNumber).FirstOrDefault();
+            var previous = await _context.Submissions.Where(s => s.TaskId == taskid && s.UserId == userid).OrderByDescending(x => x.AttemptNumber).FirstOrDefaultAsync();
 
             if (previous != null) {
                 attemptNumber = previous.AttemptNumber + 1;
+            } else
+            {
+                attemptNumber = 1;
             }
 
-            //
+                //
             var submission = new TaskSubmission() { AttemptNumber = attemptNumber, SubmissionData = payload, TaskId = taskid, UserId = userid, Created = DateTimeOffset.UtcNow, Updated = DateTimeOffset.UtcNow };
 
             var t = await _context.Database.BeginTransactionAsync();
@@ -641,6 +697,58 @@ namespace BizKidzScholarships.API.Services
             }
 
             return quiz;
+        }
+
+        public async Task<ResponseModel> AddUserConsent(Guid userId, UserConsentDTO consent)
+        {
+            var consentEntity = new UserConsent()
+            {
+                ConsentTimeUtc = DateTime.UtcNow,
+                DocumentId = consent.DocumentId,
+                IsGranted = consent.IsGranted,
+                UserId = userId,
+                IPAddress = _httpContext.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                UserAgent = _httpContext.HttpContext.Request.Headers.UserAgent.ToString(),
+                ConsentType = consent.ConsentType
+            };
+
+            var t = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                await _context.UserConsents.AddAsync(consentEntity);
+
+                await _context.SaveChangesAsync();
+
+                await t.CommitAsync();
+
+                return new ResponseModel() { Success = false, Errors = { "Failed to add user consent" } };
+            }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+
+                return new ResponseModel() { Success = false, Errors = { "Failed to add user consent" } };
+            }
+        }
+
+        public async Task<ResponseModel> AddUserConsent(Guid userId, List<UserConsentDTO> consent)
+        {
+            var r = new ResponseModel();
+
+            try { 
+                foreach (var c in consent)
+                {
+                    await AddUserConsent(userId, c);
+                }
+            } catch (Exception ex)
+            {
+                r.Errors.Add(ex.Message);
+                r.Success = false;
+            }
+
+
+            return r;
         }
     }
 }

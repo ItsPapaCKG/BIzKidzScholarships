@@ -1,6 +1,6 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 import { Form, Link, useNavigate } from "react-router";
-import { type LoginJSON, type IUserProfile, type RegisterJSON } from "../models/ViewModels";
+import { type LoginJSON, type IUserProfile, type RegisterJSON, UserType } from "../models/ViewModels";
 import { APICall, ResponseCode, ResponseError } from "../services/APIService";
 import { AttemptAuth } from "../services/AuthService";
 import DatePicker from "react-datepicker";
@@ -33,9 +33,23 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
     const navigate = useNavigate();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const { name, value, type } = e.target;
 
-        setUserForm(prev => ({...prev, [name]: value}));
+        let parsed: any = value;
+
+        if (name == "UserType") {
+            parsed = Number(value);
+        }
+
+        if (name == "PrivacyConsent" && e.target.checked) {
+            setUserForm(prev => ({ ...prev, IAmOver13: true }));
+        }
+
+        if (type == "checkbox") {
+            parsed = e.target.checked;
+        }
+
+        setUserForm(prev => ({...prev, [name]: parsed}));
     }
 
     const login = async () => {
@@ -62,6 +76,10 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
     };
 
     const register = async () => {
+        if (!formValidate()) {
+            return;
+        }
+
         let res = await AttemptAuth(userForm, true);
 
         if (!res.success)
@@ -86,25 +104,100 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         setUserForm(prev => ({...prev, ["Birthday"]: d ?? ""}));
     };
 
-    useEffect(() => {
-        console.log("IsAuthenticated when Auth component loads: " + isAuthenticated);
-        let valid: boolean = userForm.email.includes("@");
-        valid = userForm.Birthday != null;
-        valid = userForm.FirstName != "" && userForm.LastName != "";
-        valid = userForm.password == userForm.ConfirmPassword;
-        valid = userForm.password.length > 0;
-        
-        if (valid) {
-            setIsValid(true);
-            return;
-        } else {
-            setIsValid(false);
+    const compareIgnoringYear = (d1: Date, d2: Date): number => {
+        const baseYear = 2000; // leap year avoids Feb 29 issues
+
+        const date1 = new Date(baseYear, d1.getMonth(), d1.getDate());
+        const date2 = new Date(baseYear, d2.getMonth(), d2.getDate());
+
+        return date1.getTime() - date2.getTime();
+    }
+
+    const formValidate = () => {
+        let valid: boolean = false;
+        let emailValid = userForm.email.includes("@");
+        let birthdayEntered = userForm.Birthday != null;
+        let nameValid = userForm.FirstName != "" && userForm.LastName != "";
+        let passwordsMatch = userForm.password == userForm.ConfirmPassword;
+        let passwordEntered = userForm.password !== "" && userForm.password.length > 8;
+
+        valid = emailValid && birthdayEntered && nameValid && passwordsMatch && passwordEntered;
+
+        const birthDate = userForm.Birthday.split('T')[0];
+
+        const [year, month, day] = birthDate.split("-").map(Number);
+        let bday = new Date(year, month - 1, day);
+        let today = new Date();
+
+        let thisYear = today.getFullYear();
+        let birthYear = bday.getFullYear();
+
+        let age = thisYear - birthYear;
+
+        const hasHadBirthdayThisYear =
+            today.getMonth() > bday.getMonth() ||
+            (today.getMonth() === bday.getMonth() &&
+                today.getDate() >= bday.getDate());
+
+        if (!hasHadBirthdayThisYear) {
+            age--;
         }
+
+        let validAge = age >= 13;
+
+        if (!validAge && birthdayEntered) {
+            setErrorState("You must be greater than 13 years of age to Register.");
+            return false;
+        }
+
+        if (!nameValid) {
+            setErrorState("You must provide a First and Last name.");
+            return false;
+        }
+
+        if (!birthdayEntered) {
+            setErrorState("You must provide a First and Last name.");
+            return false;
+        }
+
+        if (!emailValid) {
+            setErrorState("You must be greater than 13 years of age to Register.");
+            return false;
+        }
+
+        if (!passwordEntered) {
+            setErrorState("You must enter a password that is 8 characters in length and contain 1 number and 1 special character.");
+            return false;
+        }
+
+        if (!passwordsMatch) {
+            setErrorState("Your passwords do not match.");
+            return false;
+        }
+
+        return true;
+    }
+
+    useEffect(() => {
+        if (!RegisterMode) {
+            return;
+        }
+
+        let valid: boolean = false;
+        let emailValid = userForm.email.includes("@");
+        let birthdayEntered = userForm.Birthday != null;
+        let nameValid = userForm.FirstName != "" && userForm.LastName != "";
+        let passwordsMatch = userForm.password == userForm.ConfirmPassword;
+        let passwordEntered = userForm.password !== "" && userForm.password.length > 8;
+
+        valid = emailValid && birthdayEntered && nameValid && passwordsMatch && passwordEntered;
+        
+        setIsValid(valid);
 
     },[userForm]);
 
     return (
-        <div className="popup-wrapper bg-white d-flex justify-content-center align-items-center shadow-lg rounded-5 h-100 auth-card">
+        <div className="popup-wrapper bg-white d-flex justify-content-center align-items-center shadow-lg p-3 rounded-5 h-100 auth-card">
                 <form>
                     <div className="container">
                         {RegisterMode ? (
@@ -113,6 +206,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                     <div className="col d-flex justify-content-center mt-3 mb-0 text-center">
                                         <h1>Register your Account</h1>
                                     </div>
+                                    
                                 </div>
 
                                 <div className="row">
@@ -122,10 +216,29 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 </div>
 
                                 <div className="row">
+                                <p className="text-center">Individuals age 13 or older may create an account with Biz Kidz Scholarships.<br /> <strong>For participants under age 13, a parent or legal guardian must register an account instead.</strong></p>
+                                </div>
+
+                            <div className="row justify-content-evenly">
+                                <div className="col-auto">
+                                    <div className="form-check d-flex align-items-center">
+                                        <input type="radio" className="form-check-input me-2" name="UserType" checked={userForm.UserType == UserType.Parent} value={UserType.Parent} onChange={handleChange} />
+                                        <label className="form-check-label" aria-for="UserType"><span className="fs-5">Parent</span></label>
+                                    </div>
+                                </div>
+                                <div className="col-auto">
+                                    <div className="form-check d-flex align-items-center">
+                                        <input type="radio" className="form-check-input me-2" name="UserType" checked={userForm.UserType == UserType.KidOverThirteen} value={UserType.KidOverThirteen} onChange={handleChange} />
+                                        <label className="form-check-label" aria-for="UserType"><span className="fs-5">Kid over 13</span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                                <div className="row mt-4">
                                     <div className="col-12 col-md-6">
                                         <div className="input-group input-group-lg mb-3">
                                             <span className="input-group-text" id="inputGroup-sizing-lg">First Name</span>
-                                            <input type="text" name="FirstName" className="form-control" aria-label="Registrant First Name" aria-describedby="inputGroup-sizing-lg" onChange={handleChange}  value={userForm.FirstName}/>
+                                        <input type="text" name="FirstName" className="form-control" aria-label="Registrant First Name" aria-describedby="inputGroup-sizing-lg" onChange={handleChange}  value={userForm.FirstName}/>
                                         </div>
                                     </div>
 
@@ -173,7 +286,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                     <div className="col">
                                         <div className="input-group input-group-lg mb-3">
                                             <span className="input-group-text" id="inputGroup-sizing-default">Email</span>
-                                            <input type="email" name="Email" className="form-control" aria-label="Registrant Email Address" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.email}/>
+                                            <input type="email" name="email" className="form-control" aria-label="Registrant Email Address" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.email}/>
                                         </div>
                                     </div>
                                 </div>
@@ -181,7 +294,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 <div className="row">
                                     <div className="col">
                                         <div className="input-group input-group-lg mb-3">
-                                            <span className="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
+                                            <span className="input-group-text" id="inputGroup-sizing-default">Phone</span>
                                             <input type="tel" name="PhoneNumber" className="form-control" aria-label="Registrant Phone Number" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.PhoneNumber}/>
                                         </div>
                                     </div>
@@ -191,7 +304,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                     <div className="col">
                                         <div className="input-group input-group-lg mb-3">
                                             <span className="input-group-text" id="inputGroup-sizing-default">Password</span>
-                                            <input type="password" name="Password" className="form-control" aria-label="Registrant Password" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.password}/>
+                                            <input type="password" name="password" className="form-control" aria-label="Registrant Password" aria-describedby="inputGroup-sizing-default" onChange={handleChange}  value={userForm.password}/>
                                         </div>
                                     </div>
                                 </div>
@@ -206,6 +319,26 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 </div>
 
                                 <div className="row">
+                                    <div className="col">
+                                        <div className="form-check">
+                                        <input type="checkbox" className="form-check-input" name="PrivacyConsent" checked={userForm.PrivacyConsent} onChange={handleChange}></input>
+
+                                        <label className="form-check-label">{ userForm.UserType == UserType.KidOverThirteen && "I confirm that I am at least 13 years old, and " }I agree to the Privacy policy and the Terms and Conditions.<span className="text-danger">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="row mt-3">
+                                    <div className="col">
+                                        <div className="form-check">
+                                        <input type="checkbox" className="form-check-input" name="MediaConsent" checked={userForm.MediaConsent} onChange={handleChange}></input>
+
+                                            <label className="form-check-label">As a condition of participation, I grant permission for submitted materials to be used for evaluation, program administration, and promotional purposes.<span className="text-danger">*</span></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="row mt-3">
                                     <div className="col">
                                         <button onClick={e => { e.preventDefault(); register(); } } disabled={!validForm || isLoading} className="btn btn-lg btn-success w-100">{ isLoading ? "Loading..." : "Register"}</button>
                                     </div>

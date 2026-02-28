@@ -1,4 +1,5 @@
 ﻿using BizKidzScholarships.Data.Base;
+using BizKidzScholarships.Data.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,8 @@ namespace BizKidzScholarships.Data.Entities
 {
     public class UserProfile : BaseTrackableModel
     {
+        public required UserType UserType { get; set; }
+
         public required Guid UserId { get; set; }
 
         [MaxLength(30)]

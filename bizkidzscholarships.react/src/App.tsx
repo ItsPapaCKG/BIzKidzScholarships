@@ -55,10 +55,10 @@ function App({ Mode }: AppProps) {
     return (
         <>
         <div className="d-flex flex-column min-vh-100 bg-light">
-            <nav className='navbar navbar-expand-lg navbar-light bg-white fixed-top h-10 shadow'>
+            <nav className='navbar navbar-expand-lg navbar-light bg-white fixed-top shadow'>
                 <div className='container-xl'>
                     <a className='navbar-brand ms-5'>
-                        <img className="navbarLogo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png" height="100"/>
+                        <img className="navbarLogo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png" height="75"/>
                     </a>
 
                         {isAdmin && Mode == AppMode.Dashboard && <NavLink to="/admin">Go to Admin Page</NavLink>}
