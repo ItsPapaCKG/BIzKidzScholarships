@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { IUserProfile, UserCookieJSON } from "../models/ViewModels";
+import type { IUserProfile, UserCookieJSON, UserType } from "../models/ViewModels";
 import { useNavigate } from "react-router-dom";
 import { APICall } from "../services/APIService";
 
@@ -30,7 +30,8 @@ interface UserProfileJSON {
     email: string,
     businessName: string
     businessLogoKey: string,
-    birthday: Date
+    birthday: Date,
+    userType: UserType
 }
 
 const UserAccountContext = createContext<userAccountContextType>({} as userAccountContextType);
@@ -72,6 +73,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
             PhoneNumber: jsonprofile.phoneNumber,
             BusinessLogoKey: jsonprofile.businessLogoKey,
             Birthday: new Date(jsonprofile.birthday),
+            UserType: jsonprofile.userType,
             Loaded: true
         }
 

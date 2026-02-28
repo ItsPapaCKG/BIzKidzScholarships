@@ -33,7 +33,7 @@ function UserPoints() {
 
   if (!points.Loaded) return (<></>)
   else return (
-      <div className="card p-3 userpoints border-info flex-fill">
+      <div className="card userpoints border-info flex-fill">
           <div className="card-header text-center pt-3">
               <h2 className="fs-5">Next Scholarship Drawing</h2>
           </div>

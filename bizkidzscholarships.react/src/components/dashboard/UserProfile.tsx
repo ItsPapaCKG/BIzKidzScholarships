@@ -3,6 +3,7 @@ import "../../models/ViewModels"
 import { UseUserAccountContext } from "../../contexts/UserAccountContext";
 //import { useNavigate } from "react-router-dom";
 import EditProfile from "./EditProfile";
+import { UserType } from "../../models/ViewModels";
 
 function UserProfile() {
     //const navigate = useNavigate();
@@ -25,6 +26,8 @@ function UserProfile() {
 
         getProfile();
     }, [userHasNotRegisteredProfile]);
+
+    let subjectNoun = userProfile.UserType == UserType.Parent ? "Parent" : "Student";
 
     if (userHasNotRegisteredProfile) return <EditProfile />
     else if (!userProfile.Loaded) return (<></>)
@@ -49,11 +52,11 @@ function UserProfile() {
 
                                 <div className="col d-flex flex-column justify-content-center">
                                     <p className="p-2">
-                                        <strong>Student Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
+                                        <strong>{subjectNoun} Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
                                     </p>
 
                                     <p className="p-2">
-                                        <strong>Birthday</strong>: {userProfile.Birthday.toDateString()}
+                                        <strong>{subjectNoun} Birthday</strong>: {userProfile.Birthday.toDateString()}
                                     </p>
                                     
                                     <p className="p-2">
@@ -61,11 +64,11 @@ function UserProfile() {
                                     </p>
 
                                     <p className="p-2">
-                                        <strong>Student Email</strong>: {userProfile.Email}
+                                        <strong>{subjectNoun} Email</strong>: {userProfile.Email}
                                     </p>
 
                                     <p className="p-2">
-                                        <strong>Phone</strong>: {userProfile.PhoneNumber}
+                                        <strong>{subjectNoun} Phone</strong>: {userProfile.PhoneNumber}
                                     </p>
                                 </div>    
                             </div>

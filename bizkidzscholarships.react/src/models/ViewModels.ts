@@ -8,6 +8,7 @@ export interface IUserProfile {
     PhoneNumber: string,
     BusinessLogoKey: string,
     Birthday: Date,
+    UserType: UserType,
     Loaded: boolean
 }
 
