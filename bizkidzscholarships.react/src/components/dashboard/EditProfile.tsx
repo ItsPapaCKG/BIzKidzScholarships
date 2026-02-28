@@ -1,6 +1,6 @@
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { ActionType, type IUserProfile } from "../../models/ViewModels";
+import { ActionType, UserType, type IUserProfile } from "../../models/ViewModels";
 import { UseUserAccountContext } from "../../contexts/UserAccountContext";
 import FileUpload from "../tasks/FileUpload";
 
@@ -100,6 +100,11 @@ function EditProfile() {
                             <span className="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
                             <input type="text" name="PhoneNumber" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleChange} value={userProfile.PhoneNumber}/>
                         </div>
+
+                        { userProfile.UserType == UserType.Parent && <div className="input-group mb-3">
+                            <span className="input-group-text" id="inputGroup-sizing-default">Kid's Name</span>
+                            <input type="text" name="ChildFullName" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={handleChange} value={userProfile.ChildFullName} />
+                        </div>}
                         
                     </div>    
                 </div>

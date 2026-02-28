@@ -9,6 +9,7 @@ export interface IUserProfile {
     BusinessLogoKey: string,
     Birthday: Date,
     UserType: UserType,
+    ChildFullName: string | undefined,
     Loaded: boolean
 }
 

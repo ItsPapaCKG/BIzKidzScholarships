@@ -33,6 +33,8 @@ namespace BizKidzScholarships.Data.Entities
 
         public bool ProfileComplete { get; set; }
 
+        public string? ChildFullName { get; set; }
+
         public required IdentityUser<Guid> User { get; set; }
     }
 }

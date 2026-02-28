@@ -55,6 +55,10 @@ function UserProfile() {
                                         <strong>{subjectNoun} Name</strong>: {userProfile.FirstName + " " + userProfile.LastName}
                                     </p>
 
+                                    {userProfile.ChildFullName && <p className="p-2">
+                                        <strong>Child's Name</strong>: {userProfile.ChildFullName}
+                                    </p> }
+
                                     <p className="p-2">
                                         <strong>{subjectNoun} Birthday</strong>: {userProfile.Birthday.toDateString()}
                                     </p>

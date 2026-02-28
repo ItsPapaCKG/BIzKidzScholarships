@@ -34,6 +34,8 @@ namespace BizKidzScholarships.Data.dto
         [MaxLength(150)]
         public string? BusinessLogoKey { get; set; }
 
+        public string? ChildFullName { get; set; }
+
         public bool ProfileComplete { get; set; }
 
         public required UserType UserType { get; set; }
@@ -61,5 +63,7 @@ namespace BizKidzScholarships.Data.dto
 
         [MaxLength(150)]
         public string? BusinessLogoKey { get; set; }
+
+        public string? ChildFullName { get; set; }
     }
 }

@@ -31,7 +31,8 @@ interface UserProfileJSON {
     businessName: string
     businessLogoKey: string,
     birthday: Date,
-    userType: UserType
+    userType: UserType,
+    childFullName: string | undefined
 }
 
 const UserAccountContext = createContext<userAccountContextType>({} as userAccountContextType);
@@ -74,6 +75,7 @@ function UserAccountProvider({ children }: { children: ReactNode }) {
             BusinessLogoKey: jsonprofile.businessLogoKey,
             Birthday: new Date(jsonprofile.birthday),
             UserType: jsonprofile.userType,
+            ChildFullName: jsonprofile.childFullName,
             Loaded: true
         }
 
