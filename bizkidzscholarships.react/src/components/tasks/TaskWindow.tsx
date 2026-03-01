@@ -49,12 +49,12 @@ function TaskWindow() {
                             </>}
                                 
                             </div>
-                        <div className="modal-body d-flex justify-content-center p-5" style={{ maxHeight: "100vh", minHeight: "60vh" }}>
+                        <div className="modal-body d-flex justify-content-center p-5" style={{ minHeight: "60vh" }}>
                             <div className="container">
                                 {task && <>
                                     <div className="row mb-5">
                                         <div className="col">
-                                            <p className="fs-5 m-0" style={{ whiteSpace: "pre-line" } }>{task.TaskPromptSubtitle.replace(/\\n/g, "\n")}</p>
+                                            <p className="fs-7 m-0" style={{ whiteSpace: "pre-line" } }>{task.TaskPromptSubtitle.replace(/\\n/g, "\n")}</p>
                                         </div>
                                     </div>
 
