@@ -30,6 +30,8 @@ namespace BizKidzScholarships.Data.Entities
 
         public bool IsGlobalTask { get; set; } = true;
 
+        public int? Order { get; set; }
+
         public ICollection<TaskSubmission> TaskSubmissions { get; set; } = [];
 
         public ICollection<UserPointsReward> Rewards { get; set; } = [];

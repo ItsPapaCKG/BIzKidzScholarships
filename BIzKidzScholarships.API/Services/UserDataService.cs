@@ -302,12 +302,14 @@ namespace BizKidzScholarships.API.Services
             var tasksQueryable = from userTask in _context.UserTasks
                                  join t in _context.Tasks on userTask.TaskId equals t.Id
                                  where t.TaskEnabled && userTask.UserId == userId && userTask.Status != TaskStatus.Disabled && userTask.Status != TaskStatus.Hidden
-                                 select new DashboardTaskDTO { TaskTitle = t.TaskTitle, Reward = t.Reward, Status = userTask.Status, TaskId = t.Id, TaskDescription = t.TaskDescription, TaskImageKey = t.TaskImageKey, TaskType = t.TaskType, TaskPromptSubtitle = t.TaskPromptSubtitle, TaskPromptTitle = t.TaskPromptTitle };
+                                 select new DashboardTaskDTO { TaskTitle = t.TaskTitle, Reward = t.Reward, Status = userTask.Status, TaskId = t.Id, TaskDescription = t.TaskDescription, TaskImageKey = t.TaskImageKey, TaskType = t.TaskType, TaskPromptSubtitle = t.TaskPromptSubtitle, TaskPromptTitle = t.TaskPromptTitle, Order = t.Order };
 
-            var tasks = await tasksQueryable.ToListAsync();
+            var tasks = await tasksQueryable.OrderBy(t => t.Order).ToListAsync();
 
             if (tasks is null)
                 return [];
+
+
 
             return tasks;
         }

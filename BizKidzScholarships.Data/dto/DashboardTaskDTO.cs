@@ -29,5 +29,7 @@ namespace BizKidzScholarships.Data.dto
 
         public TaskStatus Status { get; set; } = TaskStatus.Disabled;
 
+        public int? Order { get; set; }
+
     }
 }
