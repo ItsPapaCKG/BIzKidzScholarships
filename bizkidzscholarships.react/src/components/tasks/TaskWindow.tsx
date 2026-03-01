@@ -54,7 +54,7 @@ function TaskWindow() {
                                 {task && <>
                                     <div className="row mb-5">
                                         <div className="col">
-                                            <p className="fs-5 m-0" style={{ whiteSpace: "pre-line" } }>{task.TaskPromptSubtitle}</p>
+                                            <p className="fs-5 m-0" style={{ whiteSpace: "pre-line" } }>{task.TaskPromptSubtitle.replace(/\\n/g, "\n")}</p>
                                         </div>
                                     </div>
 
