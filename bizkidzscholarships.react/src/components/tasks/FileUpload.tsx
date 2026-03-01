@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProfileUpload, SendUserConsent, TaskUpload } from "../../services/UserDataService"
 import { UseTaskContext } from "../../contexts/TaskViewContext";
 import { ActionType, BizDocumentType } from "../../models/ViewModels";
+import LoadingSVG from "../LoadingSVG";
 
 interface ImageUploadProps {
     action: ActionType,
@@ -18,6 +19,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
     const [statefulFile, setCurrentFile] = useState<File | undefined>(undefined);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [uploadDisabled, setUploadDisabled] = useState<boolean>(true);
+    const [uploadPending, setUploadPending] = useState<boolean>(false);
 
     let uploadClick = () => {
         fileUploadRef.current!.click();
@@ -64,6 +66,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
                 successful = true;
                 break;
             case ActionType.TaskUpload:
+                setUploadPending(true);
                 let c = await SendUserConsent(BizDocumentType.MediaConsent, consent);
 
                 if (!c.success) {
@@ -75,6 +78,8 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
                 if (successful) {
                     onClose();
 
+                    setUploadPending(false);
+
                     setTask(null);
                     setPointsRefresh(true);
                     setTaskRefresh(true);
@@ -82,6 +87,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
                 break;
         }
 
+        setUploadPending(false);
         setUploadDisabled(false);
         setError("Error Uploading File. Please try again.");
     }
@@ -133,7 +139,9 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
                                 </label>
                         </div>
 
-                        {statefulFile && (<button type="submit" disabled={uploadDisabled} className="btn btn-success w-100" onClick={() => UploadFile()}>Submit</button>)}
+                            {uploadPending && <LoadingSVG />}
+
+                            {statefulFile && (<button type="submit" disabled={uploadDisabled} className="btn btn-success w-100" onClick={() => UploadFile()}>Submit</button>)}
 
                         
                     </div>
