@@ -10,15 +10,16 @@ namespace BizKidzScholarships.API.Services.Utilities
             using var scope = services.CreateScope();
 
             var userService = scope.ServiceProvider.GetRequiredService<IUserDataService>();
+            var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser<Guid>>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
             string adminEmail = "grantsputnam@gmail.com";
-            string adminPassword = "Password1!";
+            string adminPassword = config["DEFAULT_ADMIN_PASSWORD"]!;
             string adminPhoneNumber = "2392856774";
 
             string jdEmail = "jd@bizkidzusa.org";
-            string jdPassword = "Password1!";
+            string jdPassword = config["DEFAULT_ADMIN_PASSWORD"]!;
             string jdPhoneNumber = "2396751235";
 
             // Create Admin role if it doesn't exist
