@@ -139,7 +139,8 @@ export interface StartUploadRequest {
 
 export interface UploadHandshakeConfirmation {
     RequestId: string,
-    Status: RequestStatus
+    Status: RequestStatus,
+    ConsentId: number
 }
 
 export interface ConsentResponse {

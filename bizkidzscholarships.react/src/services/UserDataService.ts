@@ -94,7 +94,7 @@ async function UploadToServer(request: StartUploadRequest, file: File): Promise<
 
     if (upload.ok) {
         // alert("Upload successful! See: " + presignedData.url + presignedData.key) 
-        var success = await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Success);
+        var success = await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Success, request.ConsentId);
 
         result.Success = success;
         return result;
@@ -111,10 +111,11 @@ async function UploadToServer(request: StartUploadRequest, file: File): Promise<
     return result;
 }
 
-async function CompleteUploadHandshake(requestId: string, requestStatus: RequestStatus) {
+async function CompleteUploadHandshake(requestId: string, requestStatus: RequestStatus, consentId: number = 0) {
     var confirmation = {
         RequestId: requestId,
-        Status: requestStatus
+        Status: requestStatus,
+        ConsentId: consentId
     } as UploadHandshakeConfirmation;
 
     var response = await APICall("user/UploadHandshake", "POST", confirmation);
