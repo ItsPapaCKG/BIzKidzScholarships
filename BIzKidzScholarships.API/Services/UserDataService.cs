@@ -494,7 +494,7 @@ namespace BizKidzScholarships.API.Services
             {
                 UserId = _user.Id,
                 ActionType = req.ActionType,
-                Status = RequestStatus.Pending,
+                Status = RequestStatus.Open,
                 Created = DateTimeOffset.UtcNow,
                 Updated = DateTimeOffset.UtcNow,
                 Payload = JsonConvert.SerializeObject(payload),
@@ -616,6 +616,15 @@ namespace BizKidzScholarships.API.Services
         {
             try
             {
+                var rowsAffected = await _context.ActionRequests
+                    .Where(r => r.RequestId == confirmation.RequestId && r.Status == RequestStatus.Open)
+                    .ExecuteUpdateAsync(s => s.SetProperty(a => a.Status, RequestStatus.Pending));
+
+                if (rowsAffected == 0)
+                {
+                    return new ResponseModel() { Success = false, Errors = { "Request was already processed." } };
+                }
+
                 var request = _context.ActionRequests.FirstOrDefault(r => r.RequestId == confirmation.RequestId);
 
                 // check that request exists

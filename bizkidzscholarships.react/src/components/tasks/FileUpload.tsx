@@ -17,12 +17,15 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
 
     const [statefulFile, setCurrentFile] = useState<File | undefined>(undefined);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [uploadDisabled, setUploadDisabled] = useState<boolean>(false);
 
     let uploadClick = () => {
         fileUploadRef.current!.click();
     }
 
     const UploadFile = async (file?: File) => {
+        setUploadDisabled(true);
+
         if (file) {
             setCurrentFile(file);
         }
@@ -31,11 +34,13 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
 
         if (focusedFile == undefined) {
             alert("Invalid upload.") 
+            setUploadDisabled(false);
             return false;
         }
         
         if (task?.TaskId == null && action == ActionType.TaskUpload) {
             console.error("No task Id found for task. Could not upload submission.");
+            setUploadDisabled(false);
             return;
         }
 
@@ -69,6 +74,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
                 }
         }
 
+        setUploadDisabled(false);
         setError("Error Uploading File. Please try again.");
     }
 
@@ -101,7 +107,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
                                 )}
                             </div>
 
-                            {statefulFile && (<button type="submit" className="btn btn-lg btn-success w-100" onClick={() => UploadFile() }>Submit</button>)}
+                            {statefulFile && (<button type="submit" disabled={uploadDisabled} className="btn btn-lg btn-success w-100" onClick={() => UploadFile() }>Submit</button>)}
 
                             <p>{error}</p>
                         </div>
@@ -123,7 +129,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
 
                 {action == ActionType.ProfileImageUpload && (
                     <>
-                            <input type="file" name="BusinessLogoKey" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); UploadFile(e.target.files?.[0]); } }/>
+                    <input type="file" name="BusinessLogoKey" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" onChange={(e) => { let file = e.target.files?.[0];  if (!file) return; setPreviewUrl(URL.createObjectURL(file)); UploadFile(e.target.files?.[0]); } }/>
                     </>
                 )}
       </>
