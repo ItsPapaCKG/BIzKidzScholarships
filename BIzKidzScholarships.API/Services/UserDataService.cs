@@ -443,6 +443,19 @@ namespace BizKidzScholarships.API.Services
 
             bool success = await SafeUpdateAsync(request);
 
+            try
+            {
+                var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == request.UserId);
+
+                if (profile is not null) { 
+                    profile.BusinessLogoKey = imageLink;
+                    await _context.SaveChangesAsync();
+                }
+            } catch (Exception ex)
+            {
+                return new ResponseModel() { Success = false, Errors = { "Could not update profile picture." } };
+            }
+
             return new ResponseModel { Success = success };
         }
 
@@ -450,11 +463,17 @@ namespace BizKidzScholarships.API.Services
         {
             bool taskIsOpen = await _context.UserTasks.AnyAsync(t => t.TaskId == req.TaskId && t.UserId == _user.Id && t.Status == TaskStatus.Open);
 
-            if (!taskIsOpen)
+            if (!taskIsOpen && req.ActionType == ActionType.TaskUpload)
             {
                 return new ResponseModel() { Success = false, Errors = { "No valid task found for upload." } };
             }
 
+            var consent = await _context.UserConsents.Where(c => c.Id == req.ConsentId && c.SubmissionId == null && c.ConsentTimeUtc >= DateTimeOffset.UtcNow.AddSeconds(-20)).FirstOrDefaultAsync();
+
+            if (consent is null && req.ActionType == ActionType.TaskUpload)
+            {
+                return new ResponseModel() { Success = false, Errors = { "User has not provided consent for this action." } };
+            }
 
             PresignedHandshakeModel handshake = new PresignedHandshakeModel();
 
@@ -648,6 +667,13 @@ namespace BizKidzScholarships.API.Services
                     return new ResponseModel() { Success = false, Errors = { $"Expired Request: {confirmation.RequestId}" } };
                 }
 
+                var consent = await _context.UserConsents.Where(c => c.Id == confirmation.ConsentId && c.SubmissionId == null && c.ConsentTimeUtc >= DateTimeOffset.UtcNow.AddSeconds(-20)).FirstOrDefaultAsync();
+
+                if (request.ActionType == ActionType.TaskUpload && consent is null)
+                {
+                    return new ResponseModel() { Success = false, Errors = { "User has not provided consent for this action." } };
+                }
+
 
                 bool fileUploaded = false;
                 var payload = JsonConvert.DeserializeObject<UploadActionPayload>(request.Payload);
@@ -717,7 +743,7 @@ namespace BizKidzScholarships.API.Services
             }
         }
 
-        private async Task<ResponseModel> NewUserSubmission(int taskid, Guid userid, string payload)
+        private async Task<ResponseModel> NewUserSubmission(int taskid, Guid userid, string payload, UserConsent? consent = null)
         {
             // get previous submissions
 
@@ -750,9 +776,11 @@ namespace BizKidzScholarships.API.Services
                     userTask.Status = Data.Enums.TaskStatus.Completed;
 
                     await _context.Submissions.AddAsync(submission);
-                    _context.UserTasks.Update(userTask);
+                    //_context.UserTasks.Update(userTask);
 
-                    _context.UserPoints.Add(reward);
+                    await _context.UserPoints.AddAsync(reward);
+
+                if (consent is not null) { consent.SubmissionId = submission.SubmissionId; }
 
                     await _context.SaveChangesAsync();
                     await t.CommitAsync();
@@ -840,16 +868,18 @@ namespace BizKidzScholarships.API.Services
             return quiz;
         }
 
-        public async Task<ResponseModel> AddUserConsent(Guid userId, UserConsentDTO consent)
+        public async Task<UserConsentResponse> AddUserConsent(Guid userId, UserConsentDTO consent)
         {
+            var response = new UserConsentResponse();
+
             var consentEntity = new UserConsent()
             {
                 ConsentTimeUtc = DateTime.UtcNow,
                 DocumentId = consent.DocumentId,
                 IsGranted = consent.IsGranted,
                 UserId = userId,
-                IPAddress = _httpContext.HttpContext.Connection.RemoteIpAddress?.ToString(),
-                UserAgent = _httpContext.HttpContext.Request.Headers.UserAgent.ToString(),
+                IPAddress = _httpContext.HttpContext?.Connection.RemoteIpAddress?.ToString(),
+                UserAgent = _httpContext.HttpContext?.Request.Headers.UserAgent.ToString(),
                 ConsentType = consent.ConsentType
             };
 
@@ -863,13 +893,18 @@ namespace BizKidzScholarships.API.Services
 
                 await t.CommitAsync();
 
-                return new ResponseModel() { Success = false, Errors = { "Failed to add user consent" } };
+                response.ConsentId = consentEntity.Id;
+
+                return response;
             }
             catch (Exception ex)
             {
                 await t.RollbackAsync();
 
-                return new ResponseModel() { Success = false, Errors = { "Failed to add user consent" } };
+                response.Success = false;
+                response.Errors.Add("Failed to add user consent.");
+
+                return response;
             }
         }
 
@@ -911,6 +946,37 @@ namespace BizKidzScholarships.API.Services
             response.HTML = doc;
 
             return response;
+        }
+
+        public async Task<UserConsentResponse> AddConsent(UserConsentRequest request)
+        {
+            var res = new UserConsentResponse();
+
+            try
+            {
+                var recentDocumentId = await _context.SiteDocuments.Where(d => d.Type == request.ConsentType).OrderByDescending(d => d.Created).Select(d => d.Id).FirstOrDefaultAsync();
+
+                var consent = new UserConsentDTO()
+                {
+                    DocumentId = recentDocumentId,
+                    ConsentType = request.ConsentType,
+                    IsGranted = request.IsGranted
+                };
+
+                if (_user.Id == Guid.Empty)
+                {
+                    throw new Exception("User id is empty.");
+                }
+
+                return await AddUserConsent(_user.Id, consent);
+
+            } catch (Exception ex)
+            {
+                res.Success = false;
+                res.Errors.Add(ex.Message);
+            }
+
+            return res;
         }
     }
 }

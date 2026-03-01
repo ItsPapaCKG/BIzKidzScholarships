@@ -22,6 +22,8 @@ namespace BizKidzScholarships.Data.Entities
         public required Guid UserId { get; set; }
 
         public required bool IsGranted { get; set; } = false;
+
+        public Guid? SubmissionId { get; set; }
     }
 
     public enum ConsentType

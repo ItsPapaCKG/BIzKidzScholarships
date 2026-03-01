@@ -14,5 +14,6 @@ namespace BizKidzScholarships.Data.Models
         public required string extension { get; set; }
 
         public bool IsPrivate { get; set; } = false;
+        public int ConsentId { get; set; }
     }
 }

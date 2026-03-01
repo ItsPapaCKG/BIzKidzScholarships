@@ -326,7 +326,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
                                 <div className="row mt-3">
                                     <div className="col">
                                         <div className="form-check">
-                                        <input type="checkbox" className="form-check-input" name="MediaConsent" checked={userForm.MediaConsent} onChange={handleChange}></input>
+                                            <input type="checkbox" className="form-check-input" name="MediaConsent" checked={userForm.MediaConsent} onChange={handleChange}></input>
 
                                             <label className="form-check-label">As a condition of participation, I grant permission for submitted materials to be used for evaluation, program administration, and promotional purposes.<span className="text-danger">*</span></label>
                                         </div>

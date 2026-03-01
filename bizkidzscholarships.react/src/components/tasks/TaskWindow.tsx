@@ -50,7 +50,7 @@ function TaskWindow() {
                                 
                             </div>
                         <div className="modal-body d-flex justify-content-center p-5" style={{ maxHeight: "100vh", minHeight: "60vh" }}>
-                            <div>
+                            <div className="container">
                                 {task && <>
                                     <div className="row mb-5">
                                         <div className="col">
@@ -59,8 +59,8 @@ function TaskWindow() {
                                     </div>
 
                                         {task.TaskType == TaskType.SocialMedia && <SocialMedia />}
-                                    {task.TaskType == TaskType.ImageUpload && <FileUpload action={ActionType.TaskUpload} onClose={ closeModal } />}
-                                    {task.TaskType == TaskType.VideoUpload && <FileUpload action={ActionType.TaskUpload} isVideo={true} onClose={ closeModal } />}
+                                    {task.TaskType == TaskType.ImageUpload && <div className="container-fluid"><FileUpload action={ActionType.TaskUpload} onClose={closeModal} /></div>}
+                                    {task.TaskType == TaskType.VideoUpload && <div className="container-fluid"><FileUpload action={ActionType.TaskUpload} isVideo={true} onClose={closeModal} /></div>}
                                         {task.TaskType == TaskType.Quiz && <Quiz />}
                                         {task.TaskType == TaskType.Contest && <p>Contest goes here</p>}
                                 </>}

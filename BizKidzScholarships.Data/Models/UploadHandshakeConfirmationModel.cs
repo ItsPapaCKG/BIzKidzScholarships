@@ -11,5 +11,7 @@ namespace BizKidzScholarships.Data.Models
     {
         public required Guid RequestId { get; set; }
         public required RequestStatus Status { get; set; }
+
+        public required int ConsentId { get; set; }
     }
 }

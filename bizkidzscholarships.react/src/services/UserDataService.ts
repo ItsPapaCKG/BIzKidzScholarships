@@ -1,4 +1,4 @@
-import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type TaskQuizAnswers, type TaskQuestion } from "../models/ViewModels";
+import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type TaskQuizAnswers, type TaskQuestion, type BizDocumentType, type ConsentResponse } from "../models/ViewModels";
 import { APICall, type APIResponse } from "./APIService";
 
 export async function CheckUserProfile(): Promise<boolean> {
@@ -33,12 +33,13 @@ export async function GetUserTasks(): Promise<ITask[]> {
     return tasks;
 }
 
-export async function TaskUpload(taskid: Number, file: File): Promise<boolean> {
+export async function TaskUpload(taskid: Number, file: File, consentId: number): Promise<boolean> {
     let request = {
         ActionType: ActionType.TaskUpload,
         Extension: file.name.split(".").pop()!.toLowerCase(),
         TaskId: taskid,
-        IsPrivate: true
+        IsPrivate: true,
+        ConsentId: consentId ?? 0
     } as StartUploadRequest
 
     return (await UploadToServer(request, file)).Success;
@@ -48,7 +49,8 @@ export async function ProfileUpload(file: File) {
     let request = {
         ActionType: ActionType.ProfileImageUpload,
         Extension: file.name.split(".").pop()!.toLowerCase(),
-        IsPrivate: false
+        IsPrivate: false,
+        ConsentId: 0
     } as StartUploadRequest
 
     return await UploadToServer(request, file);
@@ -93,6 +95,8 @@ async function UploadToServer(request: StartUploadRequest, file: File): Promise<
     if (upload.ok) {
         // alert("Upload successful! See: " + presignedData.url + presignedData.key) 
         var success = await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Success);
+
+        var consent = await fetch("/user/consent")
 
         result.Success = success;
         return result;
@@ -141,4 +145,15 @@ export async function GetDashboardPoints(): Promise<UserPointsJSON | null> {
     }
 
     return res.data!;
+}
+
+export async function SendUserConsent(consent: BizDocumentType, isGranted: boolean = false): Promise<APIResponse<ConsentResponse>> {
+    let data = {
+        ConsentType: consent,
+        IsGranted: isGranted
+    };
+
+    let res = await APICall<ConsentResponse>("user/consent", "POST", data);
+
+    return res;
 }

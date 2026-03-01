@@ -28,7 +28,7 @@ function UserList() {
 
                                             return (
                                                 <tr>
-                                                    <td>{v.ChildFullName ?? "-"}</td>
+                                                    <td>{v.UserType != UserType.KidOverThirteen ? (v.ChildFullName ?? "-" ) : "-"}</td>
                                                     <td>
                                                         {v.UserType == UserType.Parent &&
                                                             <span>

@@ -118,9 +118,9 @@ namespace BizKidzScholarships.API.Controllers
         //}
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Consent([FromBody] UserConsentDTO consent)
+        public async Task<IActionResult> Consent([FromBody] UserConsentRequest consent)
         {
-            var res = await _udService.AddUserConsent(_user.Id, consent);
+            var res = await _udService.AddConsent(consent);
 
             return RouteResponse(res);
         }

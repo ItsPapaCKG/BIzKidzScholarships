@@ -133,12 +133,17 @@ export interface StartUploadRequest {
     ActionType: ActionType,
     TaskId?: Number,
     Extension: string,
-    IsPrivate: boolean
+    IsPrivate: boolean,
+    ConsentId: number
 }
 
 export interface UploadHandshakeConfirmation {
     RequestId: string,
     Status: RequestStatus
+}
+
+export interface ConsentResponse {
+    consentId: number
 }
 // #endregion
 
