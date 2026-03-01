@@ -96,8 +96,6 @@ async function UploadToServer(request: StartUploadRequest, file: File): Promise<
         // alert("Upload successful! See: " + presignedData.url + presignedData.key) 
         var success = await CompleteUploadHandshake(presignedDataResponse.requestId, RequestStatus.Success);
 
-        var consent = await fetch("/user/consent")
-
         result.Success = success;
         return result;
     }
