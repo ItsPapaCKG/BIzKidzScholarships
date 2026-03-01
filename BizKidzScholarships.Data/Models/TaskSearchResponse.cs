@@ -1,4 +1,5 @@
-﻿using BizKidzScholarships.Data.Entities;
+﻿using BizKidzScholarships.Data.dto;
+using BizKidzScholarships.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace BizKidzScholarships.Data.Models
     {
         public TaskSearchResponse()
         {
-            Results = new List<TaskItem>();
+            Results = new List<AdminGetTaskResponse>();
         }
-        public List<TaskItem> Results { get; set; }
+        public List<AdminGetTaskResponse> Results { get; set; }
 
         public string Error { get; set; }
     }

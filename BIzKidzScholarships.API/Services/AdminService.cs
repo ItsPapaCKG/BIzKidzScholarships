@@ -88,7 +88,9 @@ namespace BizKidzScholarships.API.Services
             {
                 var list = await GetAsListAsync<TaskItem>();
 
-                var results = new TaskSearchResponse() { Results = list };
+                var newlist = _mapper.Map<List<AdminGetTaskResponse>>(list);
+
+                var results = new TaskSearchResponse() { Results = newlist };
 
                 return results;
             }
