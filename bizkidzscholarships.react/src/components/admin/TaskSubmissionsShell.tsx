@@ -26,7 +26,7 @@ function TaskSubmissionsShell() {
                               <select className="form-select" onChange={(e) => setSelectedTask(Number(e.target.value))} value={selectedTask ?? ""}>
                                   <option value="" disabled>Please select a task..</option>
                                   {!tasks?.error && tasks?.results.map((t) => {
-                                      return <option value={t.id} key={ t.id }>{t.taskTitle}</option>
+                                      return <option value={t.taskId} key={ t.taskId }>{t.taskTitle}</option>
                                   })}
                               </select>
                           </div>

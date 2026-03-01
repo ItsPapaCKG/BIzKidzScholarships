@@ -35,6 +35,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
         }
         
         if (task?.TaskId == null && action == ActionType.TaskUpload) {
+            console.error("No task Id found for task. Could not upload submission.");
             return;
         }
 

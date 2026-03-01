@@ -59,9 +59,13 @@ namespace BizKidzScholarships.API.Services
             return await GetAsListAsync<UserActivity>(q => q.OrderByDescending(a => a.Created).Take(3));
         }
 
-        public async Task<List<TaskItem>> GetTasks()
+        public async Task<List<AdminGetTaskResponse>> GetTasks()
         {
-            return await GetAsListAsync<TaskItem>();
+            var list = await GetAsListAsync<TaskItem>();
+
+            var newList = _mapper.Map<List<AdminGetTaskResponse>>(list);
+
+            return newList;
         }
 
         public async Task<AdminTaskSubmissionsSearchResults> GetAllSubmissions()

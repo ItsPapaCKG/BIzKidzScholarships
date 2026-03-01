@@ -52,7 +52,7 @@ export interface ITaskJSON {
     reward: number,
     status: UserTaskStatus,
     taskImageKey: string,
-    id: number,
+    taskId: number,
     taskType: TaskType,
     taskPromptTitle: string,
     taskPromptSubtitle: string
