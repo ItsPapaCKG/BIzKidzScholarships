@@ -55,6 +55,8 @@ namespace BizKidzScholarships.API
                 app.UseSwaggerUI();
             }
 
+            app.UseForwardedHeaders();
+
             app.UseHttpsRedirection();
 
             app.UseCors("frontend");
