@@ -5,12 +5,10 @@ namespace BizKidzScholarships.API.Services.Utilities
 {
     public class UserRewardFactory
     {
-        public Guid UserId { get; set; }
         private BizKidzDbContext db;
-        public UserRewardFactory(Guid userId, BizKidzDbContext context)
+        public UserRewardFactory(BizKidzDbContext context)
         {
             db = context;
-            UserId = userId;
         }
 
         public UserPointsReward New(int taskId, Guid userId)

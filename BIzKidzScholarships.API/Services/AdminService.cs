@@ -24,7 +24,7 @@ namespace BizKidzScholarships.API.Services
 
         public AdminService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac) : base(user, mapper, context, _fac)
         {
-            rewardFactory = new UserRewardFactory(userId, context);
+            rewardFactory = new UserRewardFactory(context);
         }
 
         protected async Task<List<T>> GetAsListAsync<T>(

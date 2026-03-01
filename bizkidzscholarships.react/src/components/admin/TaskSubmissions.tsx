@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UseAdminContext } from "../../contexts/AdminContext";
-import { TaskType, type GetSubmissionResponse, type SubmissionItemJSON, type SubmissionsSearchResults } from "../../models/ViewModels";
+import { TaskType, type GetSubmissionResponse, type SubmissionItemJSON } from "../../models/ViewModels";
 import LoadingSVG from "../LoadingSVG";
 import { GetSubmission } from "../../services/AdminDataService";
 
@@ -12,10 +12,7 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
     const adminContext = UseAdminContext();
     const [submissions] = [adminContext.taskSubmissions]
     const [viewedSubmissions, setViewedSubmissions] = useState <SubmissionItemJSON[] | undefined>()
-    const [GetSubmissions] = [adminContext.getTaskSubmissions];
-    const [GetTasks] = [adminContext.getTasks];
     const [viewedSubmission, setViewedSubmission] = useState<SubmissionItemJSON | undefined>()
-    const [showModal, setShowModal] = useState<boolean>(true);
     const [modalLoading, setModalLoading] = useState<boolean>(false);
     const [modalError, setModalError] = useState<string | undefined>();
     const [submissionAccess, setSubmissionAccess] = useState<GetSubmissionResponse | undefined>()
@@ -27,7 +24,6 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
     }
 
     const closeModal = () => {
-        setShowModal(false);
         setModalLoading(false);
         setModalError(undefined);
         setViewedSubmission(undefined);
@@ -39,7 +35,6 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
 
         setViewedSubmission(item);
 
-        setShowModal(true);
         setModalLoading(true);
 
         let res = await GetSubmission(submissionId);
@@ -87,7 +82,7 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {viewedSubmissions!.map((sub, idx) => {
+                                {viewedSubmissions!.map((sub) => {
                                     {
                                         var taskTypeString: string;
                                         var isFileType = false;
@@ -118,7 +113,7 @@ function TaskSubmissions({ taskId }: TaskSubmissionProps) {
                                     return (<tr key={ sub.submissionId }>
                                         <td>{ sub.userFullName }</td>
                                         <td>{ taskTypeString }</td>
-                                        <td>{isFileType ? (<button type="button" className="btn btn-link" onClick={e => viewSubmission(sub.submissionId)} data-bs-toggle="modal" data-bs-target="#viewSubmissionModal">View File</button>) : <></>}</td>
+                                        <td>{isFileType ? (<button type="button" className="btn btn-link" onClick={() => viewSubmission(sub.submissionId)} data-bs-toggle="modal" data-bs-target="#viewSubmissionModal">View File</button>) : <></>}</td>
                                         <td>{ sub.created.toISOString() }</td>
                                     </tr>)
                                 }) }

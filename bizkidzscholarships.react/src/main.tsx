@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import AuthFormComponent from './components/AuthFormComponent.tsx'
 import UserAccountProvider from './contexts/UserAccountContext.tsx'
 import TaskProvider from './contexts/TaskViewContext.tsx'
 import { AppMode } from './models/ViewModels.ts'
@@ -11,8 +10,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AdminDashboard from './components/admin/AdminDashboard.tsx'
 import TaskSubmissionsShell from './components/admin/TaskSubmissionsShell.tsx'
 import AdminBreadcrumb from './components/admin/AdminBreadcrumb.tsx'
-import PasswordReset from './components/auth/PasswordReset.tsx'
-import PasswordResetConfirm from './components/auth/PasswordResetConfirm.tsx'
 import UserList from './components/admin/UserList.tsx'
 
 export const router = createBrowserRouter([

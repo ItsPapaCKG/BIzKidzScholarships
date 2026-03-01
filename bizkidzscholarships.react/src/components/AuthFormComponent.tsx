@@ -1,9 +1,8 @@
 import { useEffect, useState, type ChangeEvent } from "react";
-import { Form, Link, useNavigate } from "react-router";
-import { type LoginJSON, type IUserProfile, type RegisterJSON, UserType } from "../models/ViewModels";
-import { APICall, ResponseCode, ResponseError } from "../services/APIService";
+import { Link, useNavigate } from "react-router";
+import { type RegisterJSON, UserType } from "../models/ViewModels";
+import { ResponseCode } from "../services/APIService";
 import { AttemptAuth } from "../services/AuthService";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { UseUserAccountContext } from "../contexts/UserAccountContext";
 
@@ -13,7 +12,7 @@ export interface LoginProps {
 
 function AuthFormComponent({ RegisterMode = false }: LoginProps) {
     const userDataContext = UseUserAccountContext();
-    const [setIsAuthenticated, isAuthenticated] = [userDataContext.setIsAuthenticated, userDataContext.isAuthenticated];
+    const [setIsAuthenticated, _] = [userDataContext.setIsAuthenticated, userDataContext.isAuthenticated];
     const tryGetCookie = userDataContext.populateCookie;
 
     const [errorState, setErrorState] = useState('');
@@ -105,15 +104,6 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         setUserForm(prev => ({...prev, ["Birthday"]: d ?? ""}));
     };
 
-    const compareIgnoringYear = (d1: Date, d2: Date): number => {
-        const baseYear = 2000; // leap year avoids Feb 29 issues
-
-        const date1 = new Date(baseYear, d1.getMonth(), d1.getDate());
-        const date2 = new Date(baseYear, d2.getMonth(), d2.getDate());
-
-        return date1.getTime() - date2.getTime();
-    }
-
     const formValidate = () => {
         let valid: boolean = false;
         let emailValid = userForm.email.includes("@");
@@ -123,6 +113,10 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         let passwordEntered = userForm.password !== "" && userForm.password.length > 8;
 
         valid = emailValid && birthdayEntered && nameValid && passwordsMatch && passwordEntered;
+
+        if (!valid) {
+            return false;
+        }
 
         const birthDate = userForm.Birthday.split('T')[0];
 
@@ -191,7 +185,7 @@ function AuthFormComponent({ RegisterMode = false }: LoginProps) {
         let passwordsMatch = userForm.password == userForm.ConfirmPassword;
         let passwordEntered = userForm.password !== "" && userForm.password.length > 8;
 
-        valid = emailValid && birthdayEntered && nameValid && passwordsMatch && passwordEntered;
+        valid = emailValid && birthdayEntered && nameValid && passwordsMatch && passwordEntered && userForm.MediaConsent && userForm.PrivacyConsent && userForm.IAmOver13;
         
         setIsValid(valid);
 

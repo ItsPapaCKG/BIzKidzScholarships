@@ -19,12 +19,14 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: api
-    restart: always
+    env_file:
+      - .env
+    restart: "no"
     depends_on:
       - postgres
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__PGHostd: Host=postgres;Port=5432;Database=bizkidzdb;Username=bizkidzuser;Password=1234
+      ConnectionStrings__PGHost: Host=postgres;Port=5432;Database=bizkidzdb;Username=bizkidzuser;Password=1234
     ports:
       - "8080:8080"
     networks:

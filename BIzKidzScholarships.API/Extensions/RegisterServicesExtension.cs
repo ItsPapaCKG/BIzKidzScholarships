@@ -34,6 +34,11 @@ namespace BizKidzScholarships.API.Extensions
                 options.KnownProxies.Clear();
             });
 
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.LicenseKey = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ikx1Y2t5UGVubnlTb2Z0d2FyZUxpY2Vuc2VLZXkvYmJiMTNhY2I1OTkwNGQ4OWI0Y2IxYzg1ZjA4OGNjZjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2x1Y2t5cGVubnlzb2Z0d2FyZS5jb20iLCJhdWQiOiJMdWNreVBlbm55U29mdHdhcmUiLCJleHAiOiIxODAzNzcyODAwIiwiaWF0IjoiMTc3MjMyMjA0MSIsImFjY291bnRfaWQiOiIwMTljYTY5ZmU0YmU3NDllYTg0ZTFiOTNkY2RhOGQxNSIsImN1c3RvbWVyX2lkIjoiY3RtXzAxa2prYTBieGcxNjc0NXpjcngwM2ZjMDRyIiwic3ViX2lkIjoiLSIsImVkaXRpb24iOiIwIiwidHlwZSI6IjIifQ.aZFzgwo9dmO_5Vpjc88JxkXm3tWRzQSLp9Xb49gNJ78dL696v4yQpVT4zPiZOGCKyG07m1h-EiZf4I2N_ikrNdSHuDG2fdY2nBlI-2f9zqBr6vfrPchJKi0TP-yXITBRxEwUydiywNvzCobpjQF9njfRfluD8y9F7u2H5NEQbM_dm6r96Ttds6o1SrDBBXYt7GFvdn0lJfrV1rYFQMwvRt7Mkvq71aB4Wp910HcVOZ0Vv7G46mlnPcEZbQnUsdEirdfKtzHivDv0fDXmZMbRedKYtRIOjFfL_fxpCRae30zS5VqzxCzu29JxkVLyapea5ZzcMiUZDPqVq5BRSsHgRg";
+            });
+
             services.AddHttpContextAccessor();
             services.AddHttpClient();
 

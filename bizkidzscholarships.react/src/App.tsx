@@ -3,7 +3,7 @@ import './App.css'
 import Dashboard from './components/dashboard/DashboardComponent';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { UseUserAccountContext } from './contexts/UserAccountContext';
-import { AppMode, BizDocumentType, type UserCookieJSON } from './models/ViewModels';
+import { AppMode, BizDocumentType } from './models/ViewModels';
 import AdminProvider from './contexts/AdminContext';
 import AuthFormComponent from './components/AuthFormComponent';
 import AdminGuard from './components/admin/AdminGuard';
@@ -24,8 +24,7 @@ function App({ Mode }: AppProps) {
     const navigate = useNavigate();
     const userAccountContext = UseUserAccountContext();
     const isAuthenticated = userAccountContext.isAuthenticated;
-    const [cookie, setUserCookie] = [userAccountContext.userCookie, userAccountContext.setUserCookie];
-    const [checkCookie] = [userAccountContext.populateCookie]
+    const [cookie, _] = [userAccountContext.userCookie, userAccountContext.setUserCookie];
     const [loading] = [userAccountContext.loadingData];
     const [logout] = [userAccountContext.logout];
     

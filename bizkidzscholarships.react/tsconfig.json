@@ -10,6 +10,11 @@
       "node",
       "vite/client",
       "vite-plugin-mkcert"
-    ]
+    ],
+    "strict": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   }
 }

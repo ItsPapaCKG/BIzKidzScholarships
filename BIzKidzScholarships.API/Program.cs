@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Threading.Tasks;
+using BizKidzScholarships.API.Services.Utilities;
+using AutoMapper.Configuration;
 
 namespace BizKidzScholarships.API
 {
@@ -40,7 +42,10 @@ namespace BizKidzScholarships.API
             using (var scope = app.Services.CreateScope())
             {
                 var db = scope.ServiceProvider.GetRequiredService<BizKidzDbContext>();
-                db.Database.Migrate();
+                await db.Database.MigrateAsync();
+
+                await SeedRoles(app.Services.CreateScope().ServiceProvider);
+                await IdentitySeeder.SeedAdminUser(scope.ServiceProvider);
             }
 
             // Configure the HTTP request pipeline.
@@ -58,8 +63,6 @@ namespace BizKidzScholarships.API
             app.UseAuthorization();
 
             app.MapControllers();
-
-            await SeedRoles(app.Services.CreateScope().ServiceProvider);
 
             app.Run();
         }

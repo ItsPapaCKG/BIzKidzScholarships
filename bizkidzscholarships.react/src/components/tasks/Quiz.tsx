@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import type { TaskQuestion, TaskQuizAnswers, UserAnswer } from "../../models/ViewModels";
-import { GetQuizQuestions, SubmitQuizToServer } from "../../services/UserDataService";
+import type { TaskQuestion, UserAnswer } from "../../models/ViewModels";
+import { GetQuizQuestions } from "../../services/UserDataService";
 import { UseTaskContext } from "../../contexts/TaskViewContext";
 
-type Question = TaskQuestion[]
+//type Question = TaskQuestion[]
 
 function Quiz() {
 
@@ -14,7 +14,7 @@ function Quiz() {
     const [currentQuestion, setCurrentQuestion] = useState<number>(0);
     const [task] = [context.viewedTask];
     const [answers, setAnswers] = useState<UserAnswer[]>([]);
-    const [input, setInput] = useState<string[]>([]);
+    const [_, setInput] = useState<string[]>([]);
 
     useEffect(() => {
         let func = async () => {
@@ -24,7 +24,7 @@ function Quiz() {
                 return;
             }
 
-            let res = await GetQuizQuestions(task.TaskId);
+            let res = await GetQuizQuestions();
 
             if (res.success) {
                 setQuestions(res.data!);
@@ -95,13 +95,13 @@ function Quiz() {
             return;
         }
 
-        let submission: TaskQuizAnswers = {
-            taskId: task!.TaskId,
-            answers: answers
-        }
+        //let submission: TaskQuizAnswers = {
+        //    taskId: task!.TaskId,
+        //    answers: answers
+        //}
 
         let submit = async () => {
-            let res = await SubmitQuizToServer(submission);
+            //let res = await SubmitQuizToServer(submission);
         }
 
         submit();

@@ -11,5 +11,6 @@
   <ItemGroup>
     <Folder Include="src\components\admin\tasks\" />
     <Folder Include="src\components\admin\submissions\" />
+    <Folder Include="src\components\admin\users\" />
   </ItemGroup>
 </Project>

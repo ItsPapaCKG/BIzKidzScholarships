@@ -8,7 +8,7 @@ function UserPoints() {
     const [points, setPoints] = [context.points, context.setPoints];
     const [RequestPoints] = [context.RequestPoints]
     const [DoPointsRefresh, setPointsRefresh] = [context.DoPointsRefresh, context.setPointsRefresh];
-    const [IsError, setIsError] = useState<boolean>(false);
+    const [_, setIsError] = useState<boolean>(false);
 
     const getPoints = async() => {
         let p = await RequestPoints();

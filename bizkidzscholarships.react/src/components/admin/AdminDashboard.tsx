@@ -3,8 +3,6 @@ import { UseUserAccountContext } from "../../contexts/UserAccountContext";
 import { Link, useNavigate } from "react-router-dom";
 import { UseAdminContext } from "../../contexts/AdminContext";
 import { GetUserActivities, GetUserResults } from "../../services/AdminDataService";
-import UserActivity from "./UserActivityTable";
-import UserList from "./UserList";
 
 function AdminDashboard() {
   const userAccountContext = UseUserAccountContext();
@@ -35,8 +33,8 @@ function AdminDashboard() {
       navigation("/access-denied");
     }
 
-    //getLogs();
-    //getUsers();
+    getLogs();
+    getUsers();
     
   }, []);
   

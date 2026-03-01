@@ -1,4 +1,4 @@
-import type { ITask, LoginJSON } from "../models/ViewModels";
+import type { LoginJSON } from "../models/ViewModels";
 import { APICall, type APIResponse } from "./APIService";
 
 export async function AttemptAuth(loginModel: LoginJSON, register = false): Promise<APIResponse> {

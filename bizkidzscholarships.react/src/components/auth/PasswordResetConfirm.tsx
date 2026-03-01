@@ -21,7 +21,7 @@ function PasswordResetConfirm() {
     } as PasswordResetModel);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type } = e.target;
+        const { name, value } = e.target;
 
         setPasswordResetRequest(prev => ({ ...prev, [name]: value }));
     };
@@ -58,7 +58,7 @@ function PasswordResetConfirm() {
                   </div>
 
                   <div className="card-footer">
-                      <button className="btn btn-success btn-lg" onClick={e => passwordResetRequest.Password == passwordResetRequest.ConfirmPassword && resetPassword() }>Request Reset</button>
+                      <button className="btn btn-success btn-lg" onClick={() => passwordResetRequest.Password == passwordResetRequest.ConfirmPassword && resetPassword() }>Request Reset</button>
                     </div>
 
 
@@ -69,7 +69,7 @@ function PasswordResetConfirm() {
                   <div className="card-body">
                       <p>The password reset was successful.</p>
 
-                      <button className="btn btn-success" onClick={e => navigate("/login")}>Back to Login</button>
+                      <button className="btn btn-success" onClick={() => navigate("/login")}>Back to Login</button>
                   </div>
               </>}
 
@@ -77,7 +77,7 @@ function PasswordResetConfirm() {
                   <div className="card-body">
                       <p className="text-danger">There was an error submitting your request.</p>
 
-                      <button className="btn btn-primary" onClick={e => setPasswordResetConfirmed(undefined)}>Try Again</button>
+                      <button className="btn btn-primary" onClick={() => setPasswordResetConfirmed(undefined)}>Try Again</button>
                   </div>
               </>}
 

@@ -26,8 +26,6 @@ namespace BizKidzScholarships.API.Services
         //private ICurrentUser _user;
         //private BizKidzDbContext _context;
         //private IMapper _mapper;
-
-        protected Guid userId => _user.Id;
         protected UserRewardFactory rewardFactory { get; set; }
 
         private IHttpContextAccessor _httpContext { get; set; }
@@ -38,7 +36,7 @@ namespace BizKidzScholarships.API.Services
 
         public UserDataService(ICurrentUser user, IMapper mapper, BizKidzDbContext context, IHttpClientFactory _fac, IHttpContextAccessor httpContext, IAmazonSimpleEmailService eml, IConfiguration config) : base(user, mapper, context, _fac)
         {
-            rewardFactory = new UserRewardFactory(userId, context);
+            rewardFactory = new UserRewardFactory(context);
             _httpContext = httpContext;
             _email = eml;
         }
@@ -283,7 +281,7 @@ namespace BizKidzScholarships.API.Services
             return response;
         }
 
-        public async Task<bool> UpdateUserProfile(UserProfileDTO profile)
+        public async Task<bool> UpdateUserProfile(UserProfileDTO profile, Guid userId)
         {
             var existing = _context.Profiles.Any(ut => ut.UserId == userId);
 

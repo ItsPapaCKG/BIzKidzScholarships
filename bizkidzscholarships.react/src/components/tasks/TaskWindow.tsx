@@ -1,17 +1,14 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { UseTaskContext } from "../../contexts/TaskViewContext";
 import { ActionType, TaskType } from "../../models/ViewModels";
 import FileUpload from "./FileUpload";
 import Quiz from "./Quiz";
 import SocialMedia from "./SocialMedia";
-import { Modal } from "bootstrap";
 
 function TaskWindow() {
 
     const viewedTask = UseTaskContext();
-    const [task, setTask] = [viewedTask.viewedTask, viewedTask.setViewedTask];
-
-    const [showModal, setShowModal] = useState<boolean>(false);
+    const [task] = [viewedTask.viewedTask, viewedTask.setViewedTask];
 
     const modalRef = useRef<HTMLDivElement>(null);
 

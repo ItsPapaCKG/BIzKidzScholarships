@@ -1,18 +1,18 @@
-import { useEffect, useState, type ChangeEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { ActionType, UserType, type IUserProfile } from "../../models/ViewModels";
+import { useState, type ChangeEvent } from "react";
+import { ActionType, UserType } from "../../models/ViewModels";
 import { UseUserAccountContext } from "../../contexts/UserAccountContext";
 import FileUpload from "../tasks/FileUpload";
 
 function EditProfile() {
-    const [errorState, setErrorState] = useState("")
+    const [_, setErrorState] = useState("")
 
-    const navigate = useNavigate();
     const userAccountContext = UseUserAccountContext();
     const [userProfile, setUserProfile] = [userAccountContext.userProfile, userAccountContext.setUserProfile]
-    const [editMode, setEditMode] = [userAccountContext.editMode, userAccountContext.setEditMode]
+    const [setEditMode] = [userAccountContext.setEditMode]
     const [profilePictureURL, setProfilePictureUrl] = useState<string>("");
     const [hasDataChanged, dataChanged] = useState<boolean>(false);
+
+    const closeFunc = () => { };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         // validate inputs
@@ -31,7 +31,7 @@ function EditProfile() {
         }
 
         // attempt registration
-        var res = await fetch(`https://localhost:7095/api/user/${endpoint}`, {
+        var res = await fetch(`/api/user/${endpoint}`, {
             method: httpMethod,
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -83,7 +83,7 @@ function EditProfile() {
                         
                         <div className="input-group mb-3">
                             <span className="input-group-text" id="inputGroup-sizing-default">Logo</span>
-                            <FileUpload action={ActionType.ProfileImageUpload} setFileUrl={changeProfile}/>
+                                <FileUpload action={ActionType.ProfileImageUpload} setFileUrl={changeProfile} onClose={ closeFunc } />
                             {/* <span className="input-group-text">Logo saved</span> */}
                         </div>
                         <div className="input-group mb-3">

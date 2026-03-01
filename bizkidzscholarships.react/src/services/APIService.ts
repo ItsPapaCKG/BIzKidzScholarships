@@ -1,6 +1,4 @@
 
-import { config as appConfig } from './ConfigService';
-
 // Any component can request data
 
 // The response is either:

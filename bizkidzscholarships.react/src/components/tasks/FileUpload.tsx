@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { ProfileUpload, TaskUpload } from "../../services/UserDataService"
 import { UseTaskContext } from "../../contexts/TaskViewContext";
 import { ActionType } from "../../models/ViewModels";
-import { Modal } from "bootstrap";
 
 interface ImageUploadProps {
     action: ActionType,

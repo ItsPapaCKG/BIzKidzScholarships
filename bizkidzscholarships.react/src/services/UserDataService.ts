@@ -1,14 +1,12 @@
-import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type UserPoints, type TaskQuizAnswers, type TaskQuestion } from "../models/ViewModels";
+import { type ITask, type ITaskJSON, type StartUploadRequest, ActionType, type UploadHandshakeConfirmation, RequestStatus, type StartUploadHandshakeResponseJSON, type ServerUploadResponse, type UserPointsJSON, type TaskQuizAnswers, type TaskQuestion } from "../models/ViewModels";
 import { APICall, type APIResponse } from "./APIService";
-
-import { config as appConfig } from "./ConfigService";
 
 export async function CheckUserProfile(): Promise<boolean> {
     return false;
 }
 
 export async function GetUserTasks(): Promise<ITask[]> {
-    var res = await fetch(`${appConfig.baseAPIURL}:${appConfig.apiPort}/api/user/tasks`, {
+    var res = await fetch(`/api/user/tasks`, {
         credentials: "include"
     });
 
@@ -25,7 +23,7 @@ export async function GetUserTasks(): Promise<ITask[]> {
             Reward: i.reward,
             Status: i.status,
             TaskImageKey: i.taskImageKey,
-            TaskId: i.taskId,
+            TaskId: i.id,
             TaskType: i.taskType,
             TaskPromptTitle: i.taskPromptTitle,
             TaskPromptSubtitle: i.taskPromptSubtitle
@@ -128,7 +126,7 @@ export async function SubmitQuizToServer(answers: TaskQuizAnswers) {
     return res;
 }
 
-export async function GetQuizQuestions(taskId: number): Promise<APIResponse<TaskQuestion[]>> {
+export async function GetQuizQuestions(): Promise<APIResponse<TaskQuestion[]>> {
     let res = await APICall<TaskQuestion[], TaskQuizAnswers>("Quiz", "GET");
 
     return res;
@@ -142,5 +140,5 @@ export async function GetDashboardPoints(): Promise<UserPointsJSON | null> {
         return null;
     }
 
-    return res.data;
+    return res.data!;
 }

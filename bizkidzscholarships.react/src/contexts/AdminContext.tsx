@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { type UserResult, type UserActivityLog, type AdminTaskSubmission, type ITask, type SubmissionsSearchResults, type GetTasksResponse } from "../models/ViewModels";
-import { GetAllSubmissions, GetAllTasks, GetSubmissions, GetUserResults } from "../services/AdminDataService";
+import { type UserResult, type UserActivityLog, type SubmissionsSearchResults, type GetTasksResponse } from "../models/ViewModels";
+import { GetAllSubmissions, GetAllTasks, GetUserResults } from "../services/AdminDataService";
 
 export type adminContextType = {
     userActivities: UserActivityLog[],
