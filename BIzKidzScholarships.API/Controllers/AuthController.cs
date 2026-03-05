@@ -194,7 +194,7 @@ namespace BizKidzScholarships.API.Controllers
             var encodedToken = WebEncoders.Base64UrlEncode(
                 Encoding.UTF8.GetBytes(token));
 
-            var resetLink = $"{_config["FrontEndUrl"]}/passwordresetconfirm?email={email}&token={encodedToken}";
+            var resetLink = $"{_config["FrontEndUrl"]}passwordresetconfirm?email={email}&token={encodedToken}";
 
             await _udService.NewPasswordReset(email, resetLink);
 
