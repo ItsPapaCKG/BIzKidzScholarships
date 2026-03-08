@@ -64,6 +64,7 @@ function FileUpload({ action, setFileUrl, isVideo, onClose }: ImageUploadProps) 
                     setFileUrl(response.Url);
 
                 successful = true;
+                return;
                 break;
             case ActionType.TaskUpload:
                 setUploadPending(true);

@@ -1,7 +1,7 @@
 ﻿import { useEffect, createContext } from 'react'
 import './App.css'
 import Dashboard from './components/dashboard/DashboardComponent';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { UseUserAccountContext } from './contexts/UserAccountContext';
 import { AppMode, BizDocumentType } from './models/ViewModels';
 import AdminProvider from './contexts/AdminContext';
@@ -27,6 +27,7 @@ function App({ Mode }: AppProps) {
     const [cookie, _] = [userAccountContext.userCookie, userAccountContext.setUserCookie];
     const [loading] = [userAccountContext.loadingData];
     const [logout] = [userAccountContext.logout];
+    const location = useLocation();
     
     useEffect(() => {
 
@@ -55,7 +56,7 @@ function App({ Mode }: AppProps) {
         //    navigate('/login')
         //}
         
-    }, [loading]);
+    }, [loading, location]);
 
     let isAdmin = cookie.roles.includes("Admin");
 
@@ -64,9 +65,9 @@ function App({ Mode }: AppProps) {
         <div className="d-flex flex-column min-vh-100 bg-light">
             <nav className='navbar navbar-expand-lg navbar-light bg-white fixed-top shadow'>
                 <div className='container-xl'>
-                    <a className='navbar-brand ms-5'>
+                    <NavLink className='navbar-brand ms-5' to={'/'}>
                         <img className="navbarLogo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=192,h=192,fit=crop,f=png/mp86LE4kBWs8n2nr/bizkidzusa-logo-YZ97oQKGGyhz1EMk.png" height="75"/>
-                    </a>
+                    </NavLink>
 
                         {isAdmin && Mode == AppMode.Dashboard && <NavLink to="/admin">Go to Admin Page</NavLink>}
 

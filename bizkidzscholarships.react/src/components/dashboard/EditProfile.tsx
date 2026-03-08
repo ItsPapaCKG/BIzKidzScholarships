@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { ActionType, UserType } from "../../models/ViewModels";
 import { UseUserAccountContext } from "../../contexts/UserAccountContext";
 import FileUpload from "../tasks/FileUpload";
@@ -65,6 +65,12 @@ function EditProfile() {
         setProfilePictureUrl(profileUrl);
         dataChanged(true);
     };
+
+    useEffect(() => {
+        if (profilePictureURL != "") {
+            dataChanged(true);
+        }
+    }, [profilePictureURL]);
 
     // onChange={handleChange}
     return (
