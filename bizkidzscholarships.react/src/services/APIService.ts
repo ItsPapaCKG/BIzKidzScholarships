@@ -79,7 +79,6 @@ export async function APICall<Output = unknown, Input = unknown>(urlPath: string
     }
 
     if (method == "POST" && data != undefined) {
-        console.log("Sending JSON: "+JSON.stringify(data));
         config.body = JSON.stringify(data)
         config.headers = {
             "Content-Type": "application/json"

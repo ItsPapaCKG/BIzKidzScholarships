@@ -669,7 +669,7 @@ namespace BizKidzScholarships.API.Services
                     return new ResponseModel() { Success = false, Errors = { $"Expired Request: {confirmation.RequestId}" } };
                 }
 
-                var consent = await _context.UserConsents.Where(c => c.Id == confirmation.ConsentId && c.SubmissionId == null && c.ConsentTimeUtc >= DateTimeOffset.UtcNow.AddSeconds(-20)).FirstOrDefaultAsync();
+                var consent = await _context.UserConsents.Where(c => c.Id == confirmation.ConsentId && c.SubmissionId == null).FirstOrDefaultAsync();
 
                 if (request.ActionType == ActionType.TaskUpload && consent is null)
                 {
